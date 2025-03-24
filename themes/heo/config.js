@@ -119,7 +119,7 @@ const CONFIG = {
   HEO_SOCIAL_CARD: true, // 是否显示右侧，点击加入社群按钮
   HEO_SOCIAL_CARD_TITLE_1: '交流频道',
   HEO_SOCIAL_CARD_TITLE_2: '加入我们的社群讨论分享',
-  HEO_SOCIAL_CARD_TITLE_3: '[img]https://im.19492035.xyz/file/1742822130868.jpg[/img]',
+  HEO_SOCIAL_CARD_TITLE_3: '点击进入',
   HEO_SOCIAL_CARD_URL: 'https://im.19492035.xyz/file/1742651920554.jpg',
 
   // 底部统计面板文案
