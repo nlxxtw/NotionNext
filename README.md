@@ -1,3 +1,8 @@
+# 修改评论插件版本
+![image](https://github.com/user-attachments/assets/07028902-e61b-45a5-b300-64aa4a45e9b7)
+
+
+
 # 帮助教程
 
 访问帮助：[NotionNext帮助手册](https://docs.tangly1024.com/)
