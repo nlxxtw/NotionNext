@@ -53,8 +53,7 @@ export default function PoweredBy(props) {
 
 
 
-
-  {/* 固定在右下角的二维码 */}
+  /* 固定在右下角的二维码 */
       <div style={{
         position: 'absolute',
         right: '0',
