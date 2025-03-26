@@ -53,28 +53,5 @@ export default function PoweredBy(props) {
 
 
 
-  /* 固定在右下角的二维码 */
-      <div style={{
-        position: 'absolute',
-        right: '0',
-        bottom: '0',
-        padding: '10px',
-        textAlign: 'center'
-      }}>
-        <img 
-          src="https://www.zddown.icu/wp-content/uploads/2024/04/saoma.jpg" 
-          alt="扫描二维码"
-          style={{
-            width: '100px',
-            height: '100px',
-            borderRadius: '6px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-          }}
-        />
-        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-          手机扫码访问
-        </div>
-      </div>
-    </div>
   )
 }
