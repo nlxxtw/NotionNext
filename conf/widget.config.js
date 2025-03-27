@@ -36,7 +36,7 @@ module.exports = {
   MUSIC_PLAYER_ORDER: process.env.NEXT_PUBLIC_MUSIC_PLAYER_ORDER || 'list', // 默认播放方式，顺序 list，随机 random
   MUSIC_PLAYER_AUDIO_LIST: 
     // 示例音乐列表。除了以下配置外，还可配置歌词，具体配置项看此文档 https://aplayer.js.org/#/zh-Hans/
-    [{"title":"音乐","list":["https://music.163.com/#/playlist?id=779869321"]},{"title":"治愈民谣","list":["https://music.163.com/#/playlist?id=2119795491"]}],
+    [{"title":"音乐","list":["https://music.163.com/#/playlist?id=779869321"]},{"title":"治愈民谣","list":[""]}],
     
   MUSIC_PLAYER_METING: process.env.NEXT_PUBLIC_MUSIC_PLAYER_METING || true, // 是否要开启 MetingJS，从平台获取歌单。会覆盖自定义的 MUSIC_PLAYER_AUDIO_LIST，更多配置信息：https://github.com/metowolf/MetingJS
   MUSIC_PLAYER_METING_SERVER:
