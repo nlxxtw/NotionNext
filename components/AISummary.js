@@ -28,7 +28,7 @@ const AISummary = ({ aiSummary }) => {
               </svg>
             </div>
             <div className={styles['ai-title']}>{locale.AI_SUMMARY.NAME}</div>
-            <div className={styles['ai-tag']}>GPT</div>
+            <div className={styles['ai-tag']}>zdDownGPT</div>
           </div>
           <div className={styles['ai-content']}>
             <div className={styles['ai-explanation']}>
