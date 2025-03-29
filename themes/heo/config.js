@@ -122,15 +122,8 @@ const CONFIG = {
       title_2: 'Photoshop',
       img_2: '/images/heo/2023e4058a91608ea41751c4f102b131f267075902.webp',
       color_2: '#4082c3'
-    },
-     {
-      title_1: 'matlab',
-      img_1: '/images/heo/matlab.webp',
-      color_1: '#edd3ff',
-      title_2: 'IDEA',
-      img_2: '/images/heo/idea.webp',
-      color_2: '#ffffff'
     }
+    
   ],
 
   HEO_SOCIAL_CARD: true, // 是否显示右侧，点击加入社群按钮
