@@ -34,17 +34,19 @@ export default function TouchMeCard() {
         backContent={
           <Link href={siteConfig('HEO_SOCIAL_CARD_URL', null, CONFIG)}>
             <div className='font-[1000] text-xl h-full relative'>
-              {/* 新增图片层 */}
+              {/* 调整后的图片容器 */}
               <div 
-                className='absolute inset-0 w-full h-full bg-cover bg-center opacity-80'
+                className='absolute right-0 top-1/2 -translate-y-1/2 w-1/3 h-3/4 bg-contain bg-no-repeat opacity-90'
                 style={{ 
-                  backgroundImage: 'url(https://im.19492035.xyz/file/1742820981406.jpg)'
+                  backgroundImage: 'url(https://im.19492035.xyz/file/1742820981406.jpg)',
+                  backgroundPosition: 'right center'
                 }}>
-                {/* 图片遮罩 */}
-                <div className='absolute inset-0 bg-black/30 dark:bg-black/50' />
+                {/* 遮罩层调整 */}
+                <div className='absolute inset-0 bg-gradient-to-l from-black/30 to-transparent dark:from-black/50' />
               </div>
-              {/* 文字内容 */}
-              <div className='relative z-10 flex items-center justify-center h-full p-4'>
+              
+              {/* 文字内容调整 */}
+              <div className='relative z-10 flex items-center justify-start h-full pl-4 pr-[40%]'>
                 {siteConfig('HEO_SOCIAL_CARD_TITLE_3', null, CONFIG)}
               </div>
             </div>
