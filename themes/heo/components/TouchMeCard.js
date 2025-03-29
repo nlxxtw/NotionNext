@@ -36,14 +36,14 @@ export default function TouchMeCard() {
             <div className='font-[1000] text-xl h-full relative'>
               {/* 调整后的图片容器 */}
               <div 
-                className='absolute right-0 top-1/2 -translate-y-1/2 w-1/3 h-3/4 bg-contain bg-no-repeat opacity-90'
+                className='absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-contain bg-no-repeat opacity-90'
                 style={{ 
                   backgroundImage: 'url(https://im.19492035.xyz/file/1742820981406.jpg)',
                   backgroundPosition: 'right center'
                 }}>
-                {/* 遮罩层调整 */}
+                {/* 遮罩层调整
                 <div className='absolute inset-0 bg-gradient-to-l from-black/30 to-transparent dark:from-black/50' />
-              </div>
+              </div> */}
               
               {/* 文字内容调整 */}
               <div className='relative z-10 flex items-center justify-start h-full pl-4 pr-[40%]'>
