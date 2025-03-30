@@ -1,11 +1,3 @@
-/**
- *   HEO 主题说明
- *  > 主题设计者 [张洪](https://zhheo.com/)
- *  > 主题开发者 [tangly1024](https://github.com/tangly1024)
- *  1. 开启方式 在blog.config.js 将主题配置为 `HEO`
- *  2. 更多说明参考此[文档](https://docs.tangly1024.com/article/notionnext-heo)
- */
-
 import Comment from '@/components/Comment'
 import { AdSlot } from '@/components/GoogleAdsense'
 import { HashTag } from '@/components/HeroIcons'
@@ -43,6 +35,8 @@ import SideRight from './components/SideRight'
 import CONFIG from './config'
 import { Style } from './style'
 import AISummary from '@/components/AISummary'
+import BlogMemos from './components/BlogMemos'
+import AISummar from './components/AISummar'
 
 /**
  * 基础布局 采用上中下布局，移动端使用顶部侧边导航栏
@@ -94,7 +88,7 @@ const LayoutBase = props => {
   return (
     <div
       id='theme-heo'
-      className={`${siteConfig('FONT_STYLE')} bg-[#f7f9fe] dark:bg-[#18171d] h-full min-h-screen flex flex-col scroll-smooth`}>
+      className={`${siteConfig('FONT_STYLE')} bg-[#f1f2f3] dark:bg-[#18171d] h-full min-h-screen flex flex-col scroll-smooth`}>
       <Style />
 
       {/* 顶部嵌入 导航栏，首页放hero，文章页放文章详情 */}
@@ -242,6 +236,79 @@ const LayoutArchive = props => {
 }
 
 /**
+ * 说说
+ * @param {*} props
+ * @returns
+ */
+const LayoutMemos = props => {
+  const { lock, validPassword } = props
+  const { locale, fullWidth } = useGlobal()
+  
+  const [hasCode, setHasCode] = useState(false)
+
+  useEffect(() => {
+    const codeElements = document.querySelectorAll('[class^="language-"]')
+    setHasCode(codeElements.length > 0)
+  }, [fullWidth])
+  
+  const commentEnable = siteConfig('COMMENT_WALINE_SERVER_URL')
+  
+  const memoPageInfo = {
+    id: "2ab7483d3d42419ebf6dfa90b229103c", 
+    type: "memos",
+    title: "我的说说",
+  };
+
+  return (
+    <>
+      <div className={`w-full ${fullWidth ? '' : 'xl:max-w-5xl'} ${hasCode ? 'xl:w-[73.15vw]' : ''} lg:hover:shadow lg:border rounded-2xl lg:px-2 lg:py-4 bg-white dark:bg-[#18171d] dark:border-gray-600 article`}>
+        {lock && <ArticleLock validPassword={validPassword} />}
+
+        {!lock && (
+          <div
+            id="article-wrapper"
+            className="overflow-x-auto flex-grow mx-auto md:w-full md:px-5 "
+          >
+            <article
+              itemScope
+              itemType="https://schema.org/Movie"
+              data-wow-delay=".2s"
+              className="wow fadeInUp subpixel-antialiased overflow-y-hidden"
+            >
+              {/* Notion文章主体 */}
+              <section className="px-5 justify-center mx-auto">
+                <WWAds orientation="horizontal" className="w-full" />
+                <BlogMemos {...props}/>
+                <WWAds orientation="horizontal" className="w-full" />
+              </section>
+            </article>
+
+            {fullWidth
+              ? null
+              : <div className={`${commentEnable && memoPageInfo ? '' : 'hidden'}`}>
+                <hr className="my-4 border-dashed" />
+                {/* 评论区上方广告 */}
+                <div className="py-2">
+                    <AdSlot />
+                </div>
+                {/* 评论互动 */}
+                <div className="duration-200 overflow-x-auto px-5">
+                  <div className="text-2xl dark:text-white">
+                    <i className="fas fa-comment mr-1" />
+                    {locale.COMMON.COMMENTS}
+                  </div>
+                  <Comment frontMatter={memoPageInfo} />
+                </div>
+              </div>}
+          </div>
+        )}
+      </div>
+      <FloatTocButton {...props} />
+    </>
+  )
+}
+
+/**
  * 文章详情
  * @param {*} props
  * @returns
@@ -309,6 +376,7 @@ const LayoutSlug = props => {
                 data-wow-delay='.2s'>
                 <AISummary aiSummary={post.aiSummary}/>
                 <WWAds orientation='horizontal' className='w-full' />
+                {post && <AISummar post={post} />}
                 {post && <NotionPage post={post} />}
                 <WWAds orientation='horizontal' className='w-full' />
               </section>
@@ -501,6 +569,7 @@ const LayoutTagIndex = props => {
 export {
   Layout404,
   LayoutArchive,
+  LayoutMemos, //增加LayoutMemos组件Export
   LayoutBase,
   LayoutCategoryIndex,
   LayoutIndex,
