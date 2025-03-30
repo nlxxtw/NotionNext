@@ -2,6 +2,7 @@
  * 网页右键点击后是否弹出自定义菜单
  */
 module.exports = {
+  CUSTOM_RIGHT_CLICK_CONTEXT_MENU_THEME_SWITCH = true,
   CUSTOM_RIGHT_CLICK_CONTEXT_MENU:
     process.env.NEXT_PUBLIC_CUSTOM_RIGHT_CLICK_CONTEXT_MENU || true, // 自定义右键菜单，覆盖系统菜单
   CUSTOM_RIGHT_CLICK_CONTEXT_MENU_THEME_SWITCH:
