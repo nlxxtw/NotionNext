@@ -1,43 +1,3 @@
-
-
-
-
-
-/* 黑夜模式适配 */
-.dark div.border:not(div.animate__animated):not(.lg\:p-6.p-4.border.rounded-xl.bg-\[\#57bd6a\]) {
-  background:  #191919ee;
-}
-
-
-
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background-color: rgba(73, 177, 245, 0.2);
-  border-radius: 2em;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-}
-::-webkit-scrollbar-thumb {
-  background-color: rgb(255 104 23);
-  background-image: -webkit-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.4) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0.4) 75%,
-    transparent 75%
-  );
-  border-radius: 2em;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-}
-::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
 /*添加顶部加载进度条*/
 .pace {
   -webkit-pointer-events: none;
@@ -102,6 +62,53 @@
   }
 }
 
+/* 静态文件导入 自定义样式*/
+
+#theme-fukasawa .sideLeft hr{
+    opacity: .04;
+}
+.fa-info:before {
+    content: "\f05a";
+}
+
+
+
+/* 黑夜模式适配 */
+.dark div.border:not(div.animate__animated):not(.lg\:p-6.p-4.border.rounded-xl.bg-\[\#57bd6a\]) {
+  background:  #191919ee;
+}
+
+
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: rgba(73, 177, 245, 0.2);
+  border-radius: 2em;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(255 104 23);
+  background-image: -webkit-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.4) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0.4) 75%,
+    transparent 75%
+  );
+  border-radius: 2em;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+
 
 /*搜索框特效*/
 input.text-black {
@@ -119,36 +126,5 @@ border: 2px solid #4A9DEC;
 box-shadow: 0px 0px 0px 6px rgb(74, 157, 236, 20%);
 }
 
-/* 设置{AI文章摘要}字体大小及颜色 */
-.font-bold.ml-2 {
-  font-size: 18px;
-}
-#memos > ul > li > div > div.memos__text > pre > code {
-  color: #000000;
-}
 
-/* 标签颜色 */
-  .hover\:bg-indigo-600:hover {
-    background-color: #ff6817;
-}
-.group:hover .group-hover\:bg-indigo-600 {
-  background-color: #ff6817;
-}
-.bg-indigo-600 {
-  background-color: #ff6817;
-}
-.hover\:text-indigo-600:hover {
-  color:#3a86ff;
-}
 
-/* 复选框颜色 */
-.hover\:border-indigo-600:hover {
-  border-color: #b0c4de;
-  box-shadow: 0 0 6px #b0c4de, 0 0 8px #b0c4de;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.hover\:border-blue-600:hover {
-  border-color: rgba(255, 104, 23, 0.5);
-  box-shadow: 0 0 10px rgba(255, 104, 23, 0.7), 0 0 20px rgba(255, 104, 23, 0.5);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
