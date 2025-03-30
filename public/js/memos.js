@@ -47,12 +47,12 @@
 
 // Memos Start
 var memo = {
-    host: 'https://me.edui.fun',
-    limit: '30',
-    creatorId: '101',
+    host: 'https://shuo.19492035.xyz',
+    limit: '20',
+    creatorId: '1',
     domId: '#memos',
-    username: '故人博客',
-    name: '林木木'
+    username: 'zdDown研公办',
+    name: 'zdDown'
 }
 if (typeof (memos) !== "undefined") {
     for (var key in memos) {
