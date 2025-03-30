@@ -6,6 +6,73 @@ import { generateRss } from '@/lib/rss'
 import { generateSitemapXml } from '@/lib/sitemap.xml'
 import { DynamicLayout } from '@/themes/theme'
 import { generateRedirectJson } from '@/lib/redirect'
+import { useEffect, useState } from 'react'
+
+export default function Home() {
+  const [weather, setWeather] = useState('天气信息加载中...')
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const res = await fetch('https://www.zddown.icu/wp-content/themes/zibll/inc/weather-api.php?type=json')
+        const data = await res.json()
+        
+        if (data.code === 200) {
+          const { province, city, ip } = data.data
+          const temp = parseInt(data.data.weather.temp)
+          const weatherText = `你好，来自${province}${city}【IP:${ip}】的朋友，今天温度 ${temp}℃，${getComfortMessage(temp)}`
+          setWeather(weatherText)
+        } else {
+          setWeather('欢迎访问！天气服务暂时不可用')
+        }
+      } catch (error) {
+        setWeather('天气信息获取失败')
+      }
+    }
+
+    const getComfortMessage = (temp) => {
+      if (temp < 20) return '注意保暖哦~'
+      if (temp <= 25) return '舒适宜人，适合外出！'
+      return '天气炎热，注意防晒！'
+    }
+
+    fetchWeather()
+  }, [])
+
+  return (
+    <>
+      {/* 前面添加的天气组件 */}
+      <div className="weather-banner">
+        {/* ... */}
+        <span id="weatherInfo">{weather}</span>
+      </div>
+      {/* 原有页面内容 */}
+    </>
+  )
+}
+// 在 return() 的 JSX 结构中添加
+<div className="weather-banner">
+  <div className="container mx-auto px-4 py-2">
+    <div className="text-center md:text-left flex items-center justify-center">
+      <i className="fas fa-bullhorn mr-2 text-red-500"></i>
+      <span id="weatherInfo" className="text-sm"></span>
+    </div>
+  </div>
+</div>
+
+{/* 添加样式 */}
+<style jsx>{`
+  .weather-banner {
+    background: rgba(255, 250, 240, 0.9); /* 浅黄色背景 */
+    border-bottom: 1px solid #eee;
+  }
+  @media (max-width: 768px) {
+    .weather-banner { padding: 8px 0; }
+  }
+`}</style>
+
+
+
 
 /**
  * 首页布局
