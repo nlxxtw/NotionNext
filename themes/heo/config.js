@@ -128,8 +128,8 @@ const CONFIG = {
   HEO_SOCIAL_CARD: true, // 是否显示右侧，点击加入社群按钮
   HEO_SOCIAL_CARD_TITLE_1: '微信公众号',
   HEO_SOCIAL_CARD_TITLE_2: '快人一步获取最新文章',
-  HEO_SOCIAL_CARD_TITLE_3: '点击跳转扫码关注',
-  HEO_SOCIAL_CARD_URL: 'https://im.19492035.xyz/file/1742651920554.jpg',
+  HEO_SOCIAL_CARD_TITLE_3: '点击扫码关注',
+  HEO_SOCIAL_CARD_URL: 'https://ho.19492035.xyz/gzh/index.html',
 
   // 底部统计面板文案
   HEO_POST_COUNT_TITLE: '文章数:',
