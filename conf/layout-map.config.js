@@ -8,6 +8,7 @@ module.exports = {
     '-1': 'LayoutBase',
     '/': 'LayoutIndex',
     '/archive': 'LayoutArchive',
+    '/memos' : 'LayoutMemos',
     '/page/[page]': 'LayoutPostList',
     '/category/[category]': 'LayoutPostList',
     '/category/[category]/page/[page]': 'LayoutPostList',
@@ -26,5 +27,6 @@ module.exports = {
     '/sign-in/[[...index]]': 'LayoutSignIn',
     '/sign-up/[[...index]]': 'LayoutSignUp',
     '/dashboard/[[...index]]': 'LayoutDashboard'
+    
   }
 }
