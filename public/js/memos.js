@@ -47,7 +47,7 @@
 
 // Memos Start
 var memo = {
-    host: 'https://demo.usememos.com',
+    host: 'https://shuo.19492035.xyz/',
     limit: '20',
     creatorId: '1',
     domId: '#memos',
