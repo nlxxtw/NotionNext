@@ -47,9 +47,9 @@
 
 // Memos Start
 var memo = {
-    host: 'https://shuo.19492035.xyz/',
+    host: 'https://demo.usememos.com/',
     limit: '20',
-    creatorId: '1',
+    creatorId: 'nlxxtw',
     domId: '#memos',
     username: 'zdDown研公办',
     name: 'zdDown'
