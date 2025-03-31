@@ -47,9 +47,9 @@
 
 // Memos Start
 var memo = {
-    host: 'https://demo.usememos.com/',
+    host: 'https://memos.chenge.ink/',
     limit: '20',
-    creatorId: 'nlxxtw',
+    creatorId: '1',
     domId: '#memos',
     username: 'zdDown研公办',
     name: 'zdDown'
