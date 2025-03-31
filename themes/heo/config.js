@@ -8,7 +8,7 @@ const CONFIG = {
 
   // 首页顶部通知条滚动内容，如不需要可以留空 []
   HEO_NOTICE_BAR: [
-    { title: '考公资源小程序上线，一起加油吧！', url: 'https://im.19492035.xyz/file/1742651920554.jpg' },
+    { title: '🚀考公资源小程序上线，一起加油吧！', url: 'https://im.19492035.xyz/file/1742651920554.jpg' },
     { title: '春风得意马蹄疾，一日看尽长安花！', url: 'https://nav.19492035.xyz' },
      { title: '轻装策马青云路，人生从此叹长风！', url: 'https://www.peopleapp.com/home' }
   ],
