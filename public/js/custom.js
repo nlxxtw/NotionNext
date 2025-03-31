@@ -1,16 +1,15 @@
-// 这里编写自定义js脚本；将被静态引入到页面中
-// 这里编写自定义js脚本；将被静态引入到页面中
-var OriginTitile = document.title;
-var jiao;
 
+// 自定义页面标题变化脚本
+var originalTitle = document.title;
+var timeout;
 document.addEventListener('visibilitychange', function () {
-		if (document.visibilityState === undefined || document.visibilityState === 'visible') {
-				document.title = '欢迎肥来👀！' + OriginTitile;
-				jiao = setTimeout(function () {
-						document.title = OriginTitile;
-				}, 4000);
-		} else {
-				document.title = 'Where are U🎈;
-				clearTimeout(jiao);
-		}
+    if (document.visibilityState === 'visible') {
+        document.title = '欢迎肥来👀' + originalTitle;
+        timeout = setTimeout(function () {
+            document.title = originalTitle;
+        }, 3000);
+    } else {
+        document.title = 'Where are U🎈';
+        clearTimeout(timeout);
+    }
 });
