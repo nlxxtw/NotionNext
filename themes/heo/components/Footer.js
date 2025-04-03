@@ -17,7 +17,7 @@ const Footer = ({ total }) => {
       <div className='bg-white py-8 px-4 mx-auto dark:bg-[#1a191d] dark:border-t dark:border-[#3D3D3F]'>
         <div className='max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
           {/* 联系方式 */}
-        /*  <div>
+       { /*  <div>
             <div className='dark:text-white text-base font-bold mb-8'>联系方式</div>
             <div className='text-gray-600 dark:text-gray-300 mb-6'>
               问题反馈：chinavredu@gmail.com
@@ -25,7 +25,7 @@ const Footer = ({ total }) => {
             <div className='text-gray-600 dark:text-gray-300 mb-6'>
               微信公众号：zdDown
             </div>
-          </div> */
+          </div>  */}
 
           {/* 网站信息 */}
           <div>
