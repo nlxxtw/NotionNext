@@ -20,11 +20,9 @@ const Footer = ({ total }) => {
           <div>
             <div className='dark:text-white text-base font-bold mb-8'>联系方式</div>
             <div className='text-gray-600 dark:text-gray-300 mb-6'>
-              问题反馈：chinavredu@gmail.com
+             本站为非经营性个人站点，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系站长删除，敬请谅解！
             </div>
-           /*  <div className='text-gray-600 dark:text-gray-300 mb-6'>
-              微信公众号：zdDown
-            </div>*/
+           
           </div>
          
 
@@ -54,7 +52,7 @@ const Footer = ({ total }) => {
                 Home
               </a>
             </div>
-          </div>
+         
           <div className='mb-6'>
               <a href="https://dh.19492035.xyz" target="_blank" rel="noopener noreferrer"
                  className='text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors'>
@@ -101,9 +99,9 @@ const Footer = ({ total }) => {
     <p className='text-gray-600 dark:text-gray-300 text-sm'>官方微信</p>
     </div>
           </div>
-        </div>
-      </div>
-
+        
+</div>
+</div>
       {/* 底部备案信息 */}
       <div className='w-full h-20 flex flex-col p-3 lg:flex-row justify-between px-6 items-center bg-[#f1f3f7] dark:bg-[#21232A] border-t dark:border-t-[#3D3D3F]'>
         <div className='text-center lg:text-start'>
