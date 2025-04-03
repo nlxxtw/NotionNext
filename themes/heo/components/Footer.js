@@ -15,17 +15,8 @@ const Footer = ({ total }) => {
 
       {/* 主要内容容器 */}
       <div className='bg-white py-8 px-4 mx-auto dark:bg-[#1a191d] dark:border-t dark:border-[#3D3D3F]'>
-        <div className='max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
-          {/* 联系方式 */}
-        <div>
-            <div className='dark:text-white text-base font-bold mb-8'>访问须知</div>
-            <div className='text-gray-600 dark:text-gray-300 mb-6'>
-             本站为非经营性个人站点，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，
-             会员功能仅作为用户喜欢本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。
-               如有侵权不妥之处，请联系站长删除，敬请谅解！
-            </div>
-           
-          </div>  
+      <div className='max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
+         
 
           {/* 网站信息 */}
           <div>
