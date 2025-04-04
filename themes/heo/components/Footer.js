@@ -43,7 +43,7 @@ const Footer = ({ total }) => {
             <div className='mb-6'>
               <a href="https://www.zddown.icu" target="_blank" rel="noopener noreferrer" 
                  className='text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors'>
-                资源网
+                资源
               </a>
             </div>
             <div className='mb-6'>
@@ -62,48 +62,48 @@ const Footer = ({ total }) => {
                <div className='mb-6'>
               <a href="https://movie.19492035.xyz" target="_blank" rel="noopener noreferrer"
                  className='text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors'>
-                追剧中心
+                追剧
               </a>
             </div>
           </div>
 
-        {/* 二维码组 */}
+      
 {/* 二维码组 */}
-<div className='flex justify-between md:justify-end items-center gap-4 md:gap-6 px-4'>
+<div className='flex justify-end items-center gap-6 flex-wrap md:flex-nowrap'>
   {/* 官方下载 */}
-  <div className='text-center flex-1'>
-    <div className='w-20 md:w-32 mx-auto mb-2'>
+  <div className='text-center flex-shrink-0'>
+    <div className='w-28 md:w-32 mb-2'>
       <img 
         src="https://img.19492035.xyz/file/1742989667091.png" 
         alt="官方下载" 
-        className='w-full h-auto rounded-lg shadow-sm transition-transform hover:scale-105 duration-300'
+        className='w-full h-auto rounded-lg shadow-sm transition hover:scale-105 duration-300'
       />
     </div>
-    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>乐一乐</p>
+    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>官方下载</p>
   </div>
 
   {/* 官方微信号 */}
-  <div className='text-center flex-1'>
-    <div className='w-20 md:w-32 mx-auto mb-2'>
+  <div className='text-center flex-shrink-0'>
+    <div className='w-28 md:w-32 mb-2'>
       <img 
         src="https://img.19492035.xyz/file/1742824264213.jpg" 
         alt="官方微信号" 
-        className='w-full h-auto rounded-lg shadow-sm transition-transform hover:scale-105 duration-300'
+        className='w-full h-auto rounded-lg shadow-sm transition hover:scale-105 duration-300'
       />
     </div>
-    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>资源下载</p>
+    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>官方微信号</p>
   </div>
 
   {/* 赞赏作者 */}
-  <div className='text-center flex-1'>
-    <div className='w-20 md:w-32 mx-auto mb-2'>
+  <div className='text-center flex-shrink-0'>
+    <div className='w-28 md:w-32 mb-2'>
       <img 
         src="https://img.19492035.xyz/file/1743351194450.jpg" 
         alt="赞赏作者" 
-        className='w-full h-auto rounded-lg shadow-sm transition-transform hover:scale-105 duration-300'
+        className='w-full h-auto rounded-lg shadow-sm transition hover:scale-105 duration-300'
       />
     </div>
-    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>微信公众号</p>
+    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>赞赏作者</p>
   </div>
 </div>
 </div>
