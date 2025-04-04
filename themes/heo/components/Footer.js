@@ -20,13 +20,13 @@ const Footer = ({ total }) => {
           <div>
             <div className='dark:text-white text-base font-bold mb-8'>联系方式</div>
             <div className='text-gray-600 dark:text-gray-300 mb-6'>
-             本站为非经营性个人站点，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系站长删除，敬请谅解！
+             本站为非经营性个人站点，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系站长删除！
             </div>
            
           </div>
          
 
-          {/* 网站信息 */}
+          {/* 网站信息 
           <div>
             <div className='dark:text-white text-base font-bold mb-8'>网站信息</div>
             <div className='text-gray-600 dark:text-gray-300 mb-6'>共收录 {total} 个网站</div>
@@ -35,7 +35,7 @@ const Footer = ({ total }) => {
                 申请收录
               </a>
             </div>
-          </div>
+          </div>*/}
 
           {/* 作者项目 */}
           <div>
@@ -59,6 +59,12 @@ const Footer = ({ total }) => {
                 导航
               </a>
             </div>
+               <div className='mb-6'>
+              <a href="https://movie.19492035.xyz" target="_blank" rel="noopener noreferrer"
+                 className='text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors'>
+                追剧中心
+              </a>
+            </div>
           </div>
 
         {/* 二维码组 */}
@@ -73,7 +79,7 @@ const Footer = ({ total }) => {
         className='w-full h-auto rounded-lg shadow-sm transition-transform hover:scale-105 duration-300'
       />
     </div>
-    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>官方下载</p>
+    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>乐一乐</p>
   </div>
 
   {/* 官方微信号 */}
@@ -85,7 +91,7 @@ const Footer = ({ total }) => {
         className='w-full h-auto rounded-lg shadow-sm transition-transform hover:scale-105 duration-300'
       />
     </div>
-    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>官方微信号</p>
+    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>资源下载</p>
   </div>
 
   {/* 赞赏作者 */}
@@ -97,7 +103,7 @@ const Footer = ({ total }) => {
         className='w-full h-auto rounded-lg shadow-sm transition-transform hover:scale-105 duration-300'
       />
     </div>
-    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>赞赏作者</p>
+    <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>微信公众号</p>
   </div>
 </div>
 </div>
