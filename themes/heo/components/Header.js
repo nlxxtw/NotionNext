@@ -1,195 +1,128 @@
+import { BeiAnGongAn } from '@/components/BeiAnGongAn'
+import CopyRightDate from '@/components/CopyRightDate'
+import PoweredBy from '@/components/PoweredBy'
 import { siteConfig } from '@/lib/config'
-import { isBrowser } from '@/lib/utils'
-import throttle from 'lodash.throttle'
-import { useRouter } from 'next/router'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import DarkModeButton from './DarkModeButton'
-import Logo from './Logo'
-import { MenuListTop } from './MenuListTop'
-import RandomPostButton from './RandomPostButton'
-import ReadingProgress from './ReadingProgress'
-import SearchButton from './SearchButton'
-import SlideOver from './SlideOver'
 
-/**
- * 页头：顶部导航
- * @param {*} param0
- * @returns
- */
-const Header = props => {
-  const [fixedNav, setFixedNav] = useState(false)
-  const [textWhite, setTextWhite] = useState(false)
-  const [navBgWhite, setBgWhite] = useState(false)
-  const [activeIndex, setActiveIndex] = useState(0)
-
-  const router = useRouter()
-  const slideOverRef = useRef()
-
-  const toggleMenuOpen = () => {
-    slideOverRef?.current?.toggleSlideOvers()
-  }
-
-  /**
-   * 根据滚动条，切换导航栏样式
-   */
-  const scrollTrigger = useCallback(
-    throttle(() => {
-      const scrollS = window.scrollY
-      // 导航栏设置 白色背景
-      if (scrollS <= 1) {
-        setFixedNav(false)
-        setBgWhite(false)
-        setTextWhite(false)
-
-        // 文章详情页特殊处理
-        if (document?.querySelector('#post-bg')) {
-          setFixedNav(true)
-          setTextWhite(true)
-        }
-      } else {
-        // 向下滚动后的导航样式
-        setFixedNav(true)
-        setTextWhite(false)
-        setBgWhite(true)
-      }
-    }, 100)
-  )
-  useEffect(() => {
-    scrollTrigger()
-  }, [router])
-
-  // 监听滚动
-  useEffect(() => {
-    window.addEventListener('scroll', scrollTrigger)
-    return () => {
-      window.removeEventListener('scroll', scrollTrigger)
-    }
-  }, [])
-
-  // 导航栏根据滚动轮播菜单内容
-  useEffect(() => {
-    let prevScrollY = 0
-    let ticking = false
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY
-          if (currentScrollY > prevScrollY) {
-            setActiveIndex(1) // 向下滚动时设置activeIndex为1
-          } else {
-            setActiveIndex(0) // 向上滚动时设置activeIndex为0
-          }
-          prevScrollY = currentScrollY
-          ticking = false
-        })
-        ticking = true
-      }
-    }
-
-    if (isBrowser) {
-      window.addEventListener('scroll', handleScroll)
-    }
-
-    return () => {
-      if (isBrowser) {
-        window.removeEventListener('scroll', handleScroll)
-      }
-    }
-  }, [])
+const Footer = () => {
+  const BEI_AN = siteConfig('BEI_AN')
+  const BIO = siteConfig('BIO')
 
   return (
-    <>
-      <style jsx>{`
-        @keyframes fade-in-down {
-          0% {
-            opacity: 0.5;
-            transform: translateY(-30%);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+    <footer className="relative bg-white dark:bg-[#1a191d] w-full text-gray-600 dark:text-gray-100 text-sm">
+      {/* 精简过渡区高度 */}
+      <div className="h-16 bg-gradient-to-b from-[#f7f9fe] to-white dark:from-inherit dark:to-inherit" />
 
-        @keyframes fade-in-up {
-          0% {
-            opacity: 0.5;
-            transform: translateY(30%);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .fade-in-down {
-          animation: fade-in-down 0.3s ease-in-out;
-        }
-
-        .fade-in-up {
-          animation: fade-in-up 0.3s ease-in-out;
-        }
-      `}</style>
-
-      {/* fixed时留白高度 */}
-      {fixedNav && !document?.querySelector('#post-bg') && (
-        <div className='h-16'></div>
-      )}
-
-      {/* 顶部导航菜单栏 */}
-      <nav
-        id='nav'
-        className={`z-20 h-16 top-0 w-full duration-300 transition-all
-            ${fixedNav ? 'fixed' : 'relative bg-transparent'} 
-            ${textWhite ? 'text-white ' : 'text-black dark:text-white'}  
-            ${navBgWhite ? 'bg-white dark:bg-[#18171d] shadow' : 'bg-transparent'}`}>
-        <div className='flex h-full mx-auto justify-between items-center max-w-[86rem] px-6'>
-          {/* 左侧logo */}
-          <Logo {...props} />
-
-          {/* 中间菜单 */}
-          <div
-            id='nav-bar-swipe'
-            className={`hidden lg:flex flex-grow flex-col items-center justify-center h-full relative w-full`}>
-            <div
-              className={`absolute transition-all duration-700 ${activeIndex === 0 ? 'opacity-100 mt-0' : '-mt-20 opacity-0 invisible'}`}>
-              <MenuListTop {...props} />
+      {/* 主要内容容器 */}
+      <div className="bg-white dark:bg-[#1a191d] px-4 py-6 border-t dark:border-[#3D3D3F]">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between gap-6">
+            
+            {/* 左侧联系方式 */}
+            <div className="md:w-1/2">
+              <h3 className="text-base font-bold mb-3 dark:text-white">联系方式</h3>
+              <p className="text-sm leading-5 text-gray-600 dark:text-gray-300">
+                本站为非经营性个人站点，资源全部来自互联网收集，仅供用于学习和交流，
+                请勿用于商业用途。本站自愿捐赠、打赏仅为维持服务器开支与维护。
+                如有侵权请联系站长删除！
+              </p>
             </div>
-            <div
-              className={`absolute transition-all duration-700 ${activeIndex === 1 ? 'opacity-100 mb-0' : '-mb-20 opacity-0 invisible'}`}>
-              <h1 className='font-bold text-center text-light-400 dark:text-gray-400'>
-                {siteConfig('AUTHOR') || siteConfig('TITLE')}{' '}
-                {siteConfig('BIO') && <>|</>} {siteConfig('BIO')}
-              </h1>
-            </div>
-          </div>
 
-          {/* 右侧固定 */}
-          <div className='flex flex-shrink-0 justify-end items-center w-48'>
-            <RandomPostButton {...props} />
-            <SearchButton {...props} />
-            {!JSON.parse(siteConfig('THEME_SWITCH')) && (
-              <div className='hidden md:block'>
-                <DarkModeButton {...props} />
+            {/* 右侧组合布局 */}
+            <div className="md:w-1/2 flex flex-col md:flex-row gap-6">
+              
+              {/* 作者项目 */}
+              <div className="flex-1">
+                <h3 className="text-base font-bold mb-3 dark:text-white">作者项目</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <a href="https://www.zddown.icu" target="_blank" rel="noopener" 
+                     className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                    资源站
+                  </a>
+                  <a href="https://home.19492035.xyz" target="_blank" rel="noopener"
+                     className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                    个人主页
+                  </a>
+                  <a href="https://dh.19492035.xyz" target="_blank" rel="noopener"
+                     className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                    导航站
+                  </a>
+                  <a href="https://movie.19492035.xyz" target="_blank" rel="noopener"
+                     className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                    影视站
+                  </a>
+                </div>
               </div>
-            )}
-            <ReadingProgress />
 
-            {/* 移动端菜单按钮 */}
-            <div
-              onClick={toggleMenuOpen}
-              className='flex lg:hidden w-8 justify-center items-center h-8 cursor-pointer'>
-              <i className='fas fa-bars' />
+              {/* 二维码组 */}
+              <div className="flex-shrink-0">
+                <div className="flex gap-4 justify-end">
+                  <div className="text-center">
+                    <div className="w-24 mb-2">
+                      <img
+                        src="https://img.19492035.xyz/file/1742989667091.png"
+                        alt="官方下载"
+                        className="w-full h-auto rounded-lg shadow-sm hover:scale-105 transition-transform"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">官方下载</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-24 mb-2">
+                      <img
+                        src="https://img.19492035.xyz/file/1742824264213.jpg"
+                        alt="官方微信"
+                        className="w-full h-auto rounded-lg shadow-sm hover:scale-105 transition-transform"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">官方微信</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-24 mb-2">
+                      <img
+                        src="https://img.19492035.xyz/file/1743351194450.jpg"
+                        alt="赞赏作者"
+                        className="w-full h-auto rounded-lg shadow-sm hover:scale-105 transition-transform"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">赞赏作者</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* 右边侧拉抽屉 */}
-          <SlideOver cRef={slideOverRef} {...props} />
         </div>
-      </nav>
-    </>
+      </div>
+
+      {/* 底部备案信息 */}
+      <div className="w-full bg-[#f1f3f7] dark:bg-[#21232A] border-t dark:border-t-[#3D3D3F] py-4">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+            <div className="text-center md:text-left">
+              <PoweredBy />
+              <div className="flex items-center justify-center md:justify-start gap-1 mt-1">
+                <CopyRightDate />
+                <a href="/about" className="underline font-medium dark:text-gray-300">
+                  {siteConfig('AUTHOR')}
+                </a>
+                {BIO && <span className="mx-1">| {BIO}</span>}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {BEI_AN && (
+                <>
+                  <i className="fas fa-shield-alt text-sm" />
+                  <a href="https://beian.miit.gov.cn" className="text-sm hover:text-blue-500">
+                    {BEI_AN}
+                  </a>
+                </>
+              )}
+              <BeiAnGongAn />
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   )
 }
 
-export default Header
+export default Footer
