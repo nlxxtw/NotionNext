@@ -18,7 +18,7 @@ const Footer = () => {
           
           {/* 左侧联系方式 */}
           <div className='lg:w-1/2 lg:pr-8'>
-            <div className='dark:text-white text-base font-bold mb-4'>联系方式</div>
+            <div className='dark:text-white text-base font-bold mb-4'>访问须知</div>
             <div className='text-gray-600 dark:text-gray-300'>
               本站为非经营性个人站点，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，
               本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系站长删除！
@@ -45,7 +45,7 @@ const Footer = () => {
                 <div className='w-28 md:w-32 mb-2'>
                   <img 
                     src="https://img.19492035.xyz/file/1742824264213.jpg" 
-                    alt="资源下载号" 
+                    alt="资源下载" 
                     className='w-full h-auto rounded-lg shadow-sm transition hover:scale-105 duration-300'
                   />
                 </div>
@@ -67,7 +67,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* 作者项目 */}
+        {/* 作者项目 
         <div className='max-w-6xl mx-auto mt-8 grid grid-cols-2 md:grid-cols-4 gap-4'>
           <div>
             <div className='dark:text-white text-base font-bold mb-4'>作者项目</div>
@@ -98,6 +98,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
+          */}
         </div>
       </div>
 
