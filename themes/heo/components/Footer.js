@@ -37,7 +37,7 @@ const Footer = () => {
                     className='w-full h-auto rounded-lg shadow-sm transition hover:scale-105 duration-300'
                   />
                 </div>
-                <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>乐一乐</p>
+                <p className='text-gray-600 dark:text-gray-300 text-xs md:text-sm'>站长喝咖啡</p>
               </div>
 
               {/* 资源下载号 */}
