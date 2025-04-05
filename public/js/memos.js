@@ -48,11 +48,11 @@
 // Memos Start
 var memo = {
     host: 'https://memos.zddown.icu',
-    limit: '30',
+    limit: '10',
     creatorId: '1',
     domId: '#memos',
-    username: 'zdDown说说',
-    name: 'zdDown'
+    username: 'zdDown',
+    name: 'nlxxtw'
 }
 if (typeof (memos) !== "undefined") {
     for (var key in memos) {
