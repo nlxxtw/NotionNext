@@ -51,8 +51,8 @@ var memo = {
     limit: '10',
     creatorId: '1',
     domId: '#memos',
-    username: 'zdDown',
-    name: 'nlxxtw'
+    username: 'zdDown研公办',
+    name: 'zdDown'
 }
 if (typeof (memos) !== "undefined") {
     for (var key in memos) {
