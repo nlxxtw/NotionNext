@@ -254,7 +254,7 @@ const LayoutMemos = props => {
   const commentEnable = siteConfig('COMMENT_WALINE_SERVER_URL')
   
   const memoPageInfo = {
-    id: "9ecc78643def47bcvabeg5fn26304679", 
+    id: "59ee05713c234eb78d71813695313c83", 
     type: "memos",
     title: "我的说说",
   };
