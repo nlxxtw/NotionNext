@@ -88,106 +88,81 @@ const Footer = () => {
         className={`w-full border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
-        <div className='mx-auto flex max-w-6xl flex-col gap-5 px-4 py-5'>
-          {(noticeTitle || noticeText) && (
-            <div className='max-w-4xl text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
-              <div className='mb-1 inline-flex items-center gap-1.5 text-[13px] font-bold text-gray-700 dark:text-gray-200'>
-                <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
-                {noticeTitle}
+        <div className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12'>
+          {/* 左栏：访问须知 + 版权/业务（限制宽度，不伸进右边） */}
+          <div className='min-w-0 w-full max-w-xl flex-1 lg:max-w-[52%]'>
+            {(noticeTitle || noticeText) && (
+              <div className='mb-4 text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
+                <div className='mb-1 inline-flex items-center gap-1.5 text-[13px] font-bold text-gray-700 dark:text-gray-200'>
+                  <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
+                  {noticeTitle}
+                </div>
+                {noticeText ? <p className='break-words'>{noticeText}</p> : null}
               </div>
-              {noticeText ? (
-                <p className='whitespace-pre-wrap break-words'>{noticeText}</p>
-              ) : null}
-            </div>
-          )}
+            )}
 
-          {/* 无中间横线；左：版权/业务；右：快捷链接一行 + 大 logo + 统计左右两栏 */}
-          <div className='flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10'>
-            <div className='min-w-0 flex-1'>
-              <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] leading-5 text-gray-500 dark:text-gray-400'>
-                <CopyRightDate />
-                <SmartLink
-                  href='/about'
-                  className='font-extrabold text-gray-800 underline-offset-2 transition hover:text-[var(--heo-color-primary)] hover:underline dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'>
-                  {AUTHOR}
-                </SmartLink>
-                {BIO ? (
-                  <span className='inline-flex items-center gap-1.5'>
-                    <span className='text-gray-300 dark:text-gray-600'>|</span>
-                    <span>{BIO}</span>
-                  </span>
-                ) : null}
-              </div>
-              <div className='mt-1.5 inline-flex items-center gap-1.5 whitespace-nowrap text-[13px] text-gray-500 dark:text-gray-400'>
+            <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] leading-5 text-gray-500 dark:text-gray-400'>
+              <CopyRightDate />
+              <SmartLink
+                href='/about'
+                className='font-extrabold text-gray-800 underline-offset-2 transition hover:text-[var(--heo-color-primary)] hover:underline dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'>
+                {AUTHOR}
+              </SmartLink>
+              {BIO ? (
+                <span className='inline-flex items-center gap-1.5'>
+                  <span className='text-gray-300 dark:text-gray-600'>|</span>
+                  <span>{BIO}</span>
+                </span>
+              ) : null}
+              <span className='inline-flex items-center gap-1.5 whitespace-nowrap'>
                 <span
                   className='h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.18)]'
                   aria-hidden
                 />
                 所有业务正常
-              </div>
-              <div className='mt-1.5 flex flex-wrap items-center gap-x-3 text-[12px] text-gray-400 dark:text-gray-500'>
-                {BEI_AN && (
-                  <a
-                    href={BEI_AN_LINK || 'https://beian.miit.gov.cn/'}
-                    className='hover:text-[var(--heo-color-primary)]'>
-                    <i className='fas fa-shield-alt mr-1' />
-                    {BEI_AN}
-                  </a>
-                )}
-                <BeiAnGongAn />
-              </div>
+              </span>
+            </div>
+            <div className='mt-1.5 flex flex-wrap items-center gap-x-3 text-[12px] text-gray-400 dark:text-gray-500'>
+              {BEI_AN && (
+                <a
+                  href={BEI_AN_LINK || 'https://beian.miit.gov.cn/'}
+                  className='hover:text-[var(--heo-color-primary)]'>
+                  <i className='fas fa-shield-alt mr-1' />
+                  {BEI_AN}
+                </a>
+              )}
+              <BeiAnGongAn />
+            </div>
+          </div>
+
+          {/* 右栏：快捷链接等距一行（无中间大空档）+ logo + 统计 */}
+          <div className='flex w-full shrink-0 flex-col gap-3 lg:w-auto lg:max-w-md lg:items-stretch'>
+            <div className='flex flex-wrap items-center gap-x-3.5 gap-y-1'>
+              {quickLinks.map((link, index) =>
+                link.qr ? (
+                  <QrHoverText key={`${link.title}-${index}`} item={link} />
+                ) : (
+                  <SmartLink
+                    key={`${link.title}-${index}`}
+                    href={link.href || '#'}
+                    className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
+                    {link.title}
+                  </SmartLink>
+                )
+              )}
             </div>
 
-            <div className='flex w-full flex-col gap-3 lg:w-auto lg:min-w-[320px] lg:max-w-md lg:items-stretch'>
-              {/* 快捷链接同一行；左半 / 右半 各占一半对齐 */}
-              <div className='flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5'>
-                <div className='flex flex-wrap items-center gap-x-4 gap-y-1'>
-                  {quickLinks.slice(0, Math.ceil(quickLinks.length / 2)).map(
-                    (link, index) =>
-                      link.qr ? (
-                        <QrHoverText key={`${link.title}-${index}`} item={link} />
-                      ) : (
-                        <SmartLink
-                          key={`${link.title}-${index}`}
-                          href={link.href || '#'}
-                          className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
-                          {link.title}
-                        </SmartLink>
-                      )
-                  )}
-                </div>
-                <div className='flex flex-wrap items-center justify-end gap-x-4 gap-y-1'>
-                  {quickLinks.slice(Math.ceil(quickLinks.length / 2)).map(
-                    (link, index) =>
-                      link.qr ? (
-                        <QrHoverText
-                          key={`${link.title}-r-${index}`}
-                          item={link}
-                        />
-                      ) : (
-                        <SmartLink
-                          key={`${link.title}-r-${index}`}
-                          href={link.href || '#'}
-                          className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
-                          {link.title}
-                        </SmartLink>
-                      )
-                  )}
-                </div>
+            {siteInfo?.icon ? (
+              <div className='flex justify-end'>
+                <LazyImage
+                  src={siteInfo.icon}
+                  alt={AUTHOR || 'avatar'}
+                  className='h-12 w-12 rounded-full object-cover shadow-[0_8px_18px_-10px_rgba(40,50,80,0.45)] ring-2 ring-white dark:ring-gray-700 sm:h-14 sm:w-14'
+                />
               </div>
+            ) : null}
 
-              {siteInfo?.icon ? (
-                <div className='flex justify-end'>
-                  <LazyImage
-                    src={siteInfo.icon}
-                    alt={AUTHOR || 'avatar'}
-                    className='h-12 w-12 rounded-full object-cover shadow-[0_8px_18px_-10px_rgba(40,50,80,0.45)] ring-2 ring-white dark:ring-gray-700 sm:h-14 sm:w-14'
-                  />
-                </div>
-              ) : null}
-
-              <FooterStats compact />
-            </div>
+            <FooterStats compact />
           </div>
         </div>
       </div>

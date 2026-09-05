@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import CONFIG from '../config'
 
 /**
- * 页脚统计：两栏左右对齐（标签+数值），无中间分隔线
+ * 页脚统计：单行「标签 + 结果」，不加粗
  */
 export default function FooterStats({ compact = false }) {
   const enabled = siteConfig('HEO_FOOTER_STATS_ENABLE', true, CONFIG)
@@ -29,21 +29,22 @@ export default function FooterStats({ compact = false }) {
 
     loadVisitor()
 
-    const formatPv = () => {
-      const el =
-        document.querySelector('#heo-footer-stats .busuanzi_value_site_pv') ||
-        document.querySelector('.busuanzi_value_site_pv')
-      if (!el) return
-      const raw = (el.textContent || '').replace(/[,\s]/g, '').trim()
-      if (!raw || !/^\d+$/.test(raw)) return
-      const n = Number(raw)
-      if (!Number.isFinite(n) || n <= 0) return
-      if (!cancelled) setPvText(formatViews(n))
+    const readPv = () => {
+      const nodes = document.querySelectorAll('.busuanzi_value_site_pv')
+      for (const el of nodes) {
+        const raw = (el.textContent || '').replace(/[,\s]/g, '').trim()
+        if (!raw || !/^\d+$/.test(raw)) continue
+        const n = Number(raw)
+        if (!Number.isFinite(n) || n <= 0) continue
+        if (!cancelled) setPvText(formatViews(n))
+        return true
+      }
+      return false
     }
 
-    formatPv()
-    const t = window.setInterval(formatPv, 800)
-    const stop = window.setTimeout(() => window.clearInterval(t), 12000)
+    readPv()
+    const t = window.setInterval(readPv, 600)
+    const stop = window.setTimeout(() => window.clearInterval(t), 20000)
 
     return () => {
       cancelled = true
@@ -54,43 +55,41 @@ export default function FooterStats({ compact = false }) {
 
   if (!enabled) return null
 
-  const pvNode = pvText ? (
-    <span className='font-extrabold tabular-nums text-gray-800 dark:text-gray-100'>
-      {pvText}
-    </span>
-  ) : (
-    <span className='busuanzi_container_site_pv font-extrabold text-gray-800 dark:text-gray-100'>
-      <span className='busuanzi_value_site_pv tabular-nums' />
-    </span>
-  )
+  const pvDisplay = pvText || null
 
   if (compact) {
     return (
       <div
         id='heo-footer-stats'
-        className='grid w-full grid-cols-2 gap-x-6 gap-y-0.5 text-left'>
-        <div className='min-w-0'>
-          <div className='inline-flex items-center gap-1 text-[11px] text-gray-400 dark:text-gray-500'>
-            <i
-              className='fas fa-eye text-[10px] text-[var(--heo-color-primary)] dark:text-[var(--heo-color-accent)]'
-              aria-hidden
-            />
-            总浏览
-          </div>
-          <div className='mt-0.5 truncate text-[13px] leading-5'>{pvNode}</div>
-        </div>
-        <div className='min-w-0'>
-          <div className='inline-flex items-center gap-1 text-[11px] text-gray-400 dark:text-gray-500'>
-            <i
-              className='fas fa-location-dot text-[10px] text-amber-500'
-              aria-hidden
-            />
+        className='flex flex-wrap items-center gap-x-5 gap-y-1 text-[13px] leading-5 text-gray-600 dark:text-gray-300'>
+        <span className='inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap'>
+          <i
+            className='fas fa-eye text-[11px] text-[var(--heo-color-primary)] dark:text-[var(--heo-color-accent)]'
+            aria-hidden
+          />
+          <span className='text-gray-400 dark:text-gray-500'>总浏览</span>
+          {pvDisplay ? (
+            <span className='tabular-nums text-gray-700 dark:text-gray-200'>
+              {pvDisplay}
+            </span>
+          ) : (
+            <span className='busuanzi_container_site_pv tabular-nums text-gray-700 dark:text-gray-200'>
+              <span className='busuanzi_value_site_pv' />
+            </span>
+          )}
+        </span>
+        <span className='inline-flex min-w-0 max-w-full items-center gap-1.5'>
+          <i
+            className='fas fa-location-dot shrink-0 text-[11px] text-amber-500'
+            aria-hidden
+          />
+          <span className='shrink-0 text-gray-400 dark:text-gray-500'>
             访客来自
-          </div>
-          <div className='mt-0.5 truncate text-[13px] font-extrabold leading-5 text-gray-800 dark:text-gray-100'>
+          </span>
+          <span className='truncate font-normal text-gray-700 dark:text-gray-200'>
             {visitorLabel || '定位中…'}
-          </div>
-        </div>
+          </span>
+        </span>
       </div>
     )
   }
@@ -99,17 +98,25 @@ export default function FooterStats({ compact = false }) {
     <div
       id='heo-footer-stats'
       className='border-t border-black/[0.04] bg-white px-4 py-5 dark:border-white/10 dark:bg-[#1a191d]'>
-      <div className='mx-auto grid max-w-6xl grid-cols-2 gap-6'>
-        <div className='min-w-0'>
-          <div className='text-[11px] text-gray-400'>总浏览量</div>
-          <div className='mt-1 text-[16px]'>{pvNode}</div>
-        </div>
-        <div className='min-w-0'>
-          <div className='text-[11px] text-gray-400'>最近访客来自</div>
-          <div className='mt-1 truncate text-[16px] font-extrabold text-gray-800 dark:text-gray-100'>
+      <div className='mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 text-[14px]'>
+        <span className='inline-flex items-center gap-2'>
+          <span className='text-gray-400'>总浏览量</span>
+          {pvDisplay ? (
+            <span className='tabular-nums text-gray-800 dark:text-gray-100'>
+              {pvDisplay}
+            </span>
+          ) : (
+            <span className='busuanzi_container_site_pv tabular-nums text-gray-800 dark:text-gray-100'>
+              <span className='busuanzi_value_site_pv' />
+            </span>
+          )}
+        </span>
+        <span className='inline-flex min-w-0 items-center gap-2'>
+          <span className='shrink-0 text-gray-400'>最近访客来自</span>
+          <span className='truncate font-normal text-gray-800 dark:text-gray-100'>
             {visitorLabel || '定位中…'}
-          </div>
-        </div>
+          </span>
+        </span>
       </div>
     </div>
   )
