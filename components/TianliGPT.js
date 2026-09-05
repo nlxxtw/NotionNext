@@ -1,29 +1,28 @@
 /* eslint-disable camelcase */
 import { siteConfig } from '@/lib/config'
+import { useGlobal } from '@/lib/global'
 import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 /**
- * NotionNext 文章 AI 摘要（客户端）
- * 不依赖 pastking 脚本的 pathname 限制（原脚本只认 /posts|/article）
+ * 文章 AI 摘要（OpenAI 兼容）
+ * Notion 可配：AI_SUMMARY_API / AI_SUMMARY_KEY / AI_SUMMARY_MODEL / TianliGPT_KEY
+ * 未配置或失败时整块不渲染
  */
 export default function TianLiGPT() {
   const router = useRouter()
-  const tianliKey = resolveTianliKey()
-  const wordLimit = Number(siteConfig('AI_SUMMARY_WORD_LIMIT') || 1000) || 1000
+  const { NOTION_CONFIG } = useGlobal() || {}
+  const cfg = useMemo(() => resolveSummaryConfig(NOTION_CONFIG), [NOTION_CONFIG])
+  const wordLimit = Number(cfg.wordLimit) || 1000
   const [summary, setSummary] = useState('')
   const [loading, setLoading] = useState(false)
-  const [visible, setVisible] = useState(false)
-  const [error, setError] = useState('')
   const reqRef = useRef(0)
-  // 用稳定路径，避免 query/hash 变化导致摘要闪没重跑
   const pagePath = String(router.asPath || '').split(/[?#]/)[0]
 
   useEffect(() => {
-    if (!tianliKey) {
-      setVisible(false)
+    if (!cfg.configured) {
       setSummary('')
-      setError('')
+      setLoading(false)
       return undefined
     }
 
@@ -36,48 +35,22 @@ export default function TianLiGPT() {
         8000
       )
       if (cancelled || reqId !== reqRef.current) return
-      if (!container) {
-        setVisible(false)
-        return
-      }
+      if (!container) return
 
-      // 等 Notion 正文真正渲染出文字再请求，避免空内容导致闪一下消失
       const content = await waitForArticleText(container, wordLimit, 6000)
       if (cancelled || reqId !== reqRef.current) return
-      if (!content) {
-        setVisible(true)
-        setLoading(false)
-        setError('正文尚未加载完成，请刷新后再试')
-        setSummary('')
-        return
-      }
+      if (!content) return
 
-      setVisible(true)
       setLoading(true)
       setSummary('')
-      setError('')
 
       try {
-        const text = await fetchTianliSummary(content, tianliKey)
+        const text = await fetchOpenAISummary(content, cfg)
         if (cancelled || reqId !== reqRef.current) return
-        if (text) {
-          setSummary(text)
-          setError('')
-        } else {
-          setError('暂未生成摘要，请稍后再试')
-        }
+        if (text) setSummary(text)
       } catch (e) {
-        console.error('TianliGPT summary failed', e)
-        if (!cancelled && reqId === reqRef.current) {
-          const msg = String(e?.message || '')
-          if (msg === 'KEY_INVALID') {
-            setError('摘要 Key 无效或已过期，请在 Notion 配置 TianliGPT_KEY')
-          } else if (msg === 'SERVER') {
-            setError('摘要服务暂时不可用（非本站问题），请稍后再试')
-          } else {
-            setError('获取文章摘要失败，请检查网络或 Key 后重试')
-          }
-        }
+        console.warn('[AI Summary]', e?.message || e)
+        if (!cancelled && reqId === reqRef.current) setSummary('')
       } finally {
         if (!cancelled && reqId === reqRef.current) setLoading(false)
       }
@@ -88,48 +61,85 @@ export default function TianLiGPT() {
       cancelled = true
       clearTimeout(timer)
     }
-  }, [tianliKey, wordLimit, pagePath])
+  }, [cfg, wordLimit, pagePath])
 
-  if (!tianliKey || !visible) return null
+  // 未配置 / 失败无内容：不显示；加载中可短暂占位
+  if (!cfg.configured) return null
+  if (!loading && !summary) return null
 
   return (
     <div className='post-ai mb-5 font-sans'>
-      <div className='overflow-hidden rounded-[10px] border border-black/[0.06] bg-gradient-to-br from-[#f9f9f9] to-[#f5f5f5] shadow-[0_4px_6px_rgba(0,0,0,0.08)] dark:border-white/10 dark:from-[#2a2a30] dark:to-[#232328]'>
-        <div className='flex items-center gap-2.5 bg-gradient-to-br from-[#e74c3c] to-[#c0392b] px-5 py-3 text-white'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            width='22'
-            height='22'
-            aria-hidden>
-            <path
-              fill='#ffffff'
-              d='M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z'
-            />
-          </svg>
-          <div className='flex-1 text-[17px] font-bold'>AI智能摘要</div>
-          <div className='rounded-full bg-white/20 px-2 py-0.5 text-[11px]'>
+      <div className='overflow-hidden rounded-2xl border border-[var(--heo-color-primary)]/15 bg-gradient-to-br from-[#f4f6ff] via-white to-[#f7f9fe] shadow-[0_10px_28px_-18px_rgba(66,90,239,0.45)] dark:border-white/10 dark:from-[#25262e] dark:via-[#1f2027] dark:to-[#1a1b22]'>
+        <div className='flex items-center gap-2.5 bg-gradient-to-r from-[var(--heo-color-primary)] to-[#6b7cff] px-4 py-2.5 text-white dark:from-[var(--heo-color-accent)] dark:to-[#f0c674] dark:text-gray-900'>
+          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/20'>
+            <i className='fas fa-wand-magic-sparkles text-[13px]' aria-hidden />
+          </span>
+          <div className='flex-1 text-[15px] font-bold tracking-wide'>
+            AI 智能摘要
+          </div>
+          <div className='rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-semibold'>
             GPT
           </div>
         </div>
-        <div className='px-5 py-4 text-[15px] leading-relaxed text-gray-800 dark:text-gray-100'>
-          {loading && !summary && !error
-            ? '生成中…'
-            : error || summary}
+        <div className='px-4 py-3.5 text-[14px] leading-7 text-gray-700 dark:text-gray-200'>
+          {loading && !summary ? (
+            <span className='inline-flex items-center gap-2 text-gray-400'>
+              <i className='fas fa-circle-notch animate-spin text-[12px]' />
+              正在生成摘要…
+            </span>
+          ) : (
+            summary
+          )}
         </div>
       </div>
     </div>
   )
 }
 
-function resolveTianliKey() {
-  const raw =
-    siteConfig('TianliGPT_KEY') ||
-    siteConfig('AI_SUMMARY_KEY') ||
-    siteConfig('NEXT_PUBLIC_TIANLI_GPT_KEY')
-  const key = String(raw || '').trim()
-  // Notion 若清空会盖掉环境变量；无 Key 时用内置占位（失效则提示服务端错误）
-  return key || '57X8Ht6R9a8GX548ggS'
+function resolveSummaryConfig(notionConfig = {}) {
+  const pick = (...keys) => {
+    for (const k of keys) {
+      const fromNotion = notionConfig?.[k]
+      const fromSite = siteConfig(k)
+      const v = String(fromNotion || fromSite || '').trim()
+      if (v) return v
+    }
+    return ''
+  }
+
+  const api = pick('AI_SUMMARY_API')
+  const key = pick('AI_SUMMARY_KEY', 'TianliGPT_KEY', 'NEXT_PUBLIC_TIANLI_GPT_KEY')
+  const model = pick('AI_SUMMARY_MODEL') || 'gpt-4o-mini'
+  const wordLimit = Number(pick('AI_SUMMARY_WORD_LIMIT') || 1000) || 1000
+
+  // 去掉内置占位 Key：必须显式配置才启用
+  const placeholder = '57X8Ht6R9a8GX548ggS'
+  const validKey = key && key !== placeholder ? key : ''
+
+  return {
+    api,
+    key: validKey,
+    model,
+    wordLimit,
+    configured: Boolean(api && validKey)
+  }
+}
+
+async function fetchOpenAISummary(content, cfg) {
+  const res = await fetch('/api/ai-summary', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      content,
+      api: cfg.api,
+      key: cfg.key,
+      model: cfg.model
+    })
+  })
+  if (res.status === 204) return ''
+  if (!res.ok) throw new Error(`summary ${res.status}`)
+  const data = await res.json()
+  return String(data?.summary || '').trim()
 }
 
 function waitForSelector(selector, timeoutMs = 8000) {
@@ -159,7 +169,6 @@ async function waitForArticleText(container, wordLimit, timeoutMs = 6000) {
   const start = Date.now()
   while (Date.now() - start < timeoutMs) {
     const text = extractArticleText(container, wordLimit)
-    // Notion 正文多为 div.notion-text，等真正有一段内容再请求
     if (text && text.replace(/\s+/g, '').length >= 40) return text
     await sleep(120)
   }
@@ -169,7 +178,6 @@ async function waitForArticleText(container, wordLimit, timeoutMs = 6000) {
 function extractArticleText(container, wordLimit) {
   try {
     const title = document.title || ''
-    // react-notion-x：正文在 .notion-text / 列表里，不只是 <p>
     const nodes = container.querySelectorAll(
       'h1,h2,h3,h4,h5,.notion-h,.notion-text,.notion-list,.notion-quote,p,li'
     )
@@ -189,26 +197,6 @@ function extractArticleText(container, wordLimit) {
   } catch {
     return ''
   }
-}
-
-async function fetchTianliSummary(content, token) {
-  const url = `https://summary.qixing1217.top/api/summary?token=${encodeURIComponent(
-    token
-  )}`
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content })
-  })
-  if (res.status === 401 || res.status === 403) {
-    throw new Error('KEY_INVALID')
-  }
-  if (res.status >= 500) {
-    throw new Error('SERVER')
-  }
-  if (!res.ok) throw new Error(`summary ${res.status}`)
-  const data = await res.json()
-  return String(data?.summary || '').trim()
 }
 
 function sleep(ms) {

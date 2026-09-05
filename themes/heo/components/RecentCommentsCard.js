@@ -6,17 +6,18 @@ import CONFIG from '../config'
 import {
   commentPostPath,
   commentPostTitle,
+  loadTwikooRecent,
   stripCommentHtml
 } from '../lib/twikooRecent'
 import AsideWidgetHeader from './AsideWidgetHeader'
 
 /**
- * 侧栏「最新评论」（Waline）
- * 注意：@waline/client 仅在客户端动态加载，避免 SSR/webpack 打包失败
+ * 侧栏「最新评论」：优先 Waline，其次 Twikoo
  */
 export default function RecentCommentsCard(props) {
   const enabled = siteConfig('HEO_WIDGET_RECENT_COMMENTS', true, CONFIG)
-  const serverURL = siteConfig('COMMENT_WALINE_SERVER_URL')
+  const walineURL = String(siteConfig('COMMENT_WALINE_SERVER_URL') || '').trim()
+  const twikooId = String(siteConfig('COMMENT_TWIKOO_ENV_ID') || '').trim()
   const count = Math.max(
     1,
     Number(siteConfig('HEO_RECENT_COMMENTS_COUNT', 5, CONFIG)) || 5
@@ -31,7 +32,7 @@ export default function RecentCommentsCard(props) {
 
   useEffect(() => {
     if (!enabled) return
-    if (!serverURL) {
+    if (!walineURL && !twikooId) {
       setLoading(false)
       setList([])
       return
@@ -40,44 +41,16 @@ export default function RecentCommentsCard(props) {
     let cancelled = false
     ;(async () => {
       try {
-        const { RecentComments } = await import('@waline/client')
-        const { comments } = await RecentComments({
-          serverURL,
-          count: Math.max(count, 5)
-        })
-        if (cancelled) return
-        const mapped = (comments || [])
-          .map(item => {
-            const nick = item.nick || item.mail || '访客'
-            const text = stripCommentHtml(item.comment || item.content || '')
-            if (!text) return null
-            const path = commentPostPath(item.url || item.link || item.href)
-            const id = item.objectId || item.objectID || item.id || ''
-            return {
-              id: id || `${nick}-${path}-${text.slice(0, 12)}`,
-              nick,
-              avatar: item.avatar || item.avatarUrl || '',
-              text,
-              title: commentPostTitle(
-                {
-                  ...item,
-                  title: item.meta?.title || item.title
-                },
-                pages
-              ),
-              href: id
-                ? {
-                    pathname: path,
-                    hash: id,
-                    query: { target: 'comment' }
-                  }
-                : path
-            }
-          })
-          .filter(Boolean)
-          .slice(0, count)
-        setList(mapped)
-      } catch {
+        let mapped = []
+        if (walineURL) {
+          mapped = await fetchWalineRecent(walineURL, count, pages)
+        }
+        if ((!mapped.length || !walineURL) && twikooId) {
+          mapped = await fetchTwikooRecent(count, pages)
+        }
+        if (!cancelled) setList(mapped)
+      } catch (e) {
+        console.warn('[RecentComments]', e)
         if (!cancelled) setList([])
       } finally {
         if (!cancelled) setLoading(false)
@@ -88,10 +61,10 @@ export default function RecentCommentsCard(props) {
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, serverURL, count])
+  }, [enabled, walineURL, twikooId, count])
 
   if (!enabled) return null
-  if (!serverURL) return null
+  if (!walineURL && !twikooId) return null
   if (!loading && !list.length) return null
 
   return (
@@ -139,6 +112,61 @@ export default function RecentCommentsCard(props) {
       )}
     </div>
   )
+}
+
+async function fetchWalineRecent(serverURL, count, pages) {
+  const { RecentComments } = await import('@waline/client')
+  const { comments } = await RecentComments({
+    serverURL: serverURL.replace(/\/$/, ''),
+    count: Math.max(count, 5)
+  })
+  return (comments || [])
+    .map(item => {
+      const nick = item.nick || item.mail || '访客'
+      const text = stripCommentHtml(item.comment || item.content || '')
+      if (!text) return null
+      const path = commentPostPath(item.url || item.link || item.href)
+      const id = item.objectId || item.objectID || item.id || ''
+      return {
+        id: id || `w-${nick}-${path}-${text.slice(0, 12)}`,
+        nick,
+        avatar: item.avatar || item.avatarUrl || '',
+        text,
+        title: commentPostTitle(
+          { ...item, title: item.meta?.title || item.title },
+          pages
+        ),
+        href: id
+          ? { pathname: path, hash: id, query: { target: 'comment' } }
+          : path
+      }
+    })
+    .filter(Boolean)
+    .slice(0, count)
+}
+
+async function fetchTwikooRecent(count, pages) {
+  const comments = await loadTwikooRecent(Math.max(count, 10))
+  return (comments || [])
+    .map(item => {
+      const nick = item.nick || item.mail || '访客'
+      const text = stripCommentHtml(item.comment || item.content || '')
+      if (!text) return null
+      const path = commentPostPath(item.url || item.href)
+      const id = item.id || item._id || ''
+      return {
+        id: id || `t-${nick}-${path}-${text.slice(0, 12)}`,
+        nick,
+        avatar: item.avatar || item.avatarUrl || '',
+        text,
+        title: commentPostTitle(item, pages),
+        href: id
+          ? { pathname: path, hash: id, query: { target: 'comment' } }
+          : path
+      }
+    })
+    .filter(Boolean)
+    .slice(0, count)
 }
 
 function Avatar({ nick, src }) {

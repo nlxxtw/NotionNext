@@ -333,8 +333,8 @@ const LayoutSlug = props => {
               <section className='mx-auto justify-center p-5'>
                 <ArticleExpirationNotice post={post} />
                 <AISummary aiSummary={post.aiSummary} />
-                {/* 客户端天利摘要：插在正文前；不依赖 /posts|/article 路径 */}
-                <TianliGPT />
+                {/* 无服务端摘要时再用客户端 OpenAI 兼容摘要；未配置/失败不显示 */}
+                {!post.aiSummary ? <TianliGPT /> : null}
                 <WWAds orientation='horizontal' className='w-full' />
                 {post && <NotionPage post={post} />}
                 <WWAds orientation='horizontal' className='w-full' />
