@@ -5,11 +5,9 @@ import { siteConfig } from '@/lib/config'
 import { formatDateFmt } from '@/lib/utils/formatDate'
 import SmartLink from '@/components/SmartLink'
 import { useEffect, useState } from 'react'
-import WavesArea from './WavesArea'
 
 /**
- * 文章页头：等封面色就绪再铺色，避免默认主色闪一下；
- * 右侧预览卡加深阴影与边框，降低「发白过亮」感
+ * 文章页头：封面色贯通；无波浪；右侧预览卡在内容区中部；元信息高对比白字
  */
 export default function PostHeader({ post, siteInfo, lock }) {
   if (!post) return null
@@ -19,7 +17,6 @@ export default function PostHeader({ post, siteInfo, lock }) {
   const ANALYTICS_BUSUANZI_ENABLE = siteConfig('ANALYTICS_BUSUANZI_ENABLE')
 
   const [showAside, setShowAside] = useState(Boolean(coverSrc))
-  // 未取到封面色前不铺默认紫，避免跳色
   const [bgColor, setBgColor] = useState('')
   const [bgReady, setBgReady] = useState(false)
 
@@ -38,7 +35,6 @@ export default function PostHeader({ post, siteInfo, lock }) {
     }
   }, [coverSrc])
 
-  // 监听封面取色结果（PostCoverTheme 写入 --heo-cover-main）
   useEffect(() => {
     let cancelled = false
     let tries = 0
@@ -67,7 +63,6 @@ export default function PostHeader({ post, siteInfo, lock }) {
       if (apply() || tries > 40) {
         clearInterval(timer)
         if (!cancelled && !readCoverMain()) {
-          // 取色失败才用主色兜底，仍做一次淡入
           setBgColor(
             getComputedStyle(document.documentElement)
               .getPropertyValue('--heo-color-primary')
@@ -88,6 +83,9 @@ export default function PostHeader({ post, siteInfo, lock }) {
     }
   }, [post?.id, coverSrc])
 
+  const metaPill =
+    'heo-post-meta-pill inline-flex items-center rounded-full border border-white/25 bg-black/40 px-3 py-1.5 text-[13px] font-semibold text-white shadow-[0_4px_14px_-8px_rgba(0,0,0,0.45)] backdrop-blur-md'
+
   return (
     <div
       id='post-bg'
@@ -97,27 +95,26 @@ export default function PostHeader({ post, siteInfo, lock }) {
         opacity: bgReady ? 1 : 0.92,
         transition: 'background-color 280ms ease, opacity 280ms ease'
       }}>
-      {/* 轻暗角，压住过亮封面色 */}
       <div
         aria-hidden
         className='pointer-events-none absolute inset-0'
         style={{
           background:
-            'radial-gradient(ellipse 75% 55% at 82% 38%, rgba(255,255,255,0.14), transparent 58%), linear-gradient(180deg, rgba(0,0,0,0.08) 0%, transparent 42%, rgba(0,0,0,0.18) 100%)'
+            'radial-gradient(ellipse 75% 55% at 82% 38%, rgba(255,255,255,0.12), transparent 58%), linear-gradient(180deg, rgba(0,0,0,0.1) 0%, transparent 40%, rgba(0,0,0,0.2) 100%)'
         }}
       />
 
       <div className='relative z-[1] flex h-full w-full items-center justify-center py-10'>
         <div
           id='post-info'
-          className={`absolute top-44 z-10 flex w-full max-w-[86rem] flex-col space-y-4 px-5 md:top-48 lg:-mt-8 ${
+          className={`absolute top-40 z-10 flex w-full max-w-[86rem] flex-col space-y-4 px-5 md:top-44 lg:-mt-6 ${
             showAside ? 'lg:pr-[340px]' : ''
           }`}>
           <div className='flex items-center justify-center gap-3 md:justify-start'>
             {post.category && (
               <SmartLink
                 href={`/category/${post.category}`}
-                className='rounded-full border border-white/15 bg-black/20 px-3 py-1 text-sm font-bold text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:bg-white hover:text-gray-900'>
+                className='rounded-full border border-white/20 bg-black/35 px-3 py-1 text-sm font-bold text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:bg-white hover:text-gray-900'>
                 {post.category}
               </SmartLink>
             )}
@@ -127,7 +124,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
                   <SmartLink
                     key={index}
                     href={`/tag/${encodeURIComponent(tag.name)}`}
-                    className='whitespace-nowrap text-sm font-medium text-white/85 transition hover:text-white'>
+                    className='whitespace-nowrap text-sm font-medium text-white/90 transition hover:text-white'>
                     {tag.name}
                   </SmartLink>
                 ))}
@@ -137,14 +134,17 @@ export default function PostHeader({ post, siteInfo, lock }) {
 
           <h1 className='max-w-4xl text-center text-[1.85rem] font-extrabold leading-[1.35] tracking-normal text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.35)] md:text-left md:text-4xl md:leading-[1.3] lg:text-[2.75rem] lg:leading-[1.28]'>
             {siteConfig('POST_TITLE_ICON') && (
-              <NotionIcon icon={post.pageIcon} className='mr-2 inline-block align-middle' />
+              <NotionIcon
+                icon={post.pageIcon}
+                className='mr-2 inline-block align-middle'
+              />
             )}
             <span className='align-middle'>{post.title}</span>
           </h1>
 
-          <section className='mt-2 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-sm font-medium text-white/92 md:justify-start'>
+          <section className='heo-post-meta mt-2 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 md:justify-start'>
             {!lock && (
-              <span className='inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md'>
+              <span className={metaPill}>
                 <WordCount
                   wordCount={post.wordCount}
                   readTime={post.readTime}
@@ -154,19 +154,19 @@ export default function PostHeader({ post, siteInfo, lock }) {
             {post?.type !== 'Page' && (
               <SmartLink
                 href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}
-                className='inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md transition hover:bg-white/20'>
+                className={`${metaPill} transition hover:bg-black/55`}>
                 <i className='fa-regular fa-calendar mr-1.5 text-[12px]' />
                 {post?.publishDay}
               </SmartLink>
             )}
             {post.lastEditedDay && (
-              <span className='inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md'>
+              <span className={metaPill}>
                 <i className='fa-regular fa-calendar-check mr-1.5 text-[12px]' />
                 {post.lastEditedDay}
               </span>
             )}
             {ANALYTICS_BUSUANZI_ENABLE && (
-              <span className='busuanzi_container_page_pv inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md'>
+              <span className={`busuanzi_container_page_pv ${metaPill}`}>
                 <i className='fa-solid fa-fire-flame-curved mr-1.5 text-[12px]' />
                 <span className='busuanzi_value_page_pv' />
               </span>
@@ -188,12 +188,12 @@ export default function PostHeader({ post, siteInfo, lock }) {
             }}
             title={post.title}
             onMouseEnter={e => {
-              e.currentTarget.style.transform = 'scale(1.03)'
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.03)'
               e.currentTarget.style.boxShadow =
                 '0 8px 12px rgba(0,0,0,0.16), 0 28px 56px -14px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.2)'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)'
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
               e.currentTarget.style.boxShadow =
                 '0 4px 6px rgba(0,0,0,0.12), 0 22px 48px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.14)'
             }}>
@@ -203,7 +203,6 @@ export default function PostHeader({ post, siteInfo, lock }) {
               alt={post.title || 'cover'}
               className='h-full w-full object-cover transition duration-200 group-hover:scale-105'
             />
-            {/* 压亮：底部轻暗 + 内描边，避免预览过曝 */}
             <span
               aria-hidden
               className='pointer-events-none absolute inset-0 rounded-[18px]'
@@ -215,8 +214,6 @@ export default function PostHeader({ post, siteInfo, lock }) {
             />
           </a>
         )}
-
-        <WavesArea />
       </div>
     </div>
   )

@@ -363,14 +363,23 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 封面预览卡：落在导航下方，禁止顶到顶栏造成「叠层」 */
+      /* 封面预览卡：垂直居中于导航下方内容区（勿顶到顶栏） */
       #theme-heo .heo-post-cover-aside {
-        top: auto !important;
-        bottom: 4.75rem;
-        transform: none !important;
+        top: calc(50% + 1.25rem) !important;
+        bottom: auto !important;
+        transform: translateY(-50%) !important;
       }
       #theme-heo .heo-post-cover-aside:hover {
-        transform: scale(1.03) !important;
+        transform: translateY(-50%) scale(1.03) !important;
+      }
+
+      /* 文章头图元信息：强制白字，避免 WordCount 等继承成深色看不清 */
+      #theme-heo #post-info .heo-post-meta,
+      #theme-heo #post-info .heo-post-meta-pill,
+      #theme-heo #post-info .heo-post-meta-pill *,
+      #theme-heo #post-info #wordCountWrapper,
+      #theme-heo #post-info #wordCountWrapper * {
+        color: #fff !important;
       }
 
       /* 顶栏：始终 fixed + Safari 安全区 */
