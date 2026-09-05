@@ -55,8 +55,8 @@ const Logo = props => {
       aria-expanded={open}
       aria-haspopup='true'
       onClick={() => (enable ? setOpen(v => !v) : null)}
-      className='heo-soft-chip group flex cursor-pointer items-center gap-2 rounded-full bg-[var(--heo-color-card)] py-1 pl-1 pr-3 font-extrabold transition dark:bg-[var(--heo-color-card-dark)]'>
-      <span className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[var(--heo-color-primary)] text-white dark:bg-[var(--heo-color-accent)]'>
+      className='heo-nav-chip group flex cursor-pointer items-center gap-2 rounded-full py-1 pl-1 pr-3 font-extrabold text-gray-900 transition dark:text-gray-100'>
+      <span className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900'>
         {logoIcon ? (
           <LazyImage
             src={logoIcon}
@@ -66,7 +66,7 @@ const Logo = props => {
             className='h-full w-full object-cover'
           />
         ) : (
-          <i className='fas fa-th text-xs' />
+          <i className='fas fa-th text-[11px]' />
         )}
       </span>
       <span className='max-w-[8rem] truncate text-[15px] leading-none'>
@@ -93,19 +93,19 @@ const Logo = props => {
       {trigger}
 
       <div
-        className={`absolute left-0 top-[calc(100%+10px)] z-[80] w-[min(560px,calc(100vw-2rem))] origin-top-left transition duration-200 ${
+        className={`absolute left-0 top-[calc(100%+8px)] z-[80] w-[min(420px,calc(100vw-1.5rem))] origin-top-left transition duration-200 ${
           open
             ? 'pointer-events-auto translate-y-0 opacity-100'
             : 'pointer-events-none -translate-y-1 opacity-0'
         }`}>
-        <div className='rounded-2xl bg-[var(--heo-color-card)] p-4 shadow-[0_20px_50px_-20px_rgba(40,50,90,0.35)] ring-1 ring-black/5 dark:bg-[var(--heo-color-card-dark)] dark:ring-white/10'>
-          <div className='max-h-[70vh] space-y-4 overflow-y-auto pr-1'>
+        <div className='rounded-[14px] bg-[var(--heo-color-card)] p-3 shadow-[0_16px_40px_-18px_rgba(40,50,90,0.4)] ring-1 ring-black/5 dark:bg-[var(--heo-color-card-dark)] dark:ring-white/10'>
+          <div className='max-h-[70vh] space-y-3 overflow-y-auto pr-0.5'>
             {groups.map(group => (
               <section key={group.id || group.title}>
-                <div className='mb-2 px-1 text-[12px] font-bold tracking-wide text-gray-400'>
+                <div className='mb-1.5 px-1 text-[11px] font-semibold tracking-wide text-gray-400'>
                   {group.title}
                 </div>
-                <div className='grid grid-cols-2 gap-x-2 gap-y-1'>
+                <div className='grid grid-cols-2 gap-x-1 gap-y-0.5'>
                   {(group.items || []).map((item, idx) => (
                     <MegaItem
                       key={item.id || item.href || idx}
@@ -117,7 +117,7 @@ const Logo = props => {
               </section>
             ))}
             {!groups.length && (
-              <div className='px-2 py-6 text-center text-sm text-gray-400'>
+              <div className='px-2 py-5 text-center text-sm text-gray-400'>
                 暂无项目菜单。请在 Notion 创建带标签「
                 {siteConfig('HEO_LOGO_MEGA_TAG', 'LogoMega', CONFIG)}
                 」的 Menu / SubMenu。
@@ -129,12 +129,12 @@ const Logo = props => {
             <SmartLink
               href={footerUrl || '/'}
               onClick={() => setOpen(false)}
-              className='heo-soft-chip mt-4 flex items-center justify-center gap-2 rounded-full bg-[var(--heo-color-card-muted)] px-4 py-2.5 text-sm font-bold text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/5 dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)]'>
+              className='heo-soft-chip mt-3 flex items-center justify-center gap-2 rounded-full border border-black/5 bg-transparent px-3 py-2 text-[13px] font-bold text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:border-white/10 dark:text-gray-100 dark:hover:bg-[var(--heo-color-primary)]'>
               {footerIcon && (
                 <LazyImage
                   src={footerIcon}
                   alt=''
-                  className='h-5 w-5 rounded-full object-cover'
+                  className='h-4 w-4 rounded-full object-cover'
                 />
               )}
               {footerText}
@@ -156,9 +156,9 @@ function MegaItem({ item, onNavigate }) {
       href={href}
       target={item.target}
       onClick={onNavigate}
-      className='group flex items-center gap-2.5 rounded-xl px-2 py-2 transition hover:bg-[var(--heo-color-card-muted)] dark:hover:bg-white/5'>
+      className='group flex items-center gap-2 rounded-lg px-1.5 py-1.5 transition hover:bg-[var(--heo-color-card-muted)] dark:hover:bg-white/5'>
       <MegaIcon icon={icon} title={title} />
-      <span className='truncate text-[14px] font-medium text-gray-800 group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)]'>
+      <span className='truncate text-[13px] font-medium text-gray-800 group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)]'>
         {title}
       </span>
     </SmartLink>
@@ -168,8 +168,8 @@ function MegaItem({ item, onNavigate }) {
 function MegaIcon({ icon, title }) {
   if (!icon) {
     return (
-      <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)]/15 text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]/20 dark:text-[var(--heo-color-accent)]'>
-        <i className='fas fa-link text-xs' />
+      <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)]/15 text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]/20 dark:text-[var(--heo-color-accent)]'>
+        <i className='fas fa-link text-[10px]' />
       </span>
     )
   }
@@ -179,21 +179,21 @@ function MegaIcon({ icon, title }) {
       <LazyImage
         src={icon}
         alt={title}
-        className='h-8 w-8 shrink-0 rounded-full object-cover'
+        className='h-[26px] w-[26px] shrink-0 rounded-full object-cover'
       />
     )
   }
   // FontAwesome
   if (icon.includes('fa-') || icon.startsWith('fa')) {
     return (
-      <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-card-muted)] text-gray-700 dark:bg-white/10 dark:text-gray-200'>
-        <i className={icon} />
+      <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-card-muted)] text-gray-700 dark:bg-white/10 dark:text-gray-200'>
+        <i className={`${icon} text-[11px]`} />
       </span>
     )
   }
   // Emoji
   return (
-    <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-card-muted)] text-lg dark:bg-white/10'>
+    <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-card-muted)] text-[15px] leading-none dark:bg-white/10'>
       {icon}
     </span>
   )

@@ -3,20 +3,22 @@
  * 包含 AI 摘要生成、AI 聊天机器人等
  */
 module.exports = {
-  // AI 文章摘要生成（自建API方式）
+  // AI 文章摘要生成（自建 API 方式，可选）
   AI_SUMMARY_API: process.env.AI_SUMMARY_API || '',
   AI_SUMMARY_KEY: process.env.AI_SUMMARY_KEY || '',
   AI_SUMMARY_CACHE_TIME: process.env.AI_SUMMARY_CACHE_TIME || 1800,
   AI_SUMMARY_WORD_LIMIT: process.env.AI_SUMMARY_WORD_LIMIT || 1000,
 
   // 天利 GPT AI 文章摘要 @see https://docs_s.tianli0.top/
+  // 与老项目 conf/plugin.config.js 对齐：自定义 pastking 脚本 + Key
   TianliGPT_CSS:
     process.env.NEXT_PUBLIC_TIANLI_GPT_CSS ||
     'https://cdn1.tianli0.top/gh/zhheo/Post-Abstract-AI@0.15.2/tianli_gpt.css',
   TianliGPT_JS:
     process.env.NEXT_PUBLIC_TIANLI_GPT_JS ||
-    'https://cdn1.tianli0.top/gh/zhheo/Post-Abstract-AI@0.15.2/tianli_gpt.js',
-  TianliGPT_KEY: process.env.NEXT_PUBLIC_TIANLI_GPT_KEY || '',
+    'https://cdn.jsdmirror.com/gh/nlxxtw/Post-Abstract-AI-NotionNext@master/pastking_gpt.js',
+  TianliGPT_KEY:
+    process.env.NEXT_PUBLIC_TIANLI_GPT_KEY || '57X8Ht6R9a8GX548ggS',
 
   // Coze AI 机器人 @see https://www.coze.cn/
   COZE_BOT_ID: process.env.NEXT_PUBLIC_COZE_BOT_ID || '',

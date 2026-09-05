@@ -23,8 +23,8 @@ const CONFIG = {
 
   HEO_SITE_CREATE_TIME: '2021-09-21', // 建站日期，用于计算网站运行的第几天
 
-  // 顶栏「新更新」徽章；留空 '' 则不显示
-  HEO_NAV_UPDATE_BADGE: '新更新',
+  // 顶栏「新更新」徽章：留空不显示；填数字如 '3' 显示黑灰圆点；填文字显示无彩色胶囊
+  HEO_NAV_UPDATE_BADGE: '',
   HEO_NAV_UPDATE_BADGE_URL: '/',
 
   // Logo 项目大菜单（截图：博客/应用/服务/表情）
@@ -69,23 +69,11 @@ const CONFIG = {
   // 左下角音乐条（不依赖全局 MUSIC_PLAYER，heo 主题默认开启）
   HEO_MUSIC_PLAYER_ENABLE: true,
   HEO_MUSIC_PLAYER_AUTOPLAY: false,
-  // 可改成你的歌单；也可用全局 MUSIC_PLAYER_AUDIO_LIST 覆盖空列表
-  HEO_MUSIC_PLAYER_AUDIO_LIST: [
-    {
-      name: '风を共に舞う気持ち',
-      artist: 'Falcom Sound Team jdk',
-      url: 'https://music.163.com/outchain/player?type=2&id=1833834371.mp3',
-      cover:
-        'https://p2.music.126.net/kn6ugISTonvqJh3LHLaPtQ==/599233837187278.jpg'
-    },
-    {
-      name: '王都グランセル',
-      artist: 'Falcom Sound Team jdk',
-      url: 'https://music.163.com/song/media/outer/url?id=1833834371.mp3',
-      cover:
-        'https://p1.music.126.net/kn6ugISTonvqJh3LHLaPtQ==/599233837187278.jpg'
-    }
-  ],
+  // 网易云歌单（全部以列表展示；也可在 Notion Config 覆盖）
+  HEO_MUSIC_PLAYER_METING_SERVER: 'netease',
+  HEO_MUSIC_PLAYER_METING_ID: '779869321',
+  // 备用本地列表（API 失败时用）；真实可播链接优先走 Meting
+  HEO_MUSIC_PLAYER_AUDIO_LIST: [],
 
   // 订阅页 /rss
   HEO_RSS_WECHAT_TITLE: '公众号订阅',
@@ -121,7 +109,7 @@ const CONFIG = {
   HEO_HERO_SUBSCRIBE_URL: '/rss', // 订阅落地页；也可填公众号外链
   HEO_HERO_SUBSCRIBE_ICON: 'fab fa-weixin',
   // 对齐 zhheo 微信绿渐变（勿改成灰绿）
-  HEO_HERO_SUBSCRIBE_COLOR: 'linear-gradient(135deg, #3ddc5a 0%, #22c43e 55%, #1db954 100%)',
+  HEO_HERO_SUBSCRIBE_COLOR: 'linear-gradient(135deg, #a2d662 0%, #56ab2f 100%)',
 
   // 兼容旧配置（旧版 Banner 文案，新英雄区不再主用）
   HEO_HERO_TITLE_1: '分享编程',
@@ -149,14 +137,21 @@ const CONFIG = {
     '脚踏实地行动派',
     '数码科技爱好者'
   ],
+  // 资料卡悬停介绍（支持 **加粗** 与换行）
+  HEO_INFO_CARD_INTRO:
+    '这有关于**产品**、**设计**、**开发**相关的问题和看法，还有**文章翻译**和**分享**。\n相信你可以在这里找到对你有用的**知识**和**教程**。',
+
+  // 文章页按封面取色（对齐 Heo）；图床若不支持 CORS 可填七牛 ?imageAve 等
+  HEO_POST_COVER_COLOR: true,
+  HEO_POST_COVER_COLOR_API: '', // 例：'?imageAve'（七牛）
 
   // 个人资料底部按钮
-  HEO_INFO_CARD_URL1: '/about',
+  HEO_INFO_CARD_URL1: '',
   HEO_INFO_CARD_ICON1: 'fas fa-user',
-  HEO_INFO_CARD_URL2: 'https://github.com/tangly1024',
+  HEO_INFO_CARD_URL2: '',
   HEO_INFO_CARD_ICON2: 'fab fa-github',
   HEO_INFO_CARD_ICON_ORCID: 'fab fa-orcid',
-  HEO_INFO_CARD_URL3: 'https://www.tangly1024.com',
+  HEO_INFO_CARD_URL3: '',
   HEO_INFO_CARD_TEXT3: '了解更多',
 
   // 用户技能图标底纹（前端框架等）默认关闭
@@ -175,6 +170,10 @@ const CONFIG = {
   HEO_HOT_POSTS_TAG: '热门',
   HEO_HOT_POSTS_COUNT: 6,
   HEO_HOT_POSTS_MORE_URL: '/tag/热门',
+  // 搜索页封面栅格
+  HEO_SEARCH_RANDOM_COUNT: 6,
+  HEO_SEARCH_HOT_COUNT: 6,
+  HEO_SEARCH_RANDOM_MORE_URL: '/',
   HEO_SIDE_TAG_LIMIT: 24,
   HEO_STATS_MORE_URL: '/stats',
   HEO_ANALYTICS_SHOW_HEADER: true,
@@ -222,16 +221,27 @@ const CONFIG = {
   HEO_FOOTER_QR_LIST: [
     {
       title: '局长请喝咖啡',
-      img: 'https://img.19492035.xyz/file/1742989667091.png'
+      img: 'https://img.19492035.xyz/file/1742989667091.png',
+      icon: 'fas fa-mug-hot',
+      accent: true
     },
     {
       title: '资源下载',
-      img: 'https://img.19492035.xyz/file/1742824264213.jpg'
+      img: 'https://img.19492035.xyz/file/1742824264213.jpg',
+      icon: 'fas fa-rocket'
     },
     {
       title: '官方微信',
-      img: 'https://img.19492035.xyz/file/1743351194450.jpg'
+      img: 'https://img.19492035.xyz/file/1743351194450.jpg',
+      icon: 'fab fa-weixin'
     }
+  ],
+  // 底栏快捷入口；带 qrFrom 的会悬停弹出对应二维码
+  HEO_FOOTER_QUICK_LINKS: [
+    { title: '留言', href: '/about' },
+    { title: '订阅', href: '/rss', qrFrom: '官方微信' },
+    { title: '打赏', href: '#', qrFrom: '局长请喝咖啡' },
+    { title: '主题', href: 'https://github.com/tangly1024/NotionNext' }
   ],
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）

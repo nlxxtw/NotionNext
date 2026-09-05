@@ -3,15 +3,19 @@ import CopyRightDate from '@/components/CopyRightDate'
 import LazyImage from '@/components/LazyImage'
 import PoweredBy from '@/components/PoweredBy'
 import { siteConfig } from '@/lib/config'
+import SmartLink from '@/components/SmartLink'
+import { useGlobal } from '@/lib/global'
 import CONFIG from '../config'
 
 /**
- * 页脚（恢复用户原先 NotionNext-main / heo 定制版）
+ * 页脚美化：访问须知 + 悬停弹出二维码 + 底栏快捷入口
  */
 const Footer = () => {
+  const { siteInfo } = useGlobal()
   const BEI_AN = siteConfig('BEI_AN')
   const BEI_AN_LINK = siteConfig('BEI_AN_LINK')
   const BIO = siteConfig('BIO')
+  const AUTHOR = siteConfig('AUTHOR')
   const reserveMusicPlayerSpace =
     siteConfig('HEO_MUSIC_PLAYER_ENABLE', true, CONFIG) ||
     (siteConfig('MUSIC_PLAYER') && siteConfig('MUSIC_PLAYER_VISIBLE'))
@@ -30,40 +34,39 @@ const Footer = () => {
   const qrList = normalizeQrList(
     siteConfig('HEO_FOOTER_QR_LIST', DEFAULT_QR_LIST, CONFIG)
   )
+  const quickLinks = normalizeQuickLinks(
+    siteConfig('HEO_FOOTER_QUICK_LINKS', DEFAULT_QUICK_LINKS, CONFIG),
+    qrList
+  )
 
   return (
-    <footer className='relative w-full flex-shrink-0 bg-white text-sm leading-6 text-gray-600 dark:bg-[#1a191d] dark:text-gray-100'>
-      {/* 颜色过渡区 */}
-      <div className='h-32 bg-gradient-to-b from-[#f7f9fe] to-white dark:bg-[#1a191d] dark:from-inherit dark:to-inherit' />
+    <footer className='heo-footer relative w-full flex-shrink-0 bg-white text-sm leading-6 text-gray-600 dark:bg-[#1a191d] dark:text-gray-100'>
+      <div className='h-20 bg-gradient-to-b from-[#f7f9fe] to-white dark:from-[#18171d] dark:to-[#1a191d]' />
 
-      {/* 主要内容：访问须知 + 二维码 */}
-      <div className='mx-auto bg-white px-4 py-8 dark:border-t dark:border-[#3D3D3F] dark:bg-[#1a191d]'>
-        <div className='mx-auto flex max-w-6xl flex-col justify-between gap-8 lg:flex-row'>
-          <div className='lg:w-1/2 lg:pr-8'>
-            <div className='mb-4 text-base font-bold dark:text-white'>
-              {noticeTitle}
+      <div className='border-t border-black/[0.04] bg-white px-4 py-10 dark:border-white/10 dark:bg-[#1a191d]'>
+        <div className='mx-auto flex max-w-6xl flex-col gap-10 lg:flex-row lg:items-start lg:justify-between'>
+          <div className='max-w-2xl lg:w-[52%]'>
+            <div className='mb-3 flex items-center gap-2'>
+              <span className='inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--heo-color-primary)]/10 text-[var(--heo-color-primary)]'>
+                <i className='fas fa-info text-xs' />
+              </span>
+              <h3 className='text-base font-extrabold text-gray-800 dark:text-white'>
+                {noticeTitle}
+              </h3>
             </div>
-            <div className='text-gray-600 dark:text-gray-300'>{noticeText}</div>
+            <p className='text-[13px] leading-7 text-gray-500 dark:text-gray-300'>
+              {noticeText}
+            </p>
           </div>
 
           {qrList.length > 0 && (
-            <div className='flex justify-start lg:w-1/2 lg:justify-end'>
-              <div className='flex flex-wrap gap-6 md:flex-nowrap'>
-                {qrList.map(item => (
-                  <div
-                    key={item.title}
-                    className='flex-shrink-0 text-center'>
-                    <div className='mb-2 w-28 md:w-32'>
-                      <LazyImage
-                        src={item.img}
-                        alt={item.title}
-                        className='h-auto w-full rounded-lg shadow-sm transition duration-300 hover:scale-105'
-                      />
-                    </div>
-                    <p className='text-xs text-gray-600 dark:text-gray-300 md:text-sm'>
-                      {item.title}
-                    </p>
-                  </div>
+            <div className='flex flex-1 flex-col items-start gap-4 lg:items-end'>
+              <div className='text-xs font-bold tracking-wide text-gray-400'>
+                悬停查看二维码
+              </div>
+              <div className='flex flex-wrap gap-3 lg:justify-end'>
+                {qrList.map((item, index) => (
+                  <QrHoverChip key={`${item.title}-${index}`} item={item} />
                 ))}
               </div>
             </div>
@@ -71,54 +74,156 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* 底部备案 / PoweredBy / 版权 */}
       <div
         id='footer-bottom'
-        className={`flex w-full min-h-20 flex-col items-center justify-between border-t bg-[#f1f3f7] p-3 px-6 dark:border-t-[#3D3D3F] dark:bg-[#21232A] lg:flex-row ${
+        className={`w-full border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
-        <div id='footer-bottom-left' className='text-center lg:text-start'>
-          <PoweredBy />
-          <div className='flex flex-wrap justify-center gap-x-1 lg:justify-start'>
-            <CopyRightDate />
-            <a
-              href={'/about'}
-              className='font-semibold underline dark:text-gray-300'>
-              {siteConfig('AUTHOR')}
-            </a>
-            {BIO && <span className='mx-1'> | {BIO}</span>}
+        <div className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between'>
+          <div id='footer-bottom-left' className='text-center lg:text-left'>
+            <div className='text-[12px] text-gray-500 dark:text-gray-400'>
+              <PoweredBy />
+            </div>
+            <div className='mt-1 flex flex-wrap items-center justify-center gap-x-1 text-[13px] lg:justify-start'>
+              <CopyRightDate />
+              <SmartLink
+                href='/about'
+                className='font-extrabold text-gray-800 underline-offset-2 hover:underline dark:text-gray-100'>
+                {AUTHOR}
+              </SmartLink>
+              {BIO ? (
+                <span className='text-gray-500 dark:text-gray-400'>
+                  {' '}
+                  | {BIO}
+                </span>
+              ) : null}
+            </div>
+            <div className='mt-1 flex flex-wrap items-center justify-center gap-x-3 text-[12px] text-gray-500 lg:justify-start'>
+              {BEI_AN && (
+                <a
+                  href={BEI_AN_LINK || 'https://beian.miit.gov.cn/'}
+                  className='hover:text-[var(--heo-color-primary)]'>
+                  <i className='fas fa-shield-alt mr-1' />
+                  {BEI_AN}
+                </a>
+              )}
+              <BeiAnGongAn />
+              <span className='inline-flex items-center gap-1.5'>
+                <span className='h-1.5 w-1.5 rounded-full bg-emerald-500' />
+                所有业务正常
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div id='footer-bottom-right' className='mt-2 lg:mt-0'>
-          {BEI_AN && (
-            <>
-              <i className='fas fa-shield-alt' />{' '}
-              <a href={BEI_AN_LINK || 'https://beian.miit.gov.cn/'} className='mr-2'>
-                {siteConfig('BEI_AN')}
-              </a>
-            </>
-          )}
-          <BeiAnGongAn />
+          <div
+            id='footer-bottom-right'
+            className='flex flex-wrap items-center justify-center gap-1 lg:justify-end'>
+            {quickLinks.map((link, index) =>
+              link.qr ? (
+                <QrHoverText key={`${link.title}-${index}`} item={link} />
+              ) : (
+                <SmartLink
+                  key={`${link.title}-${index}`}
+                  href={link.href || '#'}
+                  className='rounded-full px-3 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
+                  {link.title}
+                </SmartLink>
+              )
+            )}
+            {siteInfo?.icon ? (
+              <LazyImage
+                src={siteInfo.icon}
+                alt={AUTHOR || 'avatar'}
+                className='ml-2 h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-gray-700'
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     </footer>
   )
 }
 
+function QrHoverChip({ item }) {
+  return (
+    <div className='heo-qr-hover group relative'>
+      <button
+        type='button'
+        className='inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-[#f7f8fc] px-3.5 py-2 text-[13px] font-bold text-gray-700 shadow-[0_6px_16px_-10px_rgba(40,50,80,0.35)] transition group-hover:-translate-y-0.5 group-hover:border-[var(--heo-color-primary)]/30 group-hover:text-[var(--heo-color-primary)] dark:border-white/10 dark:bg-[#26262c] dark:text-gray-100'>
+        <i className={`${item.icon || 'fas fa-qrcode'} text-[12px] opacity-80`} />
+        {item.title}
+      </button>
+      <div className='heo-qr-popover pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-30 w-[148px] -translate-x-1/2 scale-95 opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100'>
+        <div className='rounded-2xl border border-black/[0.06] bg-white p-2.5 shadow-[0_18px_40px_-18px_rgba(30,40,70,0.45)] dark:border-white/10 dark:bg-[#2a2a30]'>
+          <LazyImage
+            src={item.img}
+            alt={item.title}
+            className='h-auto w-full rounded-xl'
+          />
+          <div
+            className={`mt-2 rounded-full px-2 py-1 text-center text-[11px] font-bold ${
+              item.accent
+                ? 'bg-amber-300/90 text-amber-950'
+                : 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-200'
+            }`}>
+            {item.title}
+          </div>
+        </div>
+        <div className='mx-auto -mt-1 h-3 w-3 rotate-45 border-b border-r border-black/[0.06] bg-white dark:border-white/10 dark:bg-[#2a2a30]' />
+      </div>
+    </div>
+  )
+}
+
+function QrHoverText({ item }) {
+  return (
+    <div className='heo-qr-hover group relative'>
+      <button
+        type='button'
+        className='rounded-full px-3 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
+        {item.title}
+      </button>
+      <div className='heo-qr-popover pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-30 w-[148px] -translate-x-1/2 scale-95 opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100'>
+        <div className='rounded-2xl border border-black/[0.06] bg-white p-2.5 shadow-[0_18px_40px_-18px_rgba(30,40,70,0.45)] dark:border-white/10 dark:bg-[#2a2a30]'>
+          <LazyImage
+            src={item.qr}
+            alt={item.title}
+            className='h-auto w-full rounded-xl'
+          />
+          <div className='mt-2 text-center text-[11px] font-bold text-gray-600 dark:text-gray-200'>
+            {item.title}
+          </div>
+        </div>
+        <div className='mx-auto -mt-1 h-3 w-3 rotate-45 border-b border-r border-black/[0.06] bg-white dark:border-white/10 dark:bg-[#2a2a30]' />
+      </div>
+    </div>
+  )
+}
+
 const DEFAULT_QR_LIST = [
   {
     title: '局长请喝咖啡',
-    img: 'https://img.19492035.xyz/file/1742989667091.png'
+    img: 'https://img.19492035.xyz/file/1742989667091.png',
+    icon: 'fas fa-mug-hot',
+    accent: true
   },
   {
     title: '资源下载',
-    img: 'https://img.19492035.xyz/file/1742824264213.jpg'
+    img: 'https://img.19492035.xyz/file/1742824264213.jpg',
+    icon: 'fas fa-rocket'
   },
   {
     title: '官方微信',
-    img: 'https://img.19492035.xyz/file/1743351194450.jpg'
+    img: 'https://img.19492035.xyz/file/1743351194450.jpg',
+    icon: 'fab fa-weixin'
   }
+]
+
+const DEFAULT_QUICK_LINKS = [
+  { title: '留言', href: '/about' },
+  { title: '订阅', href: '/rss', qrFrom: '官方微信' },
+  { title: '打赏', href: '#', qrFrom: '局长请喝咖啡' },
+  { title: '主题', href: 'https://github.com/tangly1024/NotionNext' }
 ]
 
 function normalizeQrList(value) {
@@ -132,12 +237,49 @@ function normalizeQrList(value) {
   }
   if (!Array.isArray(value)) return []
   return value
-    .map(item => {
+    .map((item, index) => {
       if (!item || typeof item !== 'object') return null
       const title = String(item.title || item.name || '').trim()
       const img = String(item.img || item.url || item.src || '').trim()
       if (!title || !img) return null
-      return { title, img }
+      return {
+        title,
+        img,
+        icon: item.icon || DEFAULT_QR_LIST[index]?.icon || 'fas fa-qrcode',
+        accent: Boolean(item.accent) || index === 0
+      }
+    })
+    .filter(Boolean)
+}
+
+function normalizeQuickLinks(value, qrList) {
+  let list = value
+  if (typeof list === 'string') {
+    try {
+      list = JSON.parse(list)
+    } catch {
+      list = DEFAULT_QUICK_LINKS
+    }
+  }
+  if (!Array.isArray(list) || !list.length) list = DEFAULT_QUICK_LINKS
+
+  const qrMap = new Map(qrList.map(q => [q.title, q.img]))
+
+  return list
+    .map(item => {
+      if (!item || typeof item !== 'object') return null
+      const title = String(item.title || item.name || '').trim()
+      if (!title) return null
+      const qrFrom = String(item.qrFrom || '').trim()
+      const qr =
+        String(item.qr || item.img || '').trim() ||
+        (qrFrom ? qrMap.get(qrFrom) : '') ||
+        ''
+      return {
+        title,
+        href: String(item.href || item.url || '#').trim() || '#',
+        qr
+      }
     })
     .filter(Boolean)
 }

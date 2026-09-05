@@ -2,15 +2,18 @@ import { useRouter } from 'next/router'
 import { useImperativeHandle, useRef, useState } from 'react'
 import { useGlobal } from '@/lib/global'
 
+/**
+ * 搜索输入框
+ * variant: default | pill（Heo 搜索页胶囊样式）
+ */
 const SearchInput = props => {
-  const { currentSearch, cRef, className } = props
+  const { currentSearch, cRef, className, variant = 'default' } = props
   const [onLoading, setLoadingState] = useState(false)
   const router = useRouter()
   const searchInputRef = useRef()
   const { locale } = useGlobal()
-  // 输入法组合期锁定 — 用 useRef 持有，避免使用模块级变量在 SSR
-  // 多请求 / 多实例间互相污染（之前 `let lock = false` 是模块作用域）。
   const lockRef = useRef(false)
+
   useImperativeHandle(cRef, () => {
     return {
       focus: () => {
@@ -23,80 +26,118 @@ const SearchInput = props => {
     const key = searchInputRef.current.value
     if (key && key !== '') {
       setLoadingState(true)
-      router.push({ pathname: '/search/' + key }).then(r => {
+      router.push({ pathname: '/search/' + key }).then(() => {
         setLoadingState(false)
       })
-      // location.href = '/search/' + key
     } else {
-      router.push({ pathname: '/' }).then(r => {})
+      router.push({ pathname: '/search' }).then(() => {})
     }
   }
+
   const handleKeyUp = e => {
     if (e.keyCode === 13) {
-      // 回车
-      handleSearch(searchInputRef.current.value)
+      handleSearch()
     } else if (e.keyCode === 27) {
-      // ESC
       cleanSearch()
     }
   }
+
   const cleanSearch = () => {
     searchInputRef.current.value = ''
+    setShowClean(false)
   }
 
-  const [showClean, setShowClean] = useState(false)
+  const [showClean, setShowClean] = useState(Boolean(currentSearch))
   const updateSearchKey = val => {
-    if (lockRef.current) {
-      return
-    }
+    if (lockRef.current) return
     searchInputRef.current.value = val
-
-    if (val) {
-      setShowClean(true)
-    } else {
-      setShowClean(false)
-    }
+    setShowClean(Boolean(val))
   }
-  function lockSearchInput () {
+
+  function lockSearchInput() {
     lockRef.current = true
   }
 
-  function unLockSearchInput () {
+  function unLockSearchInput() {
     lockRef.current = false
   }
 
+  const isPill = variant === 'pill'
+  const placeholder =
+    isPill ? '输入关键词搜索' : locale.SEARCH.ARTICLES
+
+  if (isPill) {
+    return (
+      <div
+        className={`heo-search-pill relative flex w-full items-center ${className || ''}`}>
+        <input
+          ref={searchInputRef}
+          type='search'
+          enterKeyHint='search'
+          className='w-full rounded-full border-0 bg-[var(--heo-color-card-muted)] py-3.5 pl-5 pr-14 text-[15px] text-gray-900 outline-none transition placeholder:text-gray-400 focus:bg-white focus:shadow-[0_10px_30px_-12px_rgba(122,93,250,0.35)] focus:ring-2 focus:ring-[var(--heo-color-primary)]/25 dark:bg-white/[0.08] dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:bg-white/[0.12] dark:focus:ring-[var(--heo-color-accent)]/30'
+          onKeyUp={handleKeyUp}
+          onCompositionStart={lockSearchInput}
+          onCompositionUpdate={lockSearchInput}
+          onCompositionEnd={unLockSearchInput}
+          placeholder={placeholder}
+          onChange={e => updateSearchKey(e.target.value)}
+          defaultValue={currentSearch || ''}
+        />
+        <div className='absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1'>
+          {showClean && (
+            <button
+              type='button'
+              aria-label='清空'
+              onClick={cleanSearch}
+              className='flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition hover:bg-black/5 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-white'>
+              <i className='fas fa-times text-sm' />
+            </button>
+          )}
+          <button
+            type='button'
+            aria-label='搜索'
+            onClick={handleSearch}
+            className='flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition hover:bg-[var(--heo-color-primary)] hover:text-white active:scale-95 dark:text-gray-300 dark:hover:bg-[var(--heo-color-primary)]'>
+            <i
+              className={`fas text-sm ${
+                onLoading ? 'fa-spinner animate-spin' : 'fa-search'
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className={'flex w-full rounded-lg ' + className}>
+    <div className={'flex w-full rounded-lg ' + (className || '')}>
       <input
         ref={searchInputRef}
-        type="text"
-        className={
-          'outline-none w-full text-sm pl-5 rounded-lg transition focus:shadow-lg dark:text-gray-300 font-light leading-10 text-black bg-white dark:bg-gray-500'
-        }
+        type='text'
+        className='w-full rounded-lg bg-white pl-5 text-sm font-light leading-10 text-black outline-none transition focus:shadow-lg dark:bg-gray-500 dark:text-gray-300'
         onKeyUp={handleKeyUp}
         onCompositionStart={lockSearchInput}
         onCompositionUpdate={lockSearchInput}
         onCompositionEnd={unLockSearchInput}
-        placeholder={locale.SEARCH.ARTICLES}
+        placeholder={placeholder}
         onChange={e => updateSearchKey(e.target.value)}
         defaultValue={currentSearch || ''}
       />
 
       <div
-        className="-ml-8 cursor-pointer  float-right items-center justify-center py-2"
-        onClick={handleSearch}
-      >
+        className='-ml-8 float-right cursor-pointer items-center justify-center py-2'
+        onClick={handleSearch}>
         <i
-          className={`hover:text-black transform duration-200 text-gray-500 dark:text-gray-200 cursor-pointer fas ${
+          className={`transform cursor-pointer text-gray-500 duration-200 hover:text-black dark:text-gray-200 fas ${
             onLoading ? 'fa-spinner animate-spin' : 'fa-search'
           }`}
         />
       </div>
 
       {showClean && (
-        <div className="-ml-12 cursor-pointer float-right items-center justify-center py-2">
+        <div className='-ml-12 float-right cursor-pointer items-center justify-center py-2'>
           <i
-            className="hover:text-black transform duration-200 text-gray-400 dark:text-gray-300 cursor-pointer fas fa-times"
+            className='fas fa-times cursor-pointer text-gray-400 duration-200 hover:text-black dark:text-gray-300'
             onClick={cleanSearch}
           />
         </div>

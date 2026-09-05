@@ -3,6 +3,8 @@ import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import CONFIG from '../config'
+import AuthorCard from './AuthorCard'
+import WechatSubscribeCard from './WechatSubscribeCard'
 
 /**
  * 首页英雄区（对齐 blog.zhheo.com 截图）
@@ -174,124 +176,17 @@ function CarouselArrow({ direction, onClick }) {
  */
 function HeroAside(props) {
   const { siteInfo } = props
-  const greetings = normalizeList(
-    siteConfig('HEO_INFOCARD_GREETINGS', null, CONFIG)
-  )
-  const [greeting, setGreeting] = useState(greetings[0] || '你好！')
-
-  const author = siteConfig('AUTHOR') || siteInfo?.title || ''
-  const bio = siteConfig('BIO') || siteInfo?.description || ''
-  const avatar = siteInfo?.icon
-
-  const socialUrl1 = siteConfig('HEO_INFO_CARD_URL1', null, CONFIG)
-  const socialIcon1 = siteConfig('HEO_INFO_CARD_ICON1', 'fas fa-user', CONFIG)
-  const socialUrl2 = siteConfig('HEO_INFO_CARD_URL2', null, CONFIG)
-  const socialIcon2 = siteConfig('HEO_INFO_CARD_ICON2', 'fab fa-github', CONFIG)
-
   const subscribeEnable = siteConfig('HEO_HERO_SUBSCRIBE_ENABLE', true, CONFIG)
-  const subscribeTitle = siteConfig(
-    'HEO_HERO_SUBSCRIBE_TITLE',
-    '公众号订阅',
-    CONFIG
-  )
-  const subscribeUrl =
-    siteConfig('HEO_HERO_SUBSCRIBE_URL', null, CONFIG) ||
-    siteConfig('HEO_SOCIAL_CARD_URL', null, CONFIG) ||
-    '/'
-  const subscribeIcon = siteConfig(
-    'HEO_HERO_SUBSCRIBE_ICON',
-    'fab fa-weixin',
-    CONFIG
-  )
-  const subscribeColor = siteConfig(
-    'HEO_HERO_SUBSCRIBE_COLOR',
-    'linear-gradient(135deg, #3ddc5a 0%, #22c43e 55%, #1db954 100%)',
-    CONFIG
-  )
-  const subscribeStyle = String(subscribeColor).includes('gradient')
-    ? { backgroundImage: subscribeColor }
-    : { backgroundColor: subscribeColor }
-
-  const nextGreeting = () => {
-    if (greetings.length <= 1) return
-    let next = greetings[Math.floor(Math.random() * greetings.length)]
-    // 避免连续抽到同一句
-    if (next === greeting && greetings.length > 1) {
-      next = greetings[(greetings.indexOf(greeting) + 1) % greetings.length]
-    }
-    setGreeting(next)
-  }
 
   return (
     <div className='flex w-full shrink-0 flex-col gap-3 lg:w-[272px] xl:w-[292px]'>
-      {/* 个人资料卡：问候胶囊置顶居中 */}
-      <div className='relative flex min-h-[220px] flex-1 flex-col overflow-hidden rounded-[22px] bg-[var(--heo-color-primary)] px-4 pb-4 pt-3 text-[var(--heo-color-primary-text)] shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] dark:bg-[var(--heo-color-accent)] lg:min-h-0'>
-        <div className='flex justify-center'>
-          <button
-            type='button'
-            onClick={nextGreeting}
-            className='max-w-[92%] truncate rounded-full bg-black/20 px-3.5 py-1 text-[13px] font-medium text-white backdrop-blur-[2px] transition hover:bg-black/30'>
-            {greeting}
-          </button>
-        </div>
-
-        <div className='relative mx-auto flex flex-1 items-center justify-center py-3'>
-          <LazyImage
-            src={avatar}
-            alt={author}
-            className='h-[88px] w-[88px] rounded-full border-[3px] border-white object-cover shadow-lg'
-          />
-          <span
-            aria-hidden
-            className='absolute bottom-3 right-[calc(50%-52px)] flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-white text-sm shadow'>
-            {siteConfig('HEO_INFO_CARD_EMOJI', '😆', CONFIG)}
-          </span>
-        </div>
-
-        <div className='flex items-end justify-between gap-2'>
-          <div className='min-w-0 flex-1'>
-            <div className='truncate text-[22px] font-extrabold leading-none'>
-              {author}
-            </div>
-            {bio && (
-              <div className='mt-1.5 line-clamp-2 text-xs leading-snug opacity-85'>
-                {bio}
-              </div>
-            )}
-          </div>
-          <div className='mb-0.5 flex shrink-0 items-center gap-2'>
-            {socialUrl1 && <SocialIcon href={socialUrl1} icon={socialIcon1} />}
-            {socialUrl2 && <SocialIcon href={socialUrl2} icon={socialIcon2} />}
-          </div>
-        </div>
-      </div>
-
-      {/* 绿色订阅条 */}
-      {subscribeEnable && (
-        <SmartLink
-          href={subscribeUrl}
-          className='group flex h-[54px] items-center justify-between rounded-[18px] px-4 text-white shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] transition hover:brightness-105 active:scale-[0.98]'
-          style={subscribeStyle}>
-          <span className='flex items-center gap-2.5 text-[15px] font-bold'>
-            <i className={`${subscribeIcon} text-lg`} />
-            {subscribeTitle}
-          </span>
-          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/25 text-white transition group-hover:translate-x-0.5'>
-            <i className='fas fa-arrow-right text-sm' />
-          </span>
-        </SmartLink>
-      )}
+      <AuthorCard
+        siteInfo={siteInfo}
+        className='flex-1 lg:min-h-0'
+        minHeightClass='min-h-[200px] lg:min-h-0'
+      />
+      {subscribeEnable && <WechatSubscribeCard className='w-full' />}
     </div>
-  )
-}
-
-function SocialIcon({ href, icon }) {
-  return (
-    <SmartLink
-      href={href}
-      className='flex h-8 w-8 items-center justify-center rounded-full border border-white/35 text-sm transition hover:scale-110 hover:bg-white hover:text-[var(--heo-color-primary)] dark:hover:text-black'>
-      <i className={icon} />
-    </SmartLink>
   )
 }
 
@@ -367,27 +262,6 @@ function getHeroSlides({ latestPosts, allNavPages, siteInfo }) {
     href: post?.href || `${siteConfig('SUB_PATH', '')}/${post?.slug}`,
     cover: post?.pageCoverThumbnail || post?.pageCover || siteInfo?.pageCover
   }))
-}
-
-function normalizeList(value) {
-  if (Array.isArray(value)) {
-    return value.map(item => String(item).trim()).filter(Boolean)
-  }
-  if (typeof value !== 'string') return []
-  const trimmed = value.trim()
-  if (!trimmed) return []
-  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-    try {
-      return normalizeList(JSON.parse(trimmed.replace(/'/g, '"')))
-    } catch {
-      return trimmed
-        .slice(1, -1)
-        .split(',')
-        .map(item => item.trim().replace(/^['"]|['"]$/g, ''))
-        .filter(Boolean)
-    }
-  }
-  return [trimmed]
 }
 
 function parseBool(value) {

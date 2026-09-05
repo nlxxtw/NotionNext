@@ -12,21 +12,21 @@ import WavesArea from './WavesArea'
  * @param {*} param0
  * @returns
  */
-export default function PostHeader({ post, siteInfo, isDarkMode, lock }) {
+export default function PostHeader({ post, siteInfo, lock }) {
   if (!post) {
     return <></>
   }
   // 文章头图
   const headerImage = post?.pageCover ? post.pageCover : siteInfo?.pageCover
   const ANALYTICS_BUSUANZI_ENABLE = siteConfig('ANALYTICS_BUSUANZI_ENABLE')
+  // 有封面取色时用 --heo-cover-main；夜间也不用刺眼黄，统一回退主色
+  const fallbackAccent = 'var(--heo-color-primary)'
   return (
     <div
       id='post-bg'
       className='md:mb-0 -mb-5 w-full h-[30rem] relative md:flex-shrink-0 overflow-hidden bg-cover bg-center bg-no-repeat z-10'
       style={{
-        '--heo-post-bg-accent': isDarkMode
-          ? 'var(--heo-color-accent)'
-          : 'var(--heo-color-primary)'
+        '--heo-post-bg-accent': `var(--heo-cover-main, ${fallbackAccent})`
       }}>
       <style jsx>{`
         .coverdiv:after {
@@ -71,7 +71,7 @@ export default function PostHeader({ post, siteInfo, isDarkMode, lock }) {
                   className='mr-4'
                   passHref
                   legacyBehavior>
-                  <div className='cursor-pointer font-sm font-bold px-3 py-1 rounded-lg hover:bg-white text-[var(--heo-color-primary-text)] bg-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)] hover:text-[var(--heo-color-primary)] duration-200 '>
+                  <div className='cursor-pointer font-sm font-bold px-3 py-1 rounded-lg hover:bg-white text-[var(--heo-color-primary-text)] bg-[var(--heo-color-primary)] hover:text-[var(--heo-color-primary)] duration-200 '>
                     {post.category}
                   </div>
                 </SmartLink>

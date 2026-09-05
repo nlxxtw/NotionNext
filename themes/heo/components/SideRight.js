@@ -27,7 +27,7 @@ const FaceBookPage = dynamic(
  * 右侧栏
  */
 export default function SideRight(props) {
-  const { post, lock, tagOptions, rightAreaSlot, notice } = props
+  const { post, lock, tagOptions, rightAreaSlot } = props
   const router = useRouter()
   const isHome = router.route === '/'
   const showHot = siteConfig('HEO_WIDGET_HOT_POSTS', true, CONFIG)
@@ -42,14 +42,15 @@ export default function SideRight(props) {
   const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', false, CONFIG)
   const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
   const sortedTags = tagOptions?.slice(0, tagLimit) || []
-  const hasNotice = Boolean(notice)
+  // 首页英雄区已有资料卡，侧栏不再重复；仅非首页显示
+  const showInfoCard = !isHome || showInfoOnHome
 
   return (
     <aside
       id='sideRight'
       className='hidden w-[272px] shrink-0 xl:block xl:w-[292px]'>
       <div className='flex w-full flex-col gap-3'>
-        {(!isHome || showInfoOnHome || hasNotice) && (
+        {showInfoCard && (
           <InfoCard {...props} className='w-full wow fadeInUp' />
         )}
 

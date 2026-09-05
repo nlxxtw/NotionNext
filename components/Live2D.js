@@ -5,14 +5,18 @@ import { isMobile, loadExternalResource } from '@/lib/utils'
 import { useEffect } from 'react'
 
 /**
- * 网页动画
- * @returns
+ * 网页动画（宠物挂件）
+ * 点击切换主题需同时满足：THEME_SWITCH 与 WIDGET_PET_SWITCH_THEME
  */
 export default function Live2D() {
   const { theme, switchTheme } = useGlobal()
-  const showPet = JSON.parse(siteConfig('WIDGET_PET'))
+  const showPet = parseBool(siteConfig('WIDGET_PET'), true)
   const petLink = siteConfig('WIDGET_PET_LINK')
-  const petSwitchTheme = siteConfig('WIDGET_PET_SWITCH_THEME')
+  // 全局关主题切换时，宠物也不再切主题（避免只关 THEME_SWITCH 仍被宠物切换）
+  const themeSwitchEnabled = parseBool(siteConfig('THEME_SWITCH'), false)
+  const petSwitchTheme =
+    themeSwitchEnabled &&
+    parseBool(siteConfig('WIDGET_PET_SWITCH_THEME'), false)
 
   useEffect(() => {
     if (showPet && !isMobile()) {
@@ -21,9 +25,8 @@ export default function Live2D() {
           'https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/live2d.min.js',
           'js'
         )
-      ]).then(e => {
+      ]).then(() => {
         if (typeof window?.loadlive2d !== 'undefined') {
-          // https://github.com/xiazeyu/live2d-widget-models
           try {
             loadlive2d('live2d', petLink)
           } catch (error) {
@@ -32,7 +35,7 @@ export default function Live2D() {
         }
       })
     }
-  }, [theme])
+  }, [theme, showPet, petLink])
 
   function handleClick() {
     if (petSwitchTheme) {
@@ -50,9 +53,28 @@ export default function Live2D() {
       width='280'
       height='250'
       onClick={handleClick}
-      className='cursor-grab'
-      onMouseDown={e => e.target.classList.add('cursor-grabbing')}
+      className={petSwitchTheme ? 'cursor-grab' : 'cursor-default'}
+      onMouseDown={e => {
+        if (petSwitchTheme) e.target.classList.add('cursor-grabbing')
+      }}
       onMouseUp={e => e.target.classList.remove('cursor-grabbing')}
     />
   )
+}
+
+function parseBool(value, fallback = false) {
+  if (typeof value === 'boolean') return value
+  if (value == null || value === '') return fallback
+  if (typeof value === 'number') return value !== 0
+  if (typeof value === 'string') {
+    const v = value.trim().toLowerCase()
+    if (['true', '1', 'yes', 'on'].includes(v)) return true
+    if (['false', '0', 'no', 'off'].includes(v)) return false
+    try {
+      return Boolean(JSON.parse(value))
+    } catch {
+      return fallback
+    }
+  }
+  return Boolean(value)
 }

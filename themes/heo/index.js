@@ -8,7 +8,6 @@
 
 import Comment from '@/components/Comment'
 import { AdSlot } from '@/components/GoogleAdsense'
-import { HashTag } from '@/components/HeroIcons'
 import LazyImage from '@/components/LazyImage'
 import LoadingCover from '@/components/LoadingCover'
 import replaceSearchResult from '@/components/Mark'
@@ -35,15 +34,18 @@ import LatestPostsGroup from './components/LatestPostsGroup'
 import { NoticeBar } from './components/NoticeBar'
 import PostAdjacent from './components/PostAdjacent'
 import PostCopyright from './components/PostCopyright'
+import PostCoverTheme from './components/PostCoverTheme'
 import PostHeader from './components/PostHeader'
 import { PostLock } from './components/PostLock'
 import PostRecommend from './components/PostRecommend'
 import SearchNav from './components/SearchNav'
+import SearchInput from './components/SearchInput'
 import SideRight from './components/SideRight'
 import ArchivesPage from './components/ArchivesPage'
 import CategoriesPage from './components/CategoriesPage'
 import StatsPage from './components/StatsPage'
 import RssPage from './components/RssPage'
+import TagsPage from './components/TagsPage'
 import CONFIG from './config'
 import { Style } from './style'
 import AISummary from '@/components/AISummary'
@@ -113,6 +115,7 @@ const LayoutBase = props => {
       id='theme-heo'
       className={`${siteConfig('FONT_STYLE')} bg-[var(--heo-color-bg)] dark:bg-[var(--heo-color-bg-dark)] h-full min-h-screen flex flex-col scroll-smooth`}>
       <Style />
+      <PostCoverTheme post={props?.post} />
 
       {/* 顶部嵌入 导航栏，首页放hero，文章页放文章详情 */}
       {headerSlot}
@@ -211,11 +214,30 @@ const LayoutSearch = props => {
   }, [currentSearch])
   return (
     <div data-current-search={currentSearch || ''}>
-      <div id='post-outer-wrapper' className='px-5  md:px-0'>
+      <div id='post-outer-wrapper' className='w-full px-1 md:px-0'>
         {!currentSearch ? (
           <SearchNav {...props} />
         ) : (
-          <div id='posts-wrapper'>
+          <div id='posts-wrapper' className='pt-2'>
+            <div className='mb-5 flex items-center justify-between gap-3'>
+              <h1 className='text-2xl font-extrabold text-[var(--heo-color-primary)] md:text-[28px]'>
+                搜索
+              </h1>
+              <SmartLink
+                href='/search'
+                className='text-sm font-medium text-gray-400 transition hover:text-[var(--heo-color-primary)]'>
+                清空
+              </SmartLink>
+            </div>
+            <SearchInput
+              variant='pill'
+              currentSearch={currentSearch}
+              className='mb-6'
+              {...props}
+            />
+            <div className='mb-4 text-sm text-gray-500 dark:text-gray-400'>
+              「{currentSearch}」的结果
+            </div>
             {siteConfig('POST_LIST_STYLE') === 'page' ? (
               <BlogPostListPage {...props} />
             ) : (
@@ -415,38 +437,10 @@ const LayoutCategoryIndex = props => {
 }
 
 /**
- * 标签列表页
+ * 标签列表页（对齐 blog.zhheo.com/tags）
  */
 const LayoutTagIndex = props => {
-  const { tagOptions } = props
-  const { locale } = useGlobal()
-
-  return (
-    <div id='tag-outer-wrapper' className='px-5 mt-6 md:px-0'>
-      <div className='mb-5 flex items-end justify-between gap-3'>
-        <div>
-          <h1 className='text-3xl font-extrabold text-gray-900 dark:text-gray-100'>
-            {locale.COMMON.TAGS}
-          </h1>
-          <p className='mt-1 text-sm text-gray-500'>共 {tagOptions?.length || 0} 个标签</p>
-        </div>
-      </div>
-      <div id='tag-list' className='flex flex-wrap gap-2.5'>
-        {tagOptions?.map(tag => (
-          <SmartLink
-            key={tag.name}
-            href={`/tag/${encodeURIComponent(tag.name)}`}
-            className='heo-chip inline-flex items-center gap-1.5 rounded-full bg-[var(--heo-color-card)] px-4 py-2 text-sm font-medium text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-[var(--heo-color-card-dark)] dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)]'>
-            <HashTag className='h-4 w-4 stroke-current stroke-2 opacity-70' />
-            {tag.name}
-            <span className='rounded-full bg-black/5 px-2 py-0.5 text-xs opacity-70 dark:bg-white/10'>
-              {tag.count}
-            </span>
-          </SmartLink>
-        ))}
-      </div>
-    </div>
-  )
+  return <TagsPage {...props} />
 }
 
 /**
