@@ -41,6 +41,7 @@ import PostRecommend from './components/PostRecommend'
 import SearchNav from './components/SearchNav'
 import SearchInput from './components/SearchInput'
 import SideRight from './components/SideRight'
+import WelcomeMascot from './components/WelcomeMascot'
 import ArchivesPage from './components/ArchivesPage'
 import CategoriesPage from './components/CategoriesPage'
 import StatsPage from './components/StatsPage'
@@ -51,6 +52,7 @@ import { Style } from './style'
 import AISummary from '@/components/AISummary'
 import ArticleExpirationNotice from '@/components/ArticleExpirationNotice'
 import TianliGPT from '@/components/TianliGPT'
+import { markPostRead, postReadKey } from './lib/readPosts'
 
 /**
  * 基础布局 采用上中下布局，移动端使用顶部侧边导航栏
@@ -127,7 +129,7 @@ const LayoutBase = props => {
         className={`relative mx-auto w-full flex-grow px-5 ${maxWidth}`}>
         <div
           id='container-inner'
-          className={`${HEO_HERO_BODY_REVERSE ? 'flex-row-reverse' : ''} relative z-10 mx-auto flex w-full justify-center lg:flex lg:gap-3`}>
+          className={`${HEO_HERO_BODY_REVERSE ? 'flex-row-reverse' : ''} relative z-10 mx-auto flex w-full items-stretch justify-center lg:flex lg:gap-3`}>
           <div className={`h-auto w-full min-w-0 ${className || ''}`}>
             {/* 主区上部嵌入 */}
             {slotTop}
@@ -140,6 +142,9 @@ const LayoutBase = props => {
 
       {/* 页脚 */}
       <Footer />
+
+      {/* 右下角欢迎挂件 */}
+      <WelcomeMascot />
 
       {/* Heo 玻璃胶囊音乐条；同时用 CSS 隐藏默认 APlayer 固定条 */}
       <HeoMusicPlayer />
@@ -274,9 +279,15 @@ const LayoutSlug = props => {
     setHasCode(hasCode)
   }, [])
 
+  // 打开文章即标记已读，列表「未读」随之消失
+  useEffect(() => {
+    if (!post || lock) return
+    markPostRead(postReadKey(post))
+  }, [post, lock])
+
   const commentEnable =
-    siteConfig('COMMENT_TWIKOO_ENV_ID') ||
     siteConfig('COMMENT_WALINE_SERVER_URL') ||
+    siteConfig('COMMENT_TWIKOO_ENV_ID') ||
     siteConfig('COMMENT_VALINE_APP_ID') ||
     siteConfig('COMMENT_GISCUS_REPO') ||
     siteConfig('COMMENT_CUSDIS_APP_ID') ||

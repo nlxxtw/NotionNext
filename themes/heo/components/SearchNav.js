@@ -162,7 +162,7 @@ function collectPosts({ latestPosts, allNavPages, posts }) {
   const byId = new Map()
   pool.forEach(post => {
     if (!post || !String(post.title || '').trim()) return
-    const key = post.id || post.slug
+    const key = post.slug || post.short_id || post.id
     if (!key || byId.has(key)) return
     byId.set(key, post)
   })
@@ -180,6 +180,7 @@ function pickRandom(list, count) {
 }
 
 function pickHot(list, count, tag) {
+  const postKey = p => p.slug || p.short_id || p.id
   const sorted = [...list].sort(
     (a, b) =>
       new Date(b?.publishDate || b?.lastEditedDate || 0) -
@@ -191,7 +192,7 @@ function pickHot(list, count, tag) {
       Array.isArray(p?.tags) ? p.tags.includes(tag) : false
     )
   }
-  const keys = new Set(tagged.map(t => t.id || t.slug))
-  const rest = sorted.filter(p => !keys.has(p.id || p.slug))
+  const keys = new Set(tagged.map(postKey))
+  const rest = sorted.filter(p => !keys.has(postKey(p)))
   return [...tagged, ...rest].slice(0, count)
 }

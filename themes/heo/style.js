@@ -186,6 +186,25 @@ const Style = () => {
         box-shadow: none;
       }
 
+      /* 左上角回主页胶囊：文章头图上用白底深色图标（见下方更具体规则） */
+      #theme-heo .heo-logo-home-btn {
+        color: #fff !important;
+      }
+
+      .dark #theme-heo .heo-logo-home-btn {
+        color: #111827 !important;
+      }
+
+      #theme-heo #nav.text-white .heo-logo-home-btn {
+        background: var(--heo-color-primary) !important;
+        color: #fff !important;
+        box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.45);
+      }
+
+      #theme-heo .heo-aside-card {
+        border-radius: 1rem;
+      }
+
       /* 文章页头上：禁止白字打在浅色胶囊上发白 */
       #theme-heo #nav.text-white .heo-nav-chip {
         background: rgba(0, 0, 0, 0.22) !important;
@@ -608,6 +627,45 @@ const Style = () => {
       #theme-heo #article-wrapper .token.comment,
       #theme-heo #notion-article .token.comment {
         color: rgba(235, 235, 245, 0.48) !important;
+      }
+
+      /* Logo 白胶囊：文章头白字时仍可读 */
+      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip {
+        background: rgba(255, 255, 255, 0.92) !important;
+        border-color: rgba(255, 255, 255, 0.7) !important;
+        color: #111827 !important;
+      }
+      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip .heo-logo-menu-btn,
+      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip span,
+      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip svg {
+        color: #111827 !important;
+        fill: currentColor;
+      }
+      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip a:not(.heo-logo-home-btn),
+      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip button {
+        color: #111827 !important;
+      }
+
+      /* 右侧栏吸顶跟随到底 */
+      #theme-heo #sideRight.heo-side-right {
+        align-self: stretch;
+      }
+      #theme-heo #sideRight .heo-side-sticky {
+        position: sticky;
+        top: 5rem;
+        max-height: calc(100vh - 5.5rem);
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        padding-bottom: 0.5rem;
+      }
+      #theme-heo #sideRight .heo-side-sticky::-webkit-scrollbar {
+        width: 4px;
+      }
+      #theme-heo #sideRight .heo-side-sticky::-webkit-scrollbar-thumb {
+        background: rgba(60, 60, 67, 0.28);
+        border-radius: 999px;
       }
 
       ${themeConsoleStyle('heo', CONFIG)}

@@ -98,11 +98,19 @@ const MenuItem = ({ href, name, featured = false }) => {
   return (
     <SmartLink
       href={href}
-      className={`inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full px-4 text-[15px] font-bold leading-none transition ${
+      className={`inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[15px] font-bold leading-none transition ${
         selected
           ? 'bg-[var(--heo-color-primary)] text-white shadow-[0_8px_16px_-4px_rgba(122,93,250,0.35)] dark:bg-[var(--heo-color-accent)] dark:text-black'
           : 'heo-cat-chip text-gray-700 hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'
       }`}>
+      {featured ? (
+        <i
+          className={`fas fa-star text-[12px] ${
+            selected ? 'text-white' : 'text-[var(--heo-color-primary)]'
+          }`}
+          aria-hidden
+        />
+      ) : null}
       <span>{name}</span>
     </SmartLink>
   )

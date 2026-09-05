@@ -52,6 +52,8 @@ export default function HeoMusicPlayer() {
 
   const audioRef = useRef(null)
   const playingRef = useRef(false)
+  const lrcLinesRef = useRef([])
+  const lrcReqRef = useRef(0)
   const [playlist, setPlaylist] = useState(fallbackList)
   const [loading, setLoading] = useState(true)
   const [index, setIndex] = useState(0)
@@ -95,7 +97,6 @@ export default function HeoMusicPlayer() {
     }
     const audio = new Audio()
     audio.preload = 'metadata'
-    audio.crossOrigin = 'anonymous'
     audioRef.current = audio
 
     const onPlay = () => {
@@ -115,22 +116,36 @@ export default function HeoMusicPlayer() {
       })
     }
     const onError = () => {
-      // 单曲失效时自动下一首，避免整条挂死
       setTimeout(() => {
         setIndex(prev => (prev + 1) % Math.max(playlist.length, 1))
       }, 400)
+    }
+    const onTimeUpdate = () => {
+      const lines = lrcLinesRef.current
+      if (!lines.length) return
+      const t = audio.currentTime
+      let current = lines[0]?.text || ''
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].time <= t) current = lines[i].text
+        else break
+      }
+      setLrcText(prev => (prev === current ? prev : current || '♪'))
     }
 
     audio.addEventListener('play', onPlay)
     audio.addEventListener('pause', onPause)
     audio.addEventListener('ended', onEnded)
     audio.addEventListener('error', onError)
+    audio.addEventListener('timeupdate', onTimeUpdate)
+    audio.addEventListener('seeked', onTimeUpdate)
     return () => {
       audio.pause()
       audio.removeEventListener('play', onPlay)
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('ended', onEnded)
       audio.removeEventListener('error', onError)
+      audio.removeEventListener('timeupdate', onTimeUpdate)
+      audio.removeEventListener('seeked', onTimeUpdate)
       audioRef.current = null
     }
   }, [enabled, playlist.length, order])
@@ -138,20 +153,42 @@ export default function HeoMusicPlayer() {
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !track?.url) {
+      lrcLinesRef.current = []
       setLrcText('♪ 暂无')
-      return
+      return undefined
     }
     const shouldContinue = playingRef.current
     audio.src = track.url
     audio.load()
-    setLrcText(track.lrc ? '♪ 歌词已载入' : '♪ 暂无')
     if (shouldContinue || autoPlay) {
       audio.play().catch(() => {
         playingRef.current = false
         setPlaying(false)
       })
     }
-  }, [index, track?.url, autoPlay, track?.lrc])
+
+    const artistFallback = track.artist || '♪'
+    setLrcText(artistFallback)
+    lrcLinesRef.current = []
+    const reqId = ++lrcReqRef.current
+
+    let cancelled = false
+    ;(async () => {
+      const raw = await resolveLrc(track.lrc)
+      if (cancelled || reqId !== lrcReqRef.current) return
+      const lines = parseLrc(raw)
+      lrcLinesRef.current = lines
+      if (lines.length) {
+        setLrcText(lines[0].text || artistFallback)
+      } else {
+        setLrcText(artistFallback)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [index, track?.url, autoPlay, track?.lrc, track?.artist])
 
   if (!enabled || !visible) return null
   if (!loading && (!playlist.length || !track)) return null
@@ -361,4 +398,35 @@ async function fetchMetingPlaylist({ server, id, apiTemplate }) {
     }
   }
   return []
+}
+
+/** Meting 常返回 lrc URL，需再拉一次正文 */
+async function resolveLrc(lrc) {
+  const value = String(lrc || '').trim()
+  if (!value) return ''
+  if (!/^https?:\/\//i.test(value)) return value
+  try {
+    const res = await fetch(value)
+    if (!res.ok) return ''
+    return await res.text()
+  } catch {
+    return ''
+  }
+}
+
+function parseLrc(raw) {
+  const lines = []
+  for (const row of String(raw || '').split(/\r?\n/)) {
+    const matches = [...row.matchAll(/\[(\d{1,2}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g)]
+    if (!matches.length) continue
+    const text = row.replace(/\[\d{1,2}:\d{1,2}(?:[.:]\d{1,3})?\]/g, '').trim()
+    if (!text) continue
+    for (const m of matches) {
+      const min = Number(m[1]) || 0
+      const sec = Number(m[2]) || 0
+      const frac = m[3] ? Number(m[3].padEnd(3, '0').slice(0, 3)) / 1000 : 0
+      lines.push({ time: min * 60 + sec + frac, text })
+    }
+  }
+  return lines.sort((a, b) => a.time - b.time)
 }

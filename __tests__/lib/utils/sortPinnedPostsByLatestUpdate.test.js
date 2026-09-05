@@ -1,15 +1,19 @@
-import { sortPinnedPostsByLatestUpdate } from '@/lib/utils/pinnedPosts'
+import {
+  isPostPinned,
+  sortPinnedPostsByLatestUpdate
+} from '@/lib/utils/pinnedPosts'
+
 
 describe('sortPinnedPostsByLatestUpdate', () => {
-  it('returns original array when topTag is falsy', () => {
+  it('returns original array when nothing is pinned', () => {
     const posts = [
-      { id: 'a', tags: ['top'], lastEditedDate: '2024-01-01' }
+      { id: 'a', tags: ['x'], lastEditedDate: '2024-01-01' }
     ]
     const res = sortPinnedPostsByLatestUpdate(posts, '')
     expect(res).toBe(posts)
   })
 
-  it('does not change non-pinned indices; only reorders pinned subset by lastEditedDate desc', () => {
+  it('moves pinned posts to front and sorts them by lastEditedDate desc', () => {
     const posts = [
       { id: 'A', tags: ['x'], lastEditedDate: '2024-01-01' },
       { id: 'P1', tags: ['top'], lastEditedDate: '2024-01-02' },
@@ -19,13 +23,7 @@ describe('sortPinnedPostsByLatestUpdate', () => {
     ]
 
     const res = sortPinnedPostsByLatestUpdate(posts, 'top')
-    const ids = res.map(p => p.id)
-
-    // pinned slots are indices [1,3]; after sort, newer pinned should appear at index 1
-    expect(ids).toEqual(['A', 'P2', 'B', 'P1', 'C'])
-    // verify normal posts keep their original indices
-    expect(res[2].id).toBe('B')
-    expect(res[4].id).toBe('C')
+    expect(res.map(p => p.id)).toEqual(['P2', 'P1', 'A', 'B', 'C'])
   })
 
   it('keeps pinned relative order when lastEditedDate is equal (stable)', () => {
@@ -38,19 +36,17 @@ describe('sortPinnedPostsByLatestUpdate', () => {
     ]
 
     const res = sortPinnedPostsByLatestUpdate(posts, 'top')
-    const ids = res.map(p => p.id)
-    // stable: P1 stays before P2 in the pinned slots [1,3]
-    expect(ids).toEqual(['A', 'P1', 'B', 'P2', 'C'])
+    expect(res.map(p => p.id)).toEqual(['P1', 'P2', 'A', 'B', 'C'])
   })
 
-  it('returns original array when pinned count <= 1', () => {
+  it('pins by sticky checkbox even without topTag', () => {
     const posts = [
       { id: 'A', tags: ['x'], lastEditedDate: '2024-01-01' },
-      { id: 'P1', tags: ['top'], lastEditedDate: '2024-01-02' },
+      { id: 'P1', sticky: true, lastEditedDate: '2024-01-02' },
       { id: 'B', tags: ['x'], lastEditedDate: '2024-02-01' }
     ]
-    const res = sortPinnedPostsByLatestUpdate(posts, 'top')
-    expect(res).toBe(posts)
+    const res = sortPinnedPostsByLatestUpdate(posts, '')
+    expect(res.map(p => p.id)).toEqual(['P1', 'A', 'B'])
+    expect(isPostPinned(posts[1], '')).toBe(true)
   })
 })
-

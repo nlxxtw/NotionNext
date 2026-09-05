@@ -36,6 +36,8 @@ const CONFIG = {
   HEO_LOGO_MEGA_FOOTER_TEXT: '更多我的项目',
   HEO_LOGO_MEGA_FOOTER_URL: '/about',
   HEO_LOGO_MEGA_FOOTER_ICON: '', // 留空用站点头像
+  // false：左上角用 Heo 四瓣图标（默认）；true：改回站点风车/自定义图标
+  HEO_LOGO_USE_SITE_ICON: false,
   // Notion 尚未配置时的本地回退示例（有 Notion 数据后自动忽略）
   HEO_LOGO_MEGA_GROUPS: [
     {
@@ -138,7 +140,8 @@ const CONFIG = {
     '脚踏实地行动派',
     '数码科技爱好者'
   ],
-  // 资料卡悬停介绍（Notion 配置中心：HEO_INFO_CARD_INTRO；支持 **加粗** 与换行）
+  // 资料卡悬停介绍（Notion：HEO_INFO_CARD_INTRO；改 BIO 只影响底部小字）
+  // 想改悬停大段文字，请改 HEO_INFO_CARD_INTRO，支持 **加粗** 与换行
   HEO_INFO_CARD_INTRO:
     '这有关于**产品**、**设计**、**开发**相关的问题和看法，还有**文章翻译**和**分享**。\n相信你可以在这里找到对你有用的**知识**和**教程**。',
 
@@ -171,6 +174,20 @@ const CONFIG = {
   HEO_HOT_POSTS_TAG: '热门',
   HEO_HOT_POSTS_COUNT: 6,
   HEO_HOT_POSTS_MORE_URL: '/tag/热门',
+  // 侧栏「最新评论」（Waline）
+  HEO_WIDGET_RECENT_COMMENTS: true,
+  HEO_RECENT_COMMENTS_COUNT: 5,
+  // 左上角回主页提示；HEO_LOGO_SHOW_TITLE 可再显示站名
+  HEO_LOGO_HOME_TOOLTIP: '返回博客主页',
+  HEO_LOGO_SHOW_TITLE: false,
+
+  // 右下角欢迎挂件（省市欢迎语 + 滑到底隐藏）
+  HEO_MASCOT_ENABLE: true,
+  HEO_MASCOT_IMG: '/images/heo-mascot.png',
+  HEO_MASCOT_SIZE: 64,
+  HEO_MASCOT_TIP_MS: 5200,
+  HEO_MASCOT_BOTTOM: '5.5rem',
+  HEO_MASCOT_RIGHT: '1.25rem',
   // 搜索页封面栅格
   HEO_SEARCH_RANDOM_COUNT: 6,
   HEO_SEARCH_HOT_COUNT: 6,
@@ -213,12 +230,17 @@ const CONFIG = {
   HEO_ARTICLE_NOT_BY_AI: false, // 显示非AI写作
   HEO_ARTICLE_RECOMMEND: true, // 文章关联推荐
 
-  HEO_INFO_CARD_EMOJI: '😆', // 资料卡头像角标
+  HEO_INFO_CARD_EMOJI: '🐶', // 资料卡头像角标（狗头）；也可填图片 URL
+
+  // 页脚统计条：总浏览量 + 最近访客省市（不含在线人数）
+  HEO_FOOTER_STATS_ENABLE: true,
 
   // 页脚（原先定制：访问须知 + 二维码）
   HEO_FOOTER_NOTICE_TITLE: '访问须知',
   HEO_FOOTER_NOTICE_TEXT:
     '本站为非经营性个人博客，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系博主删除！',
+  // 中间三颗胶囊默认关闭；图仍给底栏「打赏/资源/订阅」悬停用
+  HEO_FOOTER_SHOW_QR_CHIPS: false,
   HEO_FOOTER_QR_LIST: [
     {
       title: '局长请喝咖啡',
@@ -227,9 +249,9 @@ const CONFIG = {
       accent: true
     },
     {
-      title: '主题',
+      title: '资源',
       img: 'https://img.19492035.xyz/file/1742824264213.jpg',
-      icon: 'fas fa-palette'
+      icon: 'fas fa-cloud-download-alt'
     },
     {
       title: '官方微信',
@@ -237,11 +259,16 @@ const CONFIG = {
       icon: 'fab fa-weixin'
     }
   ],
-  // 底栏快捷入口；带 qrFrom 的会悬停弹出对应二维码（勿再加「资源」）
+  // 底栏快捷入口；打赏 / 资源 / 订阅悬停出二维码；主题跳转 NotionNext
   HEO_FOOTER_QUICK_LINKS: [
     { title: '留言', href: '/about' },
     { title: '订阅', href: '/rss', qrFrom: '官方微信' },
     { title: '打赏', href: '#', qrFrom: '局长请喝咖啡' },
+    {
+      title: '主题',
+      href: 'https://github.com/notionnext-org/NotionNext'
+    },
+    { title: '资源', href: '#', qrFrom: '资源' },
     { title: '站点地图', href: '/sitemap.xml' }
   ],
   // 页脚多列链接（可按需在 Notion 扩展）

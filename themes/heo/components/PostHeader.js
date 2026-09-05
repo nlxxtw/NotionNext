@@ -8,8 +8,8 @@ import { useEffect, useState } from 'react'
 import WavesArea from './WavesArea'
 
 /**
- * 文章页头（对齐 Heo）：主色底 + 右侧清晰封面预览卡
- * 封面过白/缺失时自动隐藏预览卡，避免发白糊块
+ * 文章页头：等封面色就绪再铺色，避免默认主色闪一下；
+ * 右侧预览卡加深阴影与边框，降低「发白过亮」感
  */
 export default function PostHeader({ post, siteInfo, lock }) {
   if (!post) return null
@@ -17,16 +17,17 @@ export default function PostHeader({ post, siteInfo, lock }) {
   const headerImage = post?.pageCoverThumbnail || post?.pageCover || ''
   const coverSrc = headerImage || ''
   const ANALYTICS_BUSUANZI_ENABLE = siteConfig('ANALYTICS_BUSUANZI_ENABLE')
-  const fallbackAccent = 'var(--heo-color-primary)'
 
   const [showAside, setShowAside] = useState(Boolean(coverSrc))
+  // 未取到封面色前不铺默认紫，避免跳色
+  const [bgColor, setBgColor] = useState('')
+  const [bgReady, setBgReady] = useState(false)
 
   useEffect(() => {
     if (!coverSrc) {
       setShowAside(false)
       return
     }
-    // 先立刻显示，避免等亮度检测拖慢首屏；过白再隐藏
     setShowAside(true)
     let cancelled = false
     isCoverTooLight(coverSrc).then(tooLight => {
@@ -37,21 +38,72 @@ export default function PostHeader({ post, siteInfo, lock }) {
     }
   }, [coverSrc])
 
+  // 监听封面取色结果（PostCoverTheme 写入 --heo-cover-main）
+  useEffect(() => {
+    let cancelled = false
+    let tries = 0
+
+    const readCoverMain = () => {
+      const root = document.getElementById('theme-heo')
+      if (!root) return ''
+      return getComputedStyle(root).getPropertyValue('--heo-cover-main').trim()
+    }
+
+    const apply = () => {
+      if (cancelled) return
+      const color = readCoverMain()
+      if (color) {
+        setBgColor(color)
+        setBgReady(true)
+        return true
+      }
+      return false
+    }
+
+    if (apply()) return undefined
+
+    const timer = setInterval(() => {
+      tries += 1
+      if (apply() || tries > 40) {
+        clearInterval(timer)
+        if (!cancelled && !readCoverMain()) {
+          // 取色失败才用主色兜底，仍做一次淡入
+          setBgColor(
+            getComputedStyle(document.documentElement)
+              .getPropertyValue('--heo-color-primary')
+              .trim() || '#7a5dfa'
+          )
+          setBgReady(true)
+        }
+      }
+    }, 50)
+
+    const onReady = () => apply()
+    window.addEventListener('heo-cover-theme-ready', onReady)
+
+    return () => {
+      cancelled = true
+      clearInterval(timer)
+      window.removeEventListener('heo-cover-theme-ready', onReady)
+    }
+  }, [post?.id, coverSrc])
+
   return (
     <div
       id='post-bg'
       className='heo-post-bg relative z-10 -mb-5 h-[28rem] w-full overflow-hidden md:mb-0 md:h-[30rem] md:flex-shrink-0'
       style={{
-        '--heo-post-bg-accent': `var(--heo-cover-main, ${fallbackAccent})`,
-        backgroundColor: 'var(--heo-post-bg-accent)'
+        backgroundColor: bgReady ? bgColor : '#1e1f26',
+        opacity: bgReady ? 1 : 0.92,
+        transition: 'background-color 280ms ease, opacity 280ms ease'
       }}>
-      {/* 柔和氛围，不再用旋转模糊大图（易发白） */}
+      {/* 轻暗角，压住过亮封面色 */}
       <div
         aria-hidden
-        className='pointer-events-none absolute inset-0 opacity-40'
+        className='pointer-events-none absolute inset-0'
         style={{
           background:
-            'radial-gradient(ellipse 80% 60% at 85% 40%, rgba(255,255,255,0.18), transparent 55%)'
+            'radial-gradient(ellipse 75% 55% at 82% 38%, rgba(255,255,255,0.14), transparent 58%), linear-gradient(180deg, rgba(0,0,0,0.08) 0%, transparent 42%, rgba(0,0,0,0.18) 100%)'
         }}
       />
 
@@ -65,7 +117,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
             {post.category && (
               <SmartLink
                 href={`/category/${post.category}`}
-                className='rounded-lg bg-white/15 px-3 py-1 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white hover:text-[var(--heo-color-primary)]'>
+                className='rounded-full border border-white/15 bg-black/20 px-3 py-1 text-sm font-bold text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:bg-white hover:text-gray-900'>
                 {post.category}
               </SmartLink>
             )}
@@ -83,57 +135,83 @@ export default function PostHeader({ post, siteInfo, lock }) {
             )}
           </div>
 
-          <h1 className='flex max-w-4xl justify-center text-center text-[1.75rem] font-extrabold leading-snug text-white drop-shadow-sm md:justify-start md:text-left md:text-4xl lg:text-[2.75rem] lg:leading-[1.25]'>
+          <h1 className='flex max-w-4xl justify-center text-center text-[1.75rem] font-extrabold leading-snug text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] md:justify-start md:text-left md:text-4xl lg:text-[2.75rem] lg:leading-[1.25]'>
             {siteConfig('POST_TITLE_ICON') && (
               <NotionIcon icon={post.pageIcon} />
             )}
             {post.title}
           </h1>
 
-          <section className='mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-light text-white/90 md:justify-start'>
+          <section className='mt-2 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-sm font-medium text-white/92 md:justify-start'>
             {!lock && (
-              <WordCount
-                wordCount={post.wordCount}
-                readTime={post.readTime}
-              />
+              <span className='inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md'>
+                <WordCount
+                  wordCount={post.wordCount}
+                  readTime={post.readTime}
+                />
+              </span>
             )}
             {post?.type !== 'Page' && (
               <SmartLink
                 href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}
-                className='hover:underline'>
-                <i className='fa-regular fa-calendar mr-1' />
+                className='inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md transition hover:bg-white/20'>
+                <i className='fa-regular fa-calendar mr-1.5 text-[12px]' />
                 {post?.publishDay}
               </SmartLink>
             )}
             {post.lastEditedDay && (
-              <span>
-                <i className='fa-regular fa-calendar-check mr-1' />
+              <span className='inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md'>
+                <i className='fa-regular fa-calendar-check mr-1.5 text-[12px]' />
                 {post.lastEditedDay}
               </span>
             )}
             {ANALYTICS_BUSUANZI_ENABLE && (
-              <span className='busuanzi_container_page_pv'>
-                <i className='fa-solid fa-fire-flame-curved mr-1' />
+              <span className='busuanzi_container_page_pv inline-flex items-center rounded-full border border-white/12 bg-black/18 px-2.5 py-1 shadow-[0_4px_14px_-8px_rgba(0,0,0,0.4)] backdrop-blur-md'>
+                <i className='fa-solid fa-fire-flame-curved mr-1.5 text-[12px]' />
                 <span className='busuanzi_value_page_pv' />
               </span>
             )}
           </section>
         </div>
 
-        {/* 右侧清晰封面预览（对齐 Heo post-cover-aside） */}
         {showAside && coverSrc && (
           <a
             href={coverSrc}
             target='_blank'
             rel='noopener noreferrer'
-            className='heo-post-cover-aside group absolute right-6 top-1/2 z-[11] hidden w-[280px] -translate-y-1/2 overflow-hidden rounded-2xl shadow-[0_12px_40px_-12px_rgba(0,0,0,0.45)] transition duration-200 hover:scale-[1.03] hover:shadow-[0_18px_48px_-12px_rgba(0,0,0,0.5)] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.5rem)] md:block md:w-[300px]'
-            style={{ aspectRatio: '16 / 9' }}
-            title={post.title}>
+            className='heo-post-cover-aside group absolute right-6 top-1/2 z-[11] hidden w-[280px] -translate-y-1/2 overflow-hidden rounded-[18px] md:block md:w-[300px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.5rem)]'
+            style={{
+              aspectRatio: '16 / 9',
+              boxShadow:
+                '0 4px 6px rgba(0,0,0,0.12), 0 22px 48px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.14)',
+              transition: 'transform 200ms ease, box-shadow 200ms ease'
+            }}
+            title={post.title}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.03)'
+              e.currentTarget.style.boxShadow =
+                '0 8px 12px rgba(0,0,0,0.16), 0 28px 56px -14px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.2)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
+              e.currentTarget.style.boxShadow =
+                '0 4px 6px rgba(0,0,0,0.12), 0 22px 48px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.14)'
+            }}>
             <LazyImage
               id='post-cover'
               src={coverSrc}
               alt={post.title || 'cover'}
               className='h-full w-full object-cover transition duration-200 group-hover:scale-105'
+            />
+            {/* 压亮：底部轻暗 + 内描边，避免预览过曝 */}
+            <span
+              aria-hidden
+              className='pointer-events-none absolute inset-0 rounded-[18px]'
+              style={{
+                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.22)',
+                background:
+                  'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.22) 100%)'
+              }}
             />
           </a>
         )}
@@ -144,7 +222,6 @@ export default function PostHeader({ post, siteInfo, lock }) {
   )
 }
 
-/** 封面整体过亮则视为「发白」，隐藏预览卡 */
 function isCoverTooLight(url) {
   return new Promise(resolve => {
     if (!url || typeof window === 'undefined') {
@@ -176,10 +253,8 @@ function isCoverTooLight(url) {
           n++
         }
         const avg = n ? sum / n : 0
-        // 接近白底（> 230）则隐藏
         resolve(avg > 230)
       } catch {
-        // CORS 失败时仍显示预览卡
         resolve(false)
       }
     }

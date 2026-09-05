@@ -7,16 +7,14 @@ import AuthorCard from './AuthorCard'
 import WechatSubscribeCard from './WechatSubscribeCard'
 
 /**
- * 首页英雄区（对齐 blog.zhheo.com 截图）
- * 左：推荐文章封面轮播
- * 右：个人资料卡 + 订阅入口
+ * 首页英雄区（对齐 blog.zhheo.com）
+ * 左轮播与右资料卡同高，形成中间十字圆角；公众号订阅放到侧栏顶对齐文章列表
  */
 const Hero = props => {
   const reverse = siteConfig('HEO_HERO_REVERSE', false, CONFIG)
 
   return (
-    <div id='hero-wrapper' className='relative mb-4 w-full select-none'>
-      {/* 柔和氛围光斑 */}
+    <div id='hero-wrapper' className='relative mb-3 w-full select-none'>
       <div
         aria-hidden
         className='pointer-events-none absolute inset-x-0 -top-20 h-[380px] overflow-hidden'>
@@ -27,11 +25,17 @@ const Hero = props => {
 
       <div
         id='home_center'
-        className={`relative z-[1] flex w-full flex-col gap-3 lg:h-[320px] lg:flex-row ${
-          reverse ? 'lg:flex-row-reverse' : ''
+        className={`relative z-[1] flex w-full flex-col gap-3 ${
+          reverse ? '' : ''
         }`}>
-        <HomeCenterCarousel {...props} />
-        <HeroAside {...props} />
+        <div
+          className={`flex w-full flex-col gap-3 lg:h-[300px] lg:flex-row lg:items-stretch ${
+            reverse ? 'lg:flex-row-reverse' : ''
+          }`}>
+          <HomeCenterCarousel {...props} />
+          <HeroAside {...props} />
+        </div>
+        <HeroSubscribeMobile />
       </div>
     </div>
   )
@@ -83,7 +87,7 @@ function HomeCenterCarousel(props) {
   const hasCover = Boolean(current?.cover)
 
   return (
-    <div className='home-center-left group relative h-[240px] flex-1 overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
+    <div className='home-center-left group relative h-[240px] min-h-0 flex-1 overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
       {/* 无封面时用技能图标底纹 */}
       {!hasCover && <TagsGroupBar />}
 
@@ -172,22 +176,45 @@ function CarouselArrow({ direction, onClick }) {
 }
 
 /**
- * 右侧资料卡 + 订阅卡（对齐截图布局）
+ * 右侧仅资料卡，与左侧轮播严格同高
  */
 function HeroAside(props) {
   const { siteInfo } = props
-  const subscribeEnable = siteConfig('HEO_HERO_SUBSCRIBE_ENABLE', true, CONFIG)
 
   return (
-    <div className='flex w-full shrink-0 flex-col gap-3 lg:w-[272px] xl:w-[292px]'>
+    <div className='h-[240px] w-full shrink-0 lg:h-full lg:w-[272px] xl:w-[292px]'>
       <AuthorCard
         siteInfo={siteInfo}
-        className='flex-1 lg:min-h-0'
-        minHeightClass='min-h-[200px] lg:min-h-0'
+        className='h-full w-full min-h-0'
+        minHeightClass='h-full min-h-0'
       />
-      {subscribeEnable && <WechatSubscribeCard className='w-full' />}
     </div>
   )
+}
+
+/** 小屏订阅条；大屏由 SideRight 顶对齐文章列表 */
+function HeroSubscribeMobile() {
+  const subscribeEnable = parseBool(
+    siteConfig('HEO_HERO_SUBSCRIBE_ENABLE', true, CONFIG)
+  )
+  if (!subscribeEnable) return null
+  return (
+    <div className='w-full xl:hidden'>
+      <WechatSubscribeCard className='w-full' />
+    </div>
+  )
+}
+
+function parseBool(value) {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value)
+    } catch {
+      return value.toLowerCase() === 'true'
+    }
+  }
+  return Boolean(value)
 }
 
 /**

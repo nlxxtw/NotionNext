@@ -1,14 +1,15 @@
 import LazyImage from '@/components/LazyImage'
-import NotionIcon from './NotionIcon'
 import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
+import { isPostPinned } from '@/lib/utils/pinnedPosts'
+import { useEffect, useState } from 'react'
 import CONFIG from '../config'
 import CommentAvatarStack from './CommentAvatarStack'
-import { TagCloverIcon } from './TagGroups'
+import { isPostRead, postReadKey } from '../lib/readPosts'
 
 /**
  * 文章卡（对齐 blog.zhheo.com）
- * 标签在上 → 标题 → 底部评论头像 + 日期
+ * 标题上方只保留「未读」；去掉分类/标签/四瓣图标
  */
 const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
   const showPreview =
@@ -26,30 +27,40 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
     !showPreview
 
   const POST_TWO_COLS = siteConfig('HEO_HOME_POST_TWO_COLS', true, CONFIG)
-  const tags = Array.isArray(post?.tagItems)
-    ? post.tagItems
-    : Array.isArray(post?.tags)
-      ? post.tags.map(name => ({ name }))
-      : []
-  const tipLabels = []
-  if (post?.category) tipLabels.push(String(post.category))
-  tags.slice(0, 3).forEach(t => {
-    const name = typeof t === 'string' ? t : t?.name
-    if (name && !tipLabels.includes(name)) tipLabels.push(name)
-  })
-
   const href = post?.href || `/${post?.slug || ''}`
   const dateLabel = formatHeoCardDate(
     post?.publishDate || post?.date?.start_date || post?.publishDay
   )
+  const readKey = postReadKey(post)
+  const [unread, setUnread] = useState(false)
+  const topTag = siteConfig('TOP_TAG', '置顶')
+  const pinned = isPostPinned(post, topTag)
+
+  useEffect(() => {
+    const sync = () => setUnread(Boolean(readKey) && !isPostRead(readKey))
+    sync()
+    window.addEventListener('heo-read-posts-changed', sync)
+    window.addEventListener('storage', sync)
+    return () => {
+      window.removeEventListener('heo-read-posts-changed', sync)
+      window.removeEventListener('storage', sync)
+    }
+  }, [readKey])
 
   return (
     <article className='h-full'>
       <div
         data-wow-delay='.2s'
-        className={`heo-card wow fadeInUp group flex h-full w-full flex-col overflow-hidden rounded-[18px] bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] ${
+        className={`heo-card wow fadeInUp group relative flex h-full w-full flex-col overflow-hidden rounded-[18px] bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] ${
           POST_TWO_COLS ? '' : 'md:h-44 md:flex-row'
         }`}>
+        {pinned && showPageCover ? (
+          <span className='absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-[var(--heo-color-primary)]/92 px-2 py-0.5 text-[11px] font-bold text-white shadow-sm backdrop-blur-sm dark:bg-[var(--heo-color-accent)]/90 dark:text-gray-900'>
+            <i className='fas fa-thumbtack text-[9px]' aria-hidden />
+            置顶
+          </span>
+        ) : null}
+
         {showPageCover && (
           <SmartLink href={href} className='block shrink-0'>
             <div
@@ -72,32 +83,26 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
           className={`flex flex-1 flex-col px-4 pb-4 pt-3.5 ${
             POST_TWO_COLS ? 'min-h-[148px]' : 'md:w-7/12'
           }`}>
-          {/* 分类/标签行：四瓣图标 + 文案，无 #、无线框 */}
-          {tipLabels.length > 0 && (
-            <div className='recent-post-info-top-tips mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] leading-none text-gray-500 dark:text-gray-400'>
-              {tipLabels.map((label, i) => (
-                <span
-                  key={`${label}-${i}`}
-                  className='inline-flex items-center gap-1.5 whitespace-nowrap font-medium'>
-                  {i === 0 && (
-                    <TagCloverIcon className='h-3 w-3 text-gray-500 dark:text-gray-400' />
-                  )}
-                  {label}
+          {/* 「未读」；读过后整行消失；无封面时置顶也在此显示 */}
+          {unread || (pinned && !showPageCover) ? (
+            <div className='mb-2 flex flex-wrap items-center gap-2 text-[12px] font-medium leading-none text-gray-400 dark:text-gray-500'>
+              {pinned && !showPageCover ? (
+                <span className='inline-flex items-center gap-1 rounded-full bg-[var(--heo-color-primary)]/10 px-2 py-0.5 text-[11px] font-bold text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]/15 dark:text-[var(--heo-color-accent)]'>
+                  <i className='fas fa-thumbtack text-[9px]' aria-hidden />
+                  置顶
                 </span>
-              ))}
+              ) : null}
+              {unread ? <span>未读</span> : null}
             </div>
-          )}
+          ) : null}
 
-          {/* 标题：对齐 Heo article-title 20px / 700 */}
           <SmartLink
             href={href}
-            className='line-clamp-2 flex-1 text-[20px] font-bold leading-[1.5] text-gray-900 transition group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)]'>
-            {siteConfig('POST_TITLE_ICON') && (
-              <NotionIcon
-                icon={post.pageIcon}
-                className='heo-icon mr-1 inline h-[1.1em] w-[1.1em] align-middle'
-              />
-            )}
+            className={`line-clamp-2 flex-1 text-[20px] font-bold leading-[1.5] transition dark:group-hover:text-[var(--heo-color-accent)] ${
+              unread
+                ? 'text-[var(--heo-color-primary)] group-hover:opacity-90 dark:text-[var(--heo-color-accent)]'
+                : 'text-gray-900 group-hover:text-[var(--heo-color-primary)] dark:text-gray-100'
+            }`}>
             <span>{post.title}</span>
           </SmartLink>
 
@@ -107,7 +112,6 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
             </p>
           ) : null}
 
-          {/* 底部：评论头像 | 日期 */}
           <div className='mt-4 flex items-center justify-between gap-3'>
             <CommentAvatarStack
               postUrl={href}

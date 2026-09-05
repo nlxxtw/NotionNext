@@ -1,12 +1,9 @@
-import SmartLink from '@/components/SmartLink'
 import { siteConfig } from '@/lib/config'
 import CONFIG from '../config'
+import AsideWidgetHeader from './AsideWidgetHeader'
 
 /**
  * 侧栏「网站统计」卡片
- * 文案标题可用 Notion 配置中心覆盖：
- * HEO_POST_COUNT_TITLE / HEO_SITE_TIME_TITLE / HEO_SITE_WORD_TITLE / HEO_SITE_COMMENT_TITLE
- * HEO_SITE_CREATE_TIME / HEO_SITE_WORD_COUNT / HEO_SITE_COMMENT_COUNT
  */
 export function AnalyticsCard(props) {
   const { postCount, allNavPages, latestPosts } = props
@@ -53,24 +50,15 @@ export function AnalyticsCard(props) {
   return (
     <div className='heo-analytics-card'>
       {showHeader && (
-        <div className='mb-2.5 flex items-center justify-between px-0.5'>
-          <div className='flex items-center gap-2 text-[15px] font-extrabold text-gray-800 dark:text-gray-100'>
-            <i className='fas fa-chart-simple text-[14px]' />
-            网站统计
-          </div>
-          <SmartLink
-            href={moreHref}
-            className='text-xs font-bold text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-200'>
-            更多
-          </SmartLink>
-        </div>
+        <AsideWidgetHeader
+          icon='fas fa-chart-simple'
+          title='网站统计'
+          moreHref={moreHref}
+        />
       )}
 
-      <div className='flex flex-col gap-2 px-0.5'>
-        <Row
-          label={postCountTitle}
-          value={postCount ?? pages.length ?? 0}
-        />
+      <div className='flex flex-col gap-3.5 px-0.5 pb-0.5 pt-0.5'>
+        <Row label={postCountTitle} value={postCount ?? pages.length ?? 0} />
         <Row label={siteTimeTitle} value={formatSiteDays(diffDays)} />
         <Row label={wordTitle} value={wordDisplay} />
         <Row label={commentTitle} value={commentDisplay} />
@@ -81,11 +69,11 @@ export function AnalyticsCard(props) {
 
 function Row({ label, value }) {
   return (
-    <div className='flex items-baseline justify-between gap-3 text-[13px] leading-none'>
+    <div className='flex items-baseline justify-between gap-3 text-[14px] leading-none'>
       <span className='shrink-0 font-medium text-gray-500 dark:text-gray-400'>
         {label}
       </span>
-      <span className='min-w-0 truncate text-right text-[13px] font-semibold tabular-nums text-gray-800 dark:text-gray-100'>
+      <span className='min-w-0 truncate text-right text-[14px] font-bold tabular-nums text-gray-900 dark:text-gray-100'>
         {value}
       </span>
     </div>

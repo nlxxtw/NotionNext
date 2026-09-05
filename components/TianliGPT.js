@@ -14,16 +14,19 @@ export default function TianLiGPT() {
   const [summary, setSummary] = useState('')
   const [loading, setLoading] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [error, setError] = useState('')
   const reqRef = useRef(0)
+  // 用稳定路径，避免 query/hash 变化导致摘要闪没重跑
+  const pagePath = String(router.asPath || '').split(/[?#]/)[0]
 
   useEffect(() => {
     if (!tianliKey) {
       setVisible(false)
       setSummary('')
+      setError('')
       return undefined
     }
 
-    // 仅在文章详情容器存在时跑；不再用 /posts|/article 路径限制
     let cancelled = false
     const reqId = ++reqRef.current
 
@@ -38,39 +41,47 @@ export default function TianLiGPT() {
         return
       }
 
+      // 等 Notion 正文真正渲染出文字再请求，避免空内容导致闪一下消失
+      const content = await waitForArticleText(container, wordLimit, 6000)
+      if (cancelled || reqId !== reqRef.current) return
+      if (!content) {
+        setVisible(true)
+        setLoading(false)
+        setError('正文尚未加载完成，请刷新后再试')
+        setSummary('')
+        return
+      }
+
       setVisible(true)
       setLoading(true)
       setSummary('')
-
-      const content = extractArticleText(container, wordLimit)
-      if (!content) {
-        setLoading(false)
-        setVisible(false)
-        return
-      }
+      setError('')
 
       try {
         const text = await fetchTianliSummary(content, tianliKey)
         if (cancelled || reqId !== reqRef.current) return
         if (text) {
           setSummary(text)
+          setError('')
         } else {
-          setVisible(false)
+          setError('暂未生成摘要，请稍后再试')
         }
       } catch (e) {
         console.error('TianliGPT summary failed', e)
-        if (!cancelled && reqId === reqRef.current) setVisible(false)
+        if (!cancelled && reqId === reqRef.current) {
+          setError('获取文章摘要失败，请稍后再试')
+        }
       } finally {
         if (!cancelled && reqId === reqRef.current) setLoading(false)
       }
     }
 
-    const timer = setTimeout(run, 50)
+    const timer = setTimeout(run, 120)
     return () => {
       cancelled = true
       clearTimeout(timer)
     }
-  }, [tianliKey, wordLimit, router.asPath])
+  }, [tianliKey, wordLimit, pagePath])
 
   if (!tianliKey || !visible) return null
 
@@ -95,7 +106,9 @@ export default function TianLiGPT() {
           </div>
         </div>
         <div className='px-5 py-4 text-[15px] leading-relaxed text-gray-800 dark:text-gray-100'>
-          {loading && !summary ? '生成中…' : summary}
+          {loading && !summary && !error
+            ? '生成中…'
+            : error || summary}
         </div>
       </div>
     </div>
@@ -132,26 +145,43 @@ function waitForSelector(selector, timeoutMs = 8000) {
   })
 }
 
+async function waitForArticleText(container, wordLimit, timeoutMs = 6000) {
+  const start = Date.now()
+  while (Date.now() - start < timeoutMs) {
+    const text = extractArticleText(container, wordLimit)
+    // Notion 正文多为 div.notion-text，等真正有一段内容再请求
+    if (text && text.replace(/\s+/g, '').length >= 40) return text
+    await sleep(120)
+  }
+  return extractArticleText(container, wordLimit)
+}
+
 function extractArticleText(container, wordLimit) {
   try {
     const title = document.title || ''
-    const headings = container.querySelectorAll('h1,h2,h3,h4,h5')
-    const paragraphs = container.getElementsByTagName('p')
+    // react-notion-x：正文在 .notion-text / 列表里，不只是 <p>
+    const nodes = container.querySelectorAll(
+      'h1,h2,h3,h4,h5,.notion-h,.notion-text,.notion-list,.notion-quote,p,li'
+    )
     let content = ''
-    headings.forEach(h => {
-      content += `${h.innerText || ''} `
+    nodes.forEach(node => {
+      const t = String(node.innerText || node.textContent || '')
+        .replace(/https?:\/\/[^\s]+/g, '')
+        .trim()
+      if (t) content += `${t} `
     })
-    for (const p of paragraphs) {
-      content += String(p.innerText || '').replace(/https?:\/\/[^\s]+/g, '')
+    if (!content.trim()) {
+      content = String(container.innerText || '')
+        .replace(/https?:\/\/[^\s]+/g, '')
+        .trim()
     }
-    return `${title} ${content}`.slice(0, wordLimit)
+    return `${title} ${content}`.replace(/\s+/g, ' ').trim().slice(0, wordLimit)
   } catch {
     return ''
   }
 }
 
 async function fetchTianliSummary(content, token) {
-  // 与 pastking 脚本同一接口；token 走 query
   const url = `https://summary.qixing1217.top/api/summary?token=${encodeURIComponent(
     token
   )}`
@@ -163,4 +193,8 @@ async function fetchTianliSummary(content, token) {
   if (!res.ok) throw new Error(`summary ${res.status}`)
   const data = await res.json()
   return String(data?.summary || '').trim()
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }

@@ -3,10 +3,11 @@ import SmartLink from '@/components/SmartLink'
 import { siteConfig } from '@/lib/config'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CONFIG from '../config'
+import { TagCloverIcon } from './TagGroups'
 
 /**
- * Logo + 项目大菜单（对齐 blog.zhheo.com）
- * 数据优先来自 Notion Menu/SubMenu（带指定标签），否则回退 config 示例
+ * 左上角：白胶囊 = 四瓣菜单 + 蓝色「回主页」
+ * 对齐 blog.zhheo.com（悬停提示：返回博客主页）
  */
 const Logo = props => {
   const { siteInfo, customMenu } = props
@@ -28,6 +29,20 @@ const Logo = props => {
   const footerIcon =
     siteConfig('HEO_LOGO_MEGA_FOOTER_ICON', '', CONFIG) || siteInfo?.icon
 
+  const homeTip = siteConfig(
+    'HEO_LOGO_HOME_TOOLTIP',
+    '返回博客主页',
+    CONFIG
+  )
+  const showTitle = parseBool(
+    siteConfig('HEO_LOGO_SHOW_TITLE', false, CONFIG)
+  )
+  const logoTitle = siteConfig('TITLE') || 'HEO'
+  const useSiteIcon = parseBool(
+    siteConfig('HEO_LOGO_USE_SITE_ICON', false, CONFIG)
+  )
+  const logoIcon = useSiteIcon ? siteInfo?.icon : ''
+
   useEffect(() => {
     if (!open) return undefined
     const onDoc = e => {
@@ -46,51 +61,70 @@ const Logo = props => {
     }
   }, [open])
 
-  const logoTitle = siteConfig('TITLE') || 'HEO'
-  const logoIcon = siteInfo?.icon
-
-  const trigger = (
+  const menuBtn = (
     <button
       type='button'
       aria-expanded={open}
       aria-haspopup='true'
+      aria-label='打开菜单'
       onClick={() => (enable ? setOpen(v => !v) : null)}
-      className='heo-nav-chip group flex cursor-pointer items-center gap-2 rounded-full py-1 pl-1 pr-3 font-extrabold text-gray-900 transition dark:text-gray-100'>
-      <span className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900'>
-        {logoIcon ? (
-          <LazyImage
-            src={logoIcon}
-            width={32}
-            height={32}
-            alt={logoTitle}
-            className='h-full w-full object-cover'
-          />
-        ) : (
-          <i className='fas fa-th text-[11px]' />
-        )}
-      </span>
-      <span className='max-w-[8rem] truncate text-[15px] leading-none'>
-        {logoTitle}
-      </span>
+      className='heo-logo-menu-btn flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-800 transition hover:bg-black/[0.05] dark:text-gray-100 dark:hover:bg-white/10'>
+      {logoIcon ? (
+        <LazyImage
+          src={logoIcon}
+          width={18}
+          height={18}
+          alt=''
+          className='h-[18px] w-[18px] rounded-sm object-cover'
+        />
+      ) : (
+        <TagCloverIcon className='h-[15px] w-[15px]' />
+      )}
     </button>
   )
 
-  // 未启用大菜单：保持可点回首页
+  const homeBtn = (
+    <SmartLink
+      href='/'
+      aria-label={homeTip}
+      className='heo-logo-home-btn group/home relative flex h-8 shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)] px-3 text-white shadow-[0_6px_14px_-8px_rgba(66,90,239,0.85)] transition hover:brightness-105 dark:bg-[var(--heo-color-accent)] dark:text-gray-900 dark:shadow-none'>
+      <i className='fas fa-home text-[13px]' aria-hidden />
+      <span className='heo-logo-home-tip pointer-events-none absolute left-1/2 top-[calc(100%+10px)] z-[90] -translate-x-1/2 whitespace-nowrap rounded-lg border border-black/[0.06] bg-white px-2.5 py-1.5 text-[12px] font-semibold text-gray-700 opacity-0 shadow-[0_10px_24px_-12px_rgba(40,50,90,0.45)] transition duration-150 group-hover/home:opacity-100 dark:border-white/10 dark:bg-[#2a2b31] dark:text-gray-100'>
+        {homeTip}
+      </span>
+    </SmartLink>
+  )
+
+  const pill = (
+    <div className='heo-logo-trigger heo-nav-chip heo-nav-home-pill inline-flex items-center gap-0.5 rounded-full p-1'>
+      {enable ? menuBtn : (
+        <SmartLink
+          href='/'
+          className='flex h-8 w-8 items-center justify-center rounded-full text-gray-800 dark:text-gray-100'
+          aria-label='首页'>
+          <TagCloverIcon className='h-[15px] w-[15px]' />
+        </SmartLink>
+      )}
+      {homeBtn}
+      {showTitle ? (
+        <span className='max-w-[7rem] truncate pr-2 text-[14px] font-extrabold leading-none tracking-tight text-gray-900 dark:text-gray-100'>
+          {logoTitle}
+        </span>
+      ) : null}
+    </div>
+  )
+
   if (!enable) {
-    return (
-      <SmartLink href='/' className='inline-flex'>
-        {trigger}
-      </SmartLink>
-    )
+    return <div className='relative inline-flex'>{pill}</div>
   }
 
   return (
     <div
       ref={wrapRef}
-      className='relative'
+      className='relative inline-flex'
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}>
-      {trigger}
+      {pill}
 
       <div
         className={`absolute left-0 top-[calc(100%+8px)] z-[80] w-[min(420px,calc(100vw-1.5rem))] origin-top-left transition duration-200 ${
@@ -171,7 +205,6 @@ function MegaIcon({ icon, title }) {
       </span>
     )
   }
-  // Notion 图片图标 / 外链图
   if (/^https?:\/\//i.test(icon) || icon.startsWith('/')) {
     return (
       <LazyImage
@@ -181,7 +214,6 @@ function MegaIcon({ icon, title }) {
       />
     )
   }
-  // FontAwesome
   if (icon.includes('fa-') || icon.startsWith('fa')) {
     return (
       <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-gray-700 duration-75 group-hover:bg-white/15 group-hover:text-white dark:bg-white/10 dark:text-gray-200'>
@@ -189,7 +221,6 @@ function MegaIcon({ icon, title }) {
       </span>
     )
   }
-  // Emoji
   return (
     <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-[15px] leading-none duration-75 group-hover:bg-white/15 dark:bg-white/10'>
       {icon}
@@ -206,7 +237,9 @@ export function buildMegaGroups(customMenu, themeConfig = CONFIG) {
   const fallback = siteConfig('HEO_LOGO_MEGA_GROUPS', null, themeConfig)
 
   const menus = Array.isArray(customMenu) ? customMenu : []
-  const matched = menus.filter(menu => matchMegaMenu(menu, filterMode, filterValue))
+  const matched = menus.filter(menu =>
+    matchMegaMenu(menu, filterMode, filterValue)
+  )
 
   if (matched.length) {
     return matched.map(menu => ({
@@ -265,7 +298,6 @@ function matchMegaMenu(menu, filterMode, filterValue) {
     return cat === filterValue
   }
 
-  // default: tag
   const tags = menu.tags
   if (Array.isArray(tags)) {
     return tags.some(t => (typeof t === 'string' ? t : t?.name) === filterValue)
@@ -274,6 +306,18 @@ function matchMegaMenu(menu, filterMode, filterValue) {
     return tags.split(/[,，]/).map(s => s.trim()).includes(filterValue)
   }
   return false
+}
+
+function parseBool(value) {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value)
+    } catch {
+      return value.toLowerCase() === 'true'
+    }
+  }
+  return Boolean(value)
 }
 
 export default Logo
