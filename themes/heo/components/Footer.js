@@ -135,34 +135,35 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* 右栏：快捷链接等距一行（无中间大空档）+ logo + 统计 */}
-          <div className='flex w-full shrink-0 flex-col gap-3 lg:w-auto lg:max-w-md lg:items-stretch'>
-            <div className='flex flex-wrap items-center gap-x-3.5 gap-y-1'>
-              {quickLinks.map((link, index) =>
-                link.qr ? (
-                  <QrHoverText key={`${link.title}-${index}`} item={link} />
-                ) : (
-                  <SmartLink
-                    key={`${link.title}-${index}`}
-                    href={link.href || '#'}
-                    className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
-                    {link.title}
-                  </SmartLink>
-                )
-              )}
-            </div>
+          {/* 右栏：链接与统计同一行；风车靠右、无白阴影 */}
+          <div className='flex w-full shrink-0 flex-col gap-2.5 lg:w-auto lg:min-w-[340px] lg:max-w-lg'>
+            <div className='flex items-end justify-between gap-4'>
+              <div className='min-w-0 flex-1 space-y-2'>
+                <div className='flex flex-wrap items-center gap-x-3.5 gap-y-1'>
+                  {quickLinks.map((link, index) =>
+                    link.qr ? (
+                      <QrHoverText key={`${link.title}-${index}`} item={link} />
+                    ) : (
+                      <SmartLink
+                        key={`${link.title}-${index}`}
+                        href={link.href || '#'}
+                        className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
+                        {link.title}
+                      </SmartLink>
+                    )
+                  )}
+                </div>
+                <FooterStats compact />
+              </div>
 
-            {siteInfo?.icon ? (
-              <div className='flex justify-end'>
+              {siteInfo?.icon ? (
                 <LazyImage
                   src={siteInfo.icon}
                   alt={AUTHOR || 'avatar'}
-                  className='h-12 w-12 rounded-full object-cover shadow-[0_8px_18px_-10px_rgba(40,50,80,0.45)] ring-2 ring-white dark:ring-gray-700 sm:h-14 sm:w-14'
+                  className='heo-footer-logo mb-0.5 h-11 w-11 shrink-0 rounded-full object-cover sm:h-12 sm:w-12'
                 />
-              </div>
-            ) : null}
-
-            <FooterStats compact />
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

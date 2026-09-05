@@ -84,7 +84,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
   }, [post?.id, coverSrc])
 
   const metaPill =
-    'heo-post-meta-pill inline-flex items-center rounded-full border border-white/25 bg-black/40 px-3 py-1.5 text-[13px] font-semibold text-white shadow-[0_4px_14px_-8px_rgba(0,0,0,0.45)] backdrop-blur-md'
+    'heo-post-meta-pill inline-flex items-center rounded-full border-0 bg-white/18 px-3 py-1.5 text-[13px] font-semibold text-white backdrop-blur-[6px]'
 
   return (
     <div
@@ -114,7 +114,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
             {post.category && (
               <SmartLink
                 href={`/category/${post.category}`}
-                className='rounded-full border border-white/20 bg-black/35 px-3 py-1 text-sm font-bold text-white shadow-[0_6px_16px_-8px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:bg-white hover:text-gray-900'>
+                className='rounded-full border-0 bg-white/18 px-3 py-1 text-sm font-bold text-white backdrop-blur-[6px] transition hover:bg-white/28'>
                 {post.category}
               </SmartLink>
             )}
@@ -154,7 +154,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
             {post?.type !== 'Page' && (
               <SmartLink
                 href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}
-                className={`${metaPill} transition hover:bg-black/55`}>
+                className={`${metaPill} transition hover:bg-white/28`}>
                 <i className='fa-regular fa-calendar mr-1.5 text-[12px]' />
                 {post?.publishDay}
               </SmartLink>
@@ -182,20 +182,19 @@ export default function PostHeader({ post, siteInfo, lock }) {
             className='heo-post-cover-aside group absolute right-5 z-[11] hidden w-[280px] overflow-hidden rounded-[18px] md:block md:w-[300px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.25rem)]'
             style={{
               aspectRatio: '16 / 9',
-              boxShadow:
-                '0 4px 6px rgba(0,0,0,0.12), 0 22px 48px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.14)',
+              boxShadow: '0 12px 28px -14px rgba(0,0,0,0.45)',
               transition: 'transform 200ms ease, box-shadow 200ms ease'
             }}
             title={post.title}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1.03)'
               e.currentTarget.style.boxShadow =
-                '0 8px 12px rgba(0,0,0,0.16), 0 28px 56px -14px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.2)'
+                '0 16px 32px -12px rgba(0,0,0,0.5)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
               e.currentTarget.style.boxShadow =
-                '0 4px 6px rgba(0,0,0,0.12), 0 22px 48px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.14)'
+                '0 12px 28px -14px rgba(0,0,0,0.45)'
             }}>
             <LazyImage
               id='post-cover'
@@ -207,9 +206,9 @@ export default function PostHeader({ post, siteInfo, lock }) {
               aria-hidden
               className='pointer-events-none absolute inset-0 rounded-[18px]'
               style={{
-                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.22)',
+                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.08)',
                 background:
-                  'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.22) 100%)'
+                  'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.2) 100%)'
               }}
             />
           </a>

@@ -363,23 +363,38 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 封面预览卡：垂直居中于导航下方内容区（勿顶到顶栏） */
+      /* 封面预览卡：再往下，避开顶栏 */
       #theme-heo .heo-post-cover-aside {
-        top: calc(50% + 1.25rem) !important;
+        top: calc(58% + 1.5rem) !important;
         bottom: auto !important;
         transform: translateY(-50%) !important;
+        box-shadow:
+          0 12px 28px -14px rgba(0, 0, 0, 0.45),
+          0 0 0 1px rgba(255, 255, 255, 0.08) !important;
       }
       #theme-heo .heo-post-cover-aside:hover {
         transform: translateY(-50%) scale(1.03) !important;
       }
 
-      /* 文章头图元信息：强制白字，避免 WordCount 等继承成深色看不清 */
+      /* 文章头图元信息：柔和透明底，无白色细线框；强制白字 */
+      #theme-heo #post-info .heo-post-meta-pill {
+        border: 0 !important;
+        box-shadow: none !important;
+        background: rgba(255, 255, 255, 0.18) !important;
+      }
       #theme-heo #post-info .heo-post-meta,
       #theme-heo #post-info .heo-post-meta-pill,
       #theme-heo #post-info .heo-post-meta-pill *,
       #theme-heo #post-info #wordCountWrapper,
       #theme-heo #post-info #wordCountWrapper * {
         color: #fff !important;
+      }
+
+      /* 页脚风车：无白圈阴影，靠右 */
+      #theme-heo .heo-footer-logo {
+        box-shadow: none !important;
+        outline: none !important;
+        border: 0 !important;
       }
 
       /* 顶栏：始终 fixed + Safari 安全区 */
