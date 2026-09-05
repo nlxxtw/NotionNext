@@ -171,18 +171,18 @@ const Style = () => {
         box-shadow: none;
       }
 
-      /* 顶栏胶囊：默认半透明白，无彩色 */
+      /* 顶栏胶囊：半透明毛玻璃，对齐 Heo 悬浮感 */
       #theme-heo .heo-nav-chip {
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(255, 255, 255, 0.55);
-        box-shadow: 0 6px 18px -10px rgba(40, 50, 80, 0.28);
-        backdrop-filter: blur(14px) saturate(160%);
-        -webkit-backdrop-filter: blur(14px) saturate(160%);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        box-shadow: 0 4px 16px -8px rgba(40, 50, 80, 0.22);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
       }
 
       .dark #theme-heo .heo-nav-chip {
-        background: rgba(36, 38, 46, 0.78);
-        border-color: rgba(255, 255, 255, 0.08);
+        background: rgba(40, 42, 50, 0.45);
+        border-color: rgba(255, 255, 255, 0.1);
         box-shadow: none;
       }
 
@@ -205,10 +205,16 @@ const Style = () => {
         border-radius: 1rem;
       }
 
-      /* 文章页头上：禁止白字打在浅色胶囊上发白 */
+      /* 避免父层 overflow 裁切 fixed 导航（Safari） */
+      #theme-heo,
+      #theme-heo #wrapper-outer {
+        overflow: visible;
+      }
+
+      /* 文章页头上：胶囊略加深，保证白字可读 */
       #theme-heo #nav.text-white .heo-nav-chip {
-        background: rgba(0, 0, 0, 0.22) !important;
-        border-color: rgba(255, 255, 255, 0.22) !important;
+        background: rgba(0, 0, 0, 0.18) !important;
+        border-color: rgba(255, 255, 255, 0.18) !important;
         box-shadow: none;
         color: #fff !important;
       }
@@ -230,23 +236,39 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 下滑时整条顶栏毛玻璃遮罩 */
+      /* 顶栏：始终 fixed + Safari 安全区 */
+      #theme-heo .heo-nav--fixed {
+        top: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+      }
+
+      #theme-heo .heo-nav-spacer {
+        height: calc(4rem + env(safe-area-inset-top, 0px));
+      }
+
+      /* 页顶：完全透明，只剩悬浮胶囊 */
+      #theme-heo .heo-nav--top {
+        background: transparent !important;
+        border-bottom: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+      /* 下滑：淡毛玻璃整条，不是实心白/黑 */
       #theme-heo .heo-nav--scrolled {
-        background: rgba(247, 249, 254, 0.62) !important;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-        box-shadow: 0 8px 30px -18px rgba(40, 50, 80, 0.35);
-        backdrop-filter: blur(18px) saturate(180%);
-        -webkit-backdrop-filter: blur(18px) saturate(180%);
+        background: rgba(255, 255, 255, 0.28) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow: 0 10px 36px -24px rgba(40, 50, 80, 0.35);
+        backdrop-filter: blur(22px) saturate(190%);
+        -webkit-backdrop-filter: blur(22px) saturate(190%);
       }
 
       .dark #theme-heo .heo-nav--scrolled {
-        background: rgba(24, 23, 29, 0.72) !important;
+        background: rgba(18, 18, 22, 0.42) !important;
         border-bottom-color: rgba(255, 255, 255, 0.06);
-        box-shadow: none;
-      }
-
-      #theme-heo .heo-nav--top {
-        background: transparent !important;
         box-shadow: none;
       }
 
@@ -277,8 +299,8 @@ const Style = () => {
         gap: 0.3rem;
         border-radius: 999px;
         padding: 0.3rem 0.65rem;
-        background: rgba(255, 255, 255, 0.86);
-        border: 1px solid rgba(0, 0, 0, 0.06);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         color: #2b2f36;
         font-size: 11px;
         font-weight: 800;
@@ -287,8 +309,8 @@ const Style = () => {
       }
 
       .dark #theme-heo .heo-nav-badge-pill {
-        background: rgba(40, 42, 50, 0.86);
-        border-color: rgba(255, 255, 255, 0.08);
+        background: rgba(40, 42, 50, 0.5);
+        border-color: rgba(255, 255, 255, 0.1);
         color: #e8eaed;
       }
 

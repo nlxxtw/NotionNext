@@ -14,20 +14,18 @@ import CONFIG from '../config'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 页头：下滑毛玻璃遮罩；徽章无彩色
+ * 顶栏：始终 fixed 悬浮胶囊；下滑才出淡毛玻璃底
+ * 无实心白/黑导航条；兼容 Safari safe-area
  */
 const Header = props => {
-  const [fixedNav, setFixedNav] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [textWhite, setTextWhite] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [hasPostBg, setHasPostBg] = useState(false)
 
   const router = useRouter()
   const slideOverRef = useRef()
   const postBgRef = useRef(null)
 
-  // 留空则不显示；支持数字徽章（如 "3"）或短文案
   const updateBadge = siteConfig('HEO_NAV_UPDATE_BADGE', '', CONFIG)
   const updateBadgeUrl =
     siteConfig('HEO_NAV_UPDATE_BADGE_URL', '/', CONFIG) || '/'
@@ -40,31 +38,26 @@ const Header = props => {
   const scrollTrigger = useMemo(
     () =>
       throttle(() => {
-        const scrollS = window.scrollY
+        const scrollS = window.scrollY || document.documentElement.scrollTop || 0
         const onPostHero = Boolean(postBgRef.current) && scrollS <= 1
-        if (scrollS <= 1) {
-          setScrolled(false)
-          setFixedNav(onPostHero)
-          setTextWhite(onPostHero)
-        } else {
-          setScrolled(true)
-          setFixedNav(true)
-          setTextWhite(false)
-        }
+        setScrolled(scrollS > 8)
+        setTextWhite(onPostHero)
       }, 80),
     []
   )
 
   useEffect(() => {
     postBgRef.current = document.querySelector('#post-bg')
-    setHasPostBg(!!postBgRef.current)
     scrollTrigger()
   }, [router.asPath, scrollTrigger])
 
   useEffect(() => {
     window.addEventListener('scroll', scrollTrigger, { passive: true })
+    // Safari 回弹 / 地址栏伸缩时补一次
+    window.addEventListener('resize', scrollTrigger, { passive: true })
     return () => {
       window.removeEventListener('scroll', scrollTrigger)
+      window.removeEventListener('resize', scrollTrigger)
       scrollTrigger.cancel?.()
     }
   }, [scrollTrigger])
@@ -76,7 +69,7 @@ const Header = props => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY
-          setActiveIndex(currentScrollY > prevScrollY ? 1 : 0)
+          setActiveIndex(currentScrollY > prevScrollY + 4 ? 1 : 0)
           prevScrollY = currentScrollY
           ticking = false
         })
@@ -93,16 +86,16 @@ const Header = props => {
 
   return (
     <>
-      {fixedNav && !hasPostBg && <div className='h-16' aria-hidden />}
+      {/* 占位：始终 fixed，避免内容顶到导航下；含 Safari 安全区 */}
+      <div className='heo-nav-spacer h-16 shrink-0' aria-hidden />
 
       <nav
         id='nav'
-        className={`heo-nav z-30 top-0 h-16 w-full transition-[background,box-shadow,backdrop-filter] duration-300
-            ${fixedNav ? 'fixed left-0 right-0' : 'relative'}
+        className={`heo-nav heo-nav--fixed fixed left-0 right-0 top-0 z-[60] w-full transition-[background,box-shadow,backdrop-filter,-webkit-backdrop-filter,border-color] duration-300
             ${textWhite ? 'text-white heo-nav--on-post' : 'text-black dark:text-white'}
             ${scrolled ? 'heo-nav--scrolled' : 'heo-nav--top'}`}>
-        <div className='mx-auto grid h-full max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 md:px-6'>
-          {/* 左：Logo + 单色徽章 */}
+        <div className='heo-nav-inner mx-auto grid h-16 max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6'>
+          {/* 左：Logo + 徽章 */}
           <div className='flex min-w-0 items-center justify-start gap-2'>
             <Logo {...props} />
             {showUpdateBadge && (
@@ -122,7 +115,7 @@ const Header = props => {
             )}
           </div>
 
-          {/* 中：菜单 */}
+          {/* 中：菜单胶囊 */}
           <div
             id='nav-bar-swipe'
             className='relative hidden h-full items-center justify-center lg:flex'>
@@ -132,7 +125,7 @@ const Header = props => {
                   ? 'opacity-100'
                   : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='heo-nav-chip rounded-full px-2 py-1'>
+              <div className='heo-nav-chip rounded-full px-2.5 py-1.5'>
                 <MenuListTop {...props} />
               </div>
             </div>
@@ -143,7 +136,7 @@ const Header = props => {
                   : 'pointer-events-none absolute opacity-0'
               }`}>
               <div className='heo-nav-chip rounded-full px-4 py-1.5'>
-                <h1 className='text-center text-sm font-bold text-gray-600 dark:text-gray-300'>
+                <h1 className='text-center text-sm font-bold text-gray-700 dark:text-gray-200'>
                   {siteConfig('AUTHOR') || siteConfig('TITLE')}
                   {siteConfig('BIO') && <> · </>}
                   {siteConfig('BIO')}
@@ -152,7 +145,7 @@ const Header = props => {
             </div>
           </div>
 
-          {/* 右：工具 */}
+          {/* 右：工具胶囊 */}
           <div className='flex items-center justify-end gap-2'>
             <div className='heo-nav-chip flex items-center gap-0.5 rounded-full px-1.5 py-1'>
               <RandomPostButton {...props} />
