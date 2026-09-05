@@ -83,6 +83,13 @@ const preBuild = (function () {
     console.log('Deleted existing sitemap.xml from public directory')
   }
 
+  // 删除 public/robots.txt，避免与 pages/robots.txt.js 冲突
+  const robotsPath = path.resolve(__dirname, 'public', 'robots.txt')
+  if (fs.existsSync(robotsPath)) {
+    fs.unlinkSync(robotsPath)
+    console.log('Deleted existing robots.txt from public directory')
+  }
+
   const sitemap2Path = path.resolve(__dirname, 'sitemap.xml')
   if (fs.existsSync(sitemap2Path)) {
     fs.unlinkSync(sitemap2Path)

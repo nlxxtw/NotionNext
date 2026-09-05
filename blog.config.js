@@ -45,6 +45,7 @@ const BLOG = {
   ...require('./conf/contact.config'), // 作者联系方式配置
   ...require('./conf/post.config'), // 文章与列表配置
   ...require('./conf/analytics.config'), // 站点访问统计
+  ...require('./conf/seo.config'), // SEO / 站点地图 / 结构化数据
   ...require('./conf/image.config'), // 网站图片相关配置
   ...require('./conf/font.config'), // 网站字体
   ...require('./conf/right-click-menu'), // 自定义右键菜单相关配置

@@ -3,7 +3,7 @@ import { generateStructuredData } from '@/components/SEO'
 describe('SEO structured data', () => {
   const siteInfo = {
     title: 'Example Blog',
-    description: 'Example description',
+    description: 'Example description for search engines',
     icon: '/logo.png'
   }
 
@@ -25,8 +25,11 @@ describe('SEO structured data', () => {
       'https://example.com'
     )
 
-    expect(data).toMatchObject({
-      '@context': 'https://schema.org',
+    expect(data['@context']).toBe('https://schema.org')
+    expect(Array.isArray(data['@graph'])).toBe(true)
+
+    const article = data['@graph'].find(item => item['@type'] === 'BlogPosting')
+    expect(article).toMatchObject({
       '@type': 'BlogPosting',
       headline: 'Structured data in NotionNext',
       url: 'https://example.com/article/structured-data',
@@ -39,10 +42,17 @@ describe('SEO structured data', () => {
         '@id': 'https://example.com/article/structured-data'
       }
     })
-    expect(data.publisher.logo.url).toBe('https://example.com/logo.png')
+
+    const org = data['@graph'].find(item => item['@type'] === 'Organization')
+    expect(org.logo.url).toBe('https://example.com/logo.png')
+
+    const breadcrumb = data['@graph'].find(
+      item => item['@type'] === 'BreadcrumbList'
+    )
+    expect(breadcrumb.itemListElement.length).toBeGreaterThanOrEqual(2)
   })
 
-  it('generates WebSite data for non-article pages', () => {
+  it('generates WebSite SearchAction and sitelinks for non-article pages', () => {
     const data = generateStructuredData(
       { type: 'Page' },
       siteInfo,
@@ -52,11 +62,18 @@ describe('SEO structured data', () => {
       'https://example.com'
     )
 
-    expect(data).toMatchObject({
-      '@context': 'https://schema.org',
+    const website = data['@graph'].find(item => item['@type'] === 'WebSite')
+    expect(website).toMatchObject({
       '@type': 'WebSite',
       name: 'Example Blog',
       url: 'https://example.com'
     })
+    expect(website.potentialAction['@type']).toBe('SearchAction')
+    expect(website.potentialAction.target.urlTemplate).toContain('/search/')
+
+    const sitelinks = data['@graph'].find(item => item['@type'] === 'ItemList')
+    expect(sitelinks.itemListElement[0]['@type']).toBe(
+      'SiteNavigationElement'
+    )
   })
 })

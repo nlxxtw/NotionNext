@@ -1,5 +1,6 @@
 import BLOG from '@/blog.config'
 import { cleanCache } from '@/lib/cache/local_file_cache'
+import { submitIndexNowUrls } from '@/lib/seo/indexnow'
 
 /**
  * On-Demand Revalidation API
@@ -12,6 +13,7 @@ import { cleanCache } from '@/lib/cache/local_file_cache'
  *   Body: { "path": "/article/my-post" }        — 刷新单个页面
  *   Body: { "paths": ["/", "/article/post-1"] }  — 批量刷新
  *   Body: { "all": true }                        — 全站刷新
+ *   Body: { "path": "/article/x", "indexnow": true } — 刷新并推送到必应 IndexNow
  *
  * 环境变量：
  *   REVALIDATION_TOKEN — API 鉴权 Token（必须设置）
@@ -24,7 +26,6 @@ export default async function handler(req, res) {
     })
   }
 
-  // Token 鉴权
   const token = process.env.REVALIDATION_TOKEN || BLOG.REVALIDATION_TOKEN
   if (!token) {
     return res.status(503).json({
@@ -42,10 +43,9 @@ export default async function handler(req, res) {
     return res.status(401).json({ ok: false, message: 'Unauthorized' })
   }
 
-  const { path, paths, all } = req.body || {}
+  const { path, paths, all, indexnow = true } = req.body || {}
 
   try {
-    // 全站刷新：清除本地缓存 + revalidate 首页
     if (all) {
       cleanCache()
       const results = []
@@ -55,14 +55,23 @@ export default async function handler(req, res) {
       } catch (e) {
         results.push({ path: '/', revalidated: false, error: e.message })
       }
+
+      let indexNowResult = null
+      if (indexnow) {
+        indexNowResult = await submitIndexNowUrls({
+          urls: ['/']
+        }).catch(e => ({ ok: false, error: e.message }))
+      }
+
       return res.status(200).json({
         ok: true,
-        message: 'Full site cache cleared. Homepage revalidated. Other pages will refresh on next visit.',
-        results
+        message:
+          'Full site cache cleared. Homepage revalidated. Other pages will refresh on next visit.',
+        results,
+        indexnow: indexNowResult
       })
     }
 
-    // 批量刷新
     const targetPaths = paths || (path ? [path] : ['/'])
     const results = []
 
@@ -76,10 +85,18 @@ export default async function handler(req, res) {
       }
     }
 
+    let indexNowResult = null
+    if (indexnow) {
+      indexNowResult = await submitIndexNowUrls({
+        urls: targetPaths
+      }).catch(e => ({ ok: false, error: e.message }))
+    }
+
     return res.status(200).json({
       ok: true,
       message: `Revalidated ${results.filter(r => r.revalidated).length}/${results.length} paths`,
-      results
+      results,
+      indexnow: indexNowResult
     })
   } catch (error) {
     console.error('[revalidate] Error:', error)
@@ -91,9 +108,6 @@ export default async function handler(req, res) {
   }
 }
 
-/**
- * 标准化路径：确保以 / 开头，去掉尾部 /
- */
 function normalizePath(p) {
   if (!p || typeof p !== 'string') return '/'
   let normalized = p.trim()
