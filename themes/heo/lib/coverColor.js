@@ -11,7 +11,7 @@ export function normalizeHex(input) {
     return rgbToHex(+m[1], +m[2], +m[3])
   }
   if (s[0] !== '#') s = `#${s}`
-  if /^#[0-9a-fA-F]{3}$/.test(s)) {
+  if (/^#[0-9a-fA-F]{3}$/.test(s)) {
     s = `#${s[1]}${s[1]}${s[2]}${s[2]}${s[3]}${s[3]}`
   }
   if (!/^#[0-9a-fA-F]{6}$/.test(s)) return null
