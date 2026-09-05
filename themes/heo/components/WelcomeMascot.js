@@ -4,24 +4,27 @@ import { useEffect, useState } from 'react'
 import CONFIG from '../config'
 
 /**
- * 右下角欢迎挂件：横向气泡 + 透明 SVG 小狗（无白底方块）
+ * 右下角欢迎挂件：横向气泡 + 狗头图
  * 首页滑到底隐藏，往上滑再悬浮显示
- * 若 Notion 配置了 HEO_MASCOT_IMG（非默认 png），才用自定义图
  */
 export default function WelcomeMascot() {
   const enabled = parseBool(siteConfig('HEO_MASCOT_ENABLE', true, CONFIG))
+  const defaultImg = 'https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png'
   const rawImg = String(
-    siteConfig('HEO_MASCOT_IMG', '', CONFIG) || ''
+    siteConfig('HEO_MASCOT_IMG', defaultImg, CONFIG) || defaultImg
   ).trim()
-  // 默认空 / 旧白底 png → 改用内联 SVG
-  const useCustomImg =
-    rawImg &&
-    !/\/images\/heo-mascot\.png$/i.test(rawImg) &&
-    rawImg !== '/images/heo-mascot.png'
+  // 空 / 旧白底 png → 用默认狗头图
+  const imgSrc =
+    !rawImg ||
+    /\/images\/heo-mascot\.png$/i.test(rawImg) ||
+    rawImg === '/images/heo-mascot.png'
+      ? defaultImg
+      : rawImg
+  const useCustomImg = Boolean(imgSrc)
 
   const size = Math.max(
-    64,
-    Number(siteConfig('HEO_MASCOT_SIZE', 96, CONFIG)) || 96
+    96,
+    Number(siteConfig('HEO_MASCOT_SIZE', 132, CONFIG)) || 132
   )
   const tipMs = Math.max(
     2000,
@@ -131,12 +134,12 @@ export default function WelcomeMascot() {
           className='heo-mascot-3d block select-none bg-transparent p-0'>
           {useCustomImg ? (
             <img
-              src={rawImg}
+              src={imgSrc}
               alt='欢迎挂件'
               width={size}
               height={size}
-              className='heo-mascot-img h-auto w-auto bg-transparent object-contain'
-              style={{ width: size, height: 'auto', maxHeight: size + 12 }}
+              className='heo-mascot-img h-auto w-auto bg-transparent object-contain drop-shadow-[0_10px_16px_rgba(40,50,90,0.28)]'
+              style={{ width: size, height: 'auto', maxHeight: size + 16 }}
             />
           ) : (
             <MascotDogSvg

@@ -23,11 +23,19 @@ export default function AuthorCard({
   const author = siteConfig('AUTHOR') || siteInfo?.title || ''
   const bio = String(siteConfig('BIO') || siteInfo?.description || '').trim()
   const avatar = siteInfo?.icon
+  // 默认用安知鱼同款狗头图；也可配 emoji 或其它图片 URL
+  const defaultStatusImg =
+    'https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png'
   const emojiRaw = String(
-    siteConfig('HEO_INFO_CARD_EMOJI', '🐶', CONFIG) || '🐶'
+    siteConfig('HEO_INFO_CARD_EMOJI', defaultStatusImg, CONFIG) ||
+      defaultStatusImg
   ).trim()
-  const emoji = !emojiRaw || emojiRaw === '😆' ? '🐶' : emojiRaw
-  const emojiIsImage = /^https?:\/\//i.test(emoji)
+  const emoji =
+    !emojiRaw || emojiRaw === '😆' || emojiRaw === '🐶'
+      ? defaultStatusImg
+      : emojiRaw
+  const emojiIsImage =
+    /^https?:\/\//i.test(emoji) || emoji.startsWith('/')
 
   const introBlocks = useMemo(() => {
     // 悬停中间大段：HEO_INFO_CARD_INTRO；没配则用 BIO
@@ -66,9 +74,9 @@ export default function AuthorCard({
         </button>
       </div>
 
-      {/* 默认：头像 + 右下角狗头徽章（相对头像定位） */}
+      {/* 默认：头像 + 右下角状态徽章（复刻安知鱼 .author-status） */}
       <div className='heo-author-avatar relative z-[1] mx-auto flex flex-1 items-center justify-center py-2 transition duration-300 group-hover:pointer-events-none group-hover:scale-0 group-hover:opacity-0'>
-        <div className='relative h-[76px] w-[76px] shrink-0'>
+        <div className='heo-author-info-avatar relative h-[76px] w-[76px] shrink-0'>
           <LazyImage
             src={avatar}
             alt={author}
@@ -76,15 +84,15 @@ export default function AuthorCard({
           />
           <span
             aria-hidden
-            className='absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white text-sm leading-none shadow transition duration-300 group-hover:scale-0 group-hover:opacity-0'>
+            className='heo-author-status absolute bottom-[2px] right-[2px] flex h-[33px] w-[33px] items-center justify-center overflow-hidden rounded-full bg-white shadow transition duration-300 group-hover:scale-0 group-hover:opacity-0'>
             {emojiIsImage ? (
               <LazyImage
                 src={emoji}
                 alt=''
-                className='h-full w-full object-cover'
+                className='h-[26px] w-[26px] rounded-none object-cover'
               />
             ) : (
-              emoji
+              <span className='text-sm leading-none'>{emoji}</span>
             )}
           </span>
         </div>

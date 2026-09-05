@@ -7,7 +7,7 @@ import SmartLink from '@/components/SmartLink'
 import { useEffect, useState } from 'react'
 
 /**
- * 文章页头：紧凑高度；标题上移；右侧始终显示封面预览（有图时）
+ * 文章页头：对齐 Heo —— 内容上移、底边留白、右侧大封面
  */
 export default function PostHeader({ post, siteInfo, lock }) {
   if (!post) return null
@@ -96,35 +96,32 @@ export default function PostHeader({ post, siteInfo, lock }) {
         }}
       />
 
-      <div className='relative z-[1] mx-auto flex h-full w-full max-w-[86rem] items-end justify-between gap-6 px-5 pb-7 pt-[4.75rem] md:pb-8 md:pt-20'>
+      <div className='relative z-[1] mx-auto flex h-full w-full max-w-[86rem] items-end justify-between gap-8 px-5 pb-10 pt-16 md:pb-12 md:pt-[4.25rem] lg:pb-14'>
         <div
           id='post-info'
-          className={`relative z-10 flex min-w-0 flex-1 flex-col gap-2.5 ${
-            showAside ? 'lg:pr-4' : ''
+          className={`relative z-10 flex min-w-0 flex-1 flex-col gap-3 md:gap-3.5 ${
+            showAside ? 'lg:pr-2' : ''
           }`}>
-          <div className='flex items-center justify-center gap-2.5 md:justify-start'>
+          <div className='flex flex-wrap items-center justify-center gap-2 md:justify-start'>
             {post.category && (
               <SmartLink
                 href={`/category/${post.category}`}
-                className='rounded-full border-0 bg-white/18 px-2.5 py-0.5 text-[13px] font-bold text-white backdrop-blur-[6px] transition hover:bg-white/28'>
+                className='rounded-full border-0 bg-white px-2.5 py-0.5 text-[12px] font-bold text-gray-800 transition hover:bg-white/90'>
                 {post.category}
               </SmartLink>
             )}
-            {post.tagItems?.length > 0 && (
-              <div className='hidden flex-nowrap items-center gap-2 overflow-x-auto md:flex'>
-                {post.tagItems.map((tag, index) => (
-                  <SmartLink
-                    key={index}
-                    href={`/tag/${encodeURIComponent(tag.name)}`}
-                    className='whitespace-nowrap text-[13px] font-medium text-white/90 transition hover:text-white'>
-                    {tag.name}
-                  </SmartLink>
-                ))}
-              </div>
-            )}
+            {post.tagItems?.length > 0 &&
+              post.tagItems.map((tag, index) => (
+                <SmartLink
+                  key={index}
+                  href={`/tag/${encodeURIComponent(tag.name)}`}
+                  className='rounded-full border-0 bg-white/90 px-2.5 py-0.5 text-[12px] font-bold text-gray-800 transition hover:bg-white'>
+                  {tag.name}
+                </SmartLink>
+              ))}
           </div>
 
-          <h1 className='max-w-3xl text-center text-[1.45rem] font-extrabold leading-[1.3] tracking-normal text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.3)] md:text-left md:text-[1.85rem] md:leading-[1.28] lg:text-[2.15rem] lg:leading-[1.26]'>
+          <h1 className='max-w-3xl text-center text-[1.5rem] font-extrabold leading-[1.28] tracking-normal text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.28)] md:text-left md:text-[1.95rem] md:leading-[1.26] lg:text-[2.25rem] lg:leading-[1.24]'>
             {siteConfig('POST_TITLE_ICON') && (
               <NotionIcon
                 icon={post.pageIcon}
@@ -134,7 +131,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
             <span className='align-middle'>{post.title}</span>
           </h1>
 
-          <section className='heo-post-meta flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 md:justify-start'>
+          <section className='heo-post-meta flex flex-wrap items-center justify-center gap-x-2 gap-y-2 md:justify-start'>
             {!lock && (
               <span className={metaPill}>
                 <WordCount
@@ -171,22 +168,22 @@ export default function PostHeader({ post, siteInfo, lock }) {
             href={coverSrc}
             target='_blank'
             rel='noopener noreferrer'
-            className='heo-post-cover-aside group relative z-[11] mb-0.5 hidden w-[220px] shrink-0 overflow-hidden rounded-[14px] md:block md:w-[240px] lg:w-[260px]'
+            className='heo-post-cover-aside group relative z-[11] hidden w-[260px] shrink-0 overflow-hidden rounded-[18px] md:block md:w-[280px] lg:w-[300px]'
             style={{
-              aspectRatio: '16 / 9',
-              boxShadow: '0 8px 20px -12px rgba(0,0,0,0.35)',
+              aspectRatio: '16 / 10',
+              boxShadow: '0 12px 28px -14px rgba(0,0,0,0.4)',
               transition: 'transform 200ms ease, box-shadow 200ms ease'
             }}
             title={post.title}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'scale(1.02)'
               e.currentTarget.style.boxShadow =
-                '0 10px 24px -12px rgba(0,0,0,0.4)'
+                '0 14px 32px -14px rgba(0,0,0,0.45)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = 'scale(1)'
               e.currentTarget.style.boxShadow =
-                '0 8px 20px -12px rgba(0,0,0,0.35)'
+                '0 12px 28px -14px rgba(0,0,0,0.4)'
             }}>
             <LazyImage
               id='post-cover'
@@ -196,11 +193,11 @@ export default function PostHeader({ post, siteInfo, lock }) {
             />
             <span
               aria-hidden
-              className='pointer-events-none absolute inset-0 rounded-[14px]'
+              className='pointer-events-none absolute inset-0 rounded-[18px]'
               style={{
-                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.08)',
+                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)',
                 background:
-                  'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.18) 100%)'
+                  'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.16) 100%)'
               }}
             />
           </a>

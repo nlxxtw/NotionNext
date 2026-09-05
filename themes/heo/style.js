@@ -235,6 +235,72 @@ const Style = () => {
         -webkit-backdrop-filter: var(--heo-glass-blur);
       }
 
+      /* 顶栏悬停下拉：复刻安知鱼 menus_item_child（横向胶囊） */
+      #theme-heo #nav-bar-swipe,
+      #theme-heo .heo-nav-chip,
+      #theme-heo .heo-menus-items {
+        overflow: visible !important;
+      }
+      #theme-heo .heo-menus-item-link {
+        color: inherit;
+      }
+      #theme-heo .heo-menus-item:hover > .heo-menus-item-link,
+      #theme-heo .heo-menus-item:focus-within > .heo-menus-item-link {
+        color: #fff !important;
+        background: var(--heo-color-primary);
+        box-shadow: var(--heo-shadow-main);
+      }
+      #theme-heo #nav.text-white .heo-menus-item:hover > .heo-menus-item-link,
+      #theme-heo #nav.text-white .heo-menus-item:focus-within > .heo-menus-item-link {
+        color: #fff !important;
+        background: rgba(255, 255, 255, 0.22);
+        box-shadow: none;
+      }
+      #theme-heo .heo-menus-item-child {
+        left: 50%;
+        top: calc(100% + 10px);
+        width: max-content;
+        max-width: min(92vw, 42rem);
+        padding: 6px 4px;
+        border-radius: 50px;
+        border: 1px solid var(--heo-card-border, rgba(0, 0, 0, 0.06));
+        background: var(--heo-color-card, #fff);
+        box-shadow: 0 8px 24px -10px rgba(20, 30, 60, 0.28);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-50%) translateY(-8px) scale(0.92);
+        transform-origin: top center;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .dark #theme-heo .heo-menus-item-child {
+        background: var(--heo-color-card-dark, #1b1c20);
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.55);
+      }
+      /* 主菜单与下拉之间的安全区，避免鼠标移过去时闪断 */
+      #theme-heo .heo-menus-item-child::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -14px;
+        height: 16px;
+      }
+      #theme-heo .heo-menus-item:hover > .heo-menus-item-child,
+      #theme-heo .heo-menus-item:focus-within > .heo-menus-item-child {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+      #theme-heo .heo-menus-child-link:hover {
+        color: #fff !important;
+        background: var(--heo-color-primary) !important;
+        box-shadow: var(--heo-shadow-main);
+      }
+      #theme-heo .heo-menus-child-li:hover {
+        background: transparent;
+      }
+
       .dark #theme-heo .heo-nav-chip,
       .dark #theme-heo .heo-cat-chip {
         background: var(--heo-maskbg) !important;
@@ -428,17 +494,23 @@ const Style = () => {
         box-shadow: none !important;
       }
 
-      /* 文章封面上移盖住导航占位；固定高度，预览图跟标题底对齐 */
+      /* 文章封面：略收高度、加大底边距，标题区整体上移（对齐 Heo） */
       #theme-heo #post-bg.heo-post-bg {
         margin-top: calc(-1 * (3.5rem + env(safe-area-inset-top, 0px)));
         padding-top: 0;
-        height: calc(19.5rem + 3.5rem + env(safe-area-inset-top, 0px));
-        min-height: calc(19.5rem + 3.5rem + env(safe-area-inset-top, 0px));
+        height: calc(16.5rem + 3.5rem + env(safe-area-inset-top, 0px));
+        min-height: calc(16.5rem + 3.5rem + env(safe-area-inset-top, 0px));
       }
       @media (min-width: 768px) {
         #theme-heo #post-bg.heo-post-bg {
-          height: calc(21rem + 3.5rem + env(safe-area-inset-top, 0px));
-          min-height: calc(21rem + 3.5rem + env(safe-area-inset-top, 0px));
+          height: calc(17.75rem + 3.5rem + env(safe-area-inset-top, 0px));
+          min-height: calc(17.75rem + 3.5rem + env(safe-area-inset-top, 0px));
+        }
+      }
+      @media (min-width: 1024px) {
+        #theme-heo #post-bg.heo-post-bg {
+          height: calc(18.5rem + 3.5rem + env(safe-area-inset-top, 0px));
+          min-height: calc(18.5rem + 3.5rem + env(safe-area-inset-top, 0px));
         }
       }
 
@@ -881,8 +953,20 @@ const Style = () => {
         padding-bottom: 0.5rem;
       }
 
-      /* Waline：隐藏底部 RSS（WiFi 图标）与 Powered by 版本号 */
-      #theme-heo .wl-footer {
+      /* Waline：隐藏底部 RSS / Powered by / 空评论提示 */
+      #theme-heo .wl-footer,
+      #theme-heo .wl-power,
+      .wl-footer,
+      .wl-power {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        visibility: hidden !important;
+      }
+      #theme-heo .wl-empty,
+      .wl-empty {
         display: none !important;
       }
 

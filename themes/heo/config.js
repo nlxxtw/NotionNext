@@ -184,11 +184,9 @@ const CONFIG = {
 
   // 右下角欢迎挂件（省市欢迎语 + 滑到底隐藏）
   HEO_MASCOT_ENABLE: true,
-  // 欢迎挂件：默认内联透明 SVG；自定义图填透明 PNG/SVG 地址
-  HEO_MASCOT_ENABLE: true,
-  HEO_MASCOT_IMG: '', // 留空用矢量小狗；勿填带白底的 jpg/png
-  HEO_MASCOT_SIZE: 96,
-  HEO_MASCOT_SIZE: 88,
+  // 默认用安知鱼同款狗头图；也可改其它透明 PNG/SVG
+  HEO_MASCOT_IMG: 'https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png',
+  HEO_MASCOT_SIZE: 132,
   HEO_MASCOT_TIP_MS: 5200,
   HEO_MASCOT_BOTTOM: '5.5rem',
   HEO_MASCOT_RIGHT: '1.25rem',
@@ -234,7 +232,9 @@ const CONFIG = {
   HEO_ARTICLE_NOT_BY_AI: false, // 显示非AI写作
   HEO_ARTICLE_RECOMMEND: true, // 文章关联推荐
 
-  HEO_INFO_CARD_EMOJI: '🐶', // 资料卡头像角标（狗头）；也可填图片 URL
+  // 资料卡头像角标：与安知鱼 author_status.statusImg 同款狗头图；也可改 emoji 或其它图片 URL
+  HEO_INFO_CARD_EMOJI:
+    'https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png',
 
   // 页脚统计条：总浏览量 + 最近访客省市（不含在线人数）
   HEO_FOOTER_STATS_ENABLE: true,

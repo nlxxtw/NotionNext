@@ -134,18 +134,18 @@ const Header = props => {
 
           <div
             id='nav-bar-swipe'
-            className='relative hidden h-full max-w-full items-center justify-center overflow-hidden lg:flex'>
+            className='relative hidden h-full max-w-full items-center justify-center overflow-visible lg:flex'>
             <div
               className={`transition-all duration-500 ${
                 activeIndex === 0
-                  ? 'relative opacity-100'
-                  : 'pointer-events-none absolute inset-y-0 flex items-center opacity-0'
+                  ? 'relative z-[70] opacity-100'
+                  : 'pointer-events-none absolute inset-y-0 z-0 flex items-center opacity-0'
               }`}>
               <div
                 className={`${
                   textWhite
                     ? 'px-1 py-1'
-                    : 'heo-nav-chip rounded-full px-2.5 py-1.5'
+                    : 'heo-nav-chip overflow-visible rounded-full px-2.5 py-1.5'
                 }`}>
                 <MenuListTop {...props} />
               </div>

@@ -51,11 +51,13 @@ export const MenuListTop = props => {
   return (
     <nav
       id='nav-mobile'
-      className='flex w-full justify-center font-light leading-8'>
+      className='heo-menus-items relative z-[70] flex w-full items-center justify-center overflow-visible leading-8'>
       {links?.map(
         (link, index) =>
           link &&
-          link.show !== false && <MenuItemDrop key={index} link={link} />
+          link.show !== false && (
+            <MenuItemDrop key={link.id || index} link={link} />
+          )
       )}
     </nav>
   )
