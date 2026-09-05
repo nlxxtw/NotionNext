@@ -406,14 +406,14 @@ const Style = () => {
 
       /* 文章封面上移盖住导航占位，颜色铺满顶部 */
       #theme-heo #post-bg.heo-post-bg {
-        margin-top: calc(-1 * (4.25rem + env(safe-area-inset-top, 0px)));
-        padding-top: calc(4.25rem + env(safe-area-inset-top, 0px));
-        min-height: calc(28rem + 4.25rem + env(safe-area-inset-top, 0px));
+        margin-top: calc(-1 * (3.5rem + env(safe-area-inset-top, 0px)));
+        padding-top: calc(3.5rem + env(safe-area-inset-top, 0px));
+        min-height: calc(28rem + 3.5rem + env(safe-area-inset-top, 0px));
         height: auto;
       }
       @media (min-width: 768px) {
         #theme-heo #post-bg.heo-post-bg {
-          min-height: calc(30rem + 4.25rem + env(safe-area-inset-top, 0px));
+          min-height: calc(30rem + 3.5rem + env(safe-area-inset-top, 0px));
         }
       }
 
