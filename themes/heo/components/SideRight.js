@@ -7,7 +7,6 @@ import { InfoCard } from './InfoCard'
 import HotPostsCard from './HotPostsCard'
 import LatestPostsGroupMini from './LatestPostsGroupMini'
 import TagGroups from './TagGroups'
-import TouchMeCard from './TouchMeCard'
 import WechatSubscribeCard from './WechatSubscribeCard'
 import CONFIG from '../config'
 
@@ -39,13 +38,12 @@ export default function SideRight(props) {
   const showLatest = siteConfig('HEO_WIDGET_LATEST_POSTS', false, CONFIG)
   const showComments = siteConfig('HEO_WIDGET_RECENT_COMMENTS', true, CONFIG)
   const showAnalytics = siteConfig('HEO_WIDGET_ANALYTICS', true, CONFIG)
-  const heroSubscribe = parseBool(
+  const subscribeEnable = parseBool(
     siteConfig('HEO_HERO_SUBSCRIBE_ENABLE', true, CONFIG)
   )
-  const showHomeSubscribe = isHome && heroSubscribe
-  const showSocial =
-    parseBool(siteConfig('HEO_SOCIAL_CARD', true, CONFIG)) &&
-    !(isHome && heroSubscribe)
+  const socialEnable = parseBool(siteConfig('HEO_SOCIAL_CARD', true, CONFIG))
+  // 绿色公众号条：资料卡正下方（首页/文章页都显示）
+  const showSubscribe = subscribeEnable || socialEnable
   const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', false, CONFIG)
   const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
   const sortedTags = tagOptions?.slice(0, tagLimit) || []
@@ -58,10 +56,14 @@ export default function SideRight(props) {
       id='sideRight'
       className='heo-side-right hidden w-[300px] shrink-0 self-stretch xl:block xl:w-[320px]'>
       <div className='heo-side-sticky sticky top-20 flex w-full flex-col gap-4'>
-        {showHomeSubscribe && <WechatSubscribeCard className='w-full' />}
-
         {showInfoCard && (
           <InfoCard {...props} className='w-full wow fadeInUp' />
+        )}
+
+        {showSubscribe && (
+          <div className='wow fadeInUp w-full'>
+            <WechatSubscribeCard className='w-full' />
+          </div>
         )}
 
         {showToc && (
@@ -69,13 +71,6 @@ export default function SideRight(props) {
             id='card-toc-wrap'
             className='heo-aside-card heo-aside-toc wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] p-3.5 dark:bg-[var(--heo-color-card-dark)]'>
             <Catalog toc={post.toc} />
-          </div>
-        )}
-
-        {/* 文章页：资料卡 + 目录优先；其余挂件仍保留在下方 */}
-        {showSocial && (
-          <div className='wow fadeInUp w-full'>
-            <TouchMeCard />
           </div>
         )}
 
