@@ -29,7 +29,7 @@ const Hero = props => {
           reverse ? '' : ''
         }`}>
         <div
-          className={`flex w-full flex-col gap-3 lg:h-[300px] lg:flex-row lg:items-stretch ${
+          className={`heo-hero-row flex w-full flex-col gap-3 lg:h-[300px] lg:flex-row lg:items-stretch ${
             reverse ? 'lg:flex-row-reverse' : ''
           }`}>
           <HomeCenterCarousel {...props} />
@@ -176,13 +176,14 @@ function CarouselArrow({ direction, onClick }) {
 }
 
 /**
- * 右侧仅资料卡，与左侧轮播严格同高
+ * 右侧仅资料卡，与左侧轮播严格同高；宽度必须与 SideRight 一致，否则会「歪」
+ * SideRight: xl:w-[320px] / w-[300px]
  */
 function HeroAside(props) {
   const { siteInfo } = props
 
   return (
-    <div className='h-[240px] w-full shrink-0 lg:h-full lg:w-[272px] xl:w-[292px]'>
+    <div className='heo-hero-aside h-[240px] w-full shrink-0 lg:h-full lg:w-[300px] xl:w-[320px]'>
       <AuthorCard
         siteInfo={siteInfo}
         className='h-full w-full min-h-0'

@@ -786,9 +786,24 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 右侧栏吸顶跟随到底；隐藏滚动条（不显示灰色竖线） */
+      {/* 右侧栏与首页 Hero 资料卡同宽，左缘对齐 */}
       #theme-heo #sideRight.heo-side-right {
         align-self: stretch;
+        width: 300px;
+      }
+      #theme-heo .heo-hero-aside {
+        width: 100%;
+      }
+      @media (min-width: 1024px) {
+        #theme-heo .heo-hero-aside {
+          width: 300px;
+        }
+      }
+      @media (min-width: 1280px) {
+        #theme-heo #sideRight.heo-side-right,
+        #theme-heo .heo-hero-aside {
+          width: 320px;
+        }
       }
       #theme-heo #sideRight .heo-side-sticky {
         position: sticky;
