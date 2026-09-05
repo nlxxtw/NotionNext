@@ -61,9 +61,6 @@ const Footer = () => {
 
           {qrList.length > 0 && (
             <div className='flex flex-1 flex-col items-start gap-4 lg:items-end'>
-              <div className='text-xs font-bold tracking-wide text-gray-400'>
-                悬停查看二维码
-              </div>
               <div className='flex flex-wrap gap-3 lg:justify-end'>
                 {qrList.map((item, index) => (
                   <QrHoverChip key={`${item.title}-${index}`} item={item} />
@@ -208,9 +205,9 @@ const DEFAULT_QR_LIST = [
     accent: true
   },
   {
-    title: '资源下载',
+    title: '主题',
     img: 'https://img.19492035.xyz/file/1742824264213.jpg',
-    icon: 'fas fa-rocket'
+    icon: 'fas fa-palette'
   },
   {
     title: '官方微信',
@@ -223,7 +220,7 @@ const DEFAULT_QUICK_LINKS = [
   { title: '留言', href: '/about' },
   { title: '订阅', href: '/rss', qrFrom: '官方微信' },
   { title: '打赏', href: '#', qrFrom: '局长请喝咖啡' },
-  { title: '主题', href: 'https://github.com/tangly1024/NotionNext' }
+  { title: '资源', href: '#', qrFrom: '主题' }
 ]
 
 function normalizeQrList(value) {

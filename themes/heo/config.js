@@ -226,9 +226,9 @@ const CONFIG = {
       accent: true
     },
     {
-      title: '资源下载',
+      title: '主题',
       img: 'https://img.19492035.xyz/file/1742824264213.jpg',
-      icon: 'fas fa-rocket'
+      icon: 'fas fa-palette'
     },
     {
       title: '官方微信',
@@ -241,7 +241,7 @@ const CONFIG = {
     { title: '留言', href: '/about' },
     { title: '订阅', href: '/rss', qrFrom: '官方微信' },
     { title: '打赏', href: '#', qrFrom: '局长请喝咖啡' },
-    { title: '主题', href: 'https://github.com/tangly1024/NotionNext' }
+    { title: '资源', href: '#', qrFrom: '主题' }
   ],
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）
