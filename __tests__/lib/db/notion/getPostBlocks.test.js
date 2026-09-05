@@ -321,6 +321,54 @@ describe('formatNotionBlock', () => {
     )
   })
 
+  it('preserves attachment: sources on file blocks instead of placeholder', () => {
+    const attachment = 'attachment:deadbeef:lesson.rar'
+    const formatted = formatNotionBlock({
+      file: {
+        value: {
+          id: 'file-block',
+          type: 'file',
+          properties: {
+            title: [['lesson.rar']],
+            size: [['10 MiB']],
+            source: [[attachment]]
+          }
+        }
+      }
+    })
+
+    expect(formatted.file.value.properties.source[0][0]).toBe(
+      `https://notion.so/signed/${encodeURIComponent(attachment)}?table=block&id=file-block`
+    )
+    expect(formatted.file.value.properties.source[0][0]).not.toContain(
+      'placeholder.com'
+    )
+  })
+
+  it('uses stable Notion signed entry for file download URLs', () => {
+    const attachment = 'attachment:abc123:notes.zip'
+    const recordMap = {
+      signed_urls: {},
+      block: {
+        file: {
+          value: {
+            id: 'file',
+            type: 'file',
+            properties: {
+              source: [[attachment]]
+            }
+          }
+        }
+      }
+    }
+
+    preferStablePdfSignedUrls(recordMap)
+
+    expect(recordMap.signed_urls.file).toBe(
+      `https://notion.so/signed/${encodeURIComponent(attachment)}?table=block&id=file`
+    )
+  })
+
   it.each(['tab', 'tabs'])(
     'maps Notion %s containers to internal tabs embeds',
     originalType => {

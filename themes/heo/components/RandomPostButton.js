@@ -3,7 +3,7 @@ import { useGlobal } from '@/lib/global'
 import { useRouter } from 'next/router'
 
 /**
- * 随机跳转到一个文章（安知鱼骰子图标）
+ * 随机跳转到一个文章
  */
 export default function RandomPostButton(props) {
   const { latestPosts } = props
@@ -18,13 +18,11 @@ export default function RandomPostButton(props) {
   }
 
   return (
-    <button
-      type='button'
+    <div
       title={locale.MENU.WALK_AROUND}
-      aria-label={locale.MENU.WALK_AROUND}
-      className='heo-nav-icon-btn flex h-9 w-9 cursor-pointer items-center justify-center rounded-full duration-200 transition-all hover:bg-black/10 dark:hover:bg-white/10'
+      className='flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-all duration-200 hover:bg-black hover:bg-opacity-10'
       onClick={handleClick}>
-      <i className='fa-solid fa-dice text-[15px]' aria-hidden />
-    </button>
+      <i className='fa-solid fa-podcast' />
+    </div>
   )
 }

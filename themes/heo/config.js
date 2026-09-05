@@ -230,7 +230,6 @@ const CONFIG = {
   // 留空则用语言包默认：「本文是原创文章，采用 CC BY-NC-SA 4.0 协议，完整转载请注明来自」
   HEO_ARTICLE_COPYRIGHT_NOTICE:
     '本文是原创文章，采用 CC BY-NC-SA 4.0 协议，完整转载请注明来自',
-  HEO_PRIVACY_URL: '', // 评论区「隐私政策」链接，空则锚点回评论区
   HEO_ARTICLE_NOT_BY_AI: false, // 显示非AI写作
   HEO_ARTICLE_RECOMMEND: true, // 文章关联推荐
 

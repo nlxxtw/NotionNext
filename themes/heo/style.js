@@ -397,6 +397,33 @@ const Style = () => {
       #theme-heo #nav.heo-nav--fixed {
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
+        /* 向下多盖 1px，抹掉与下方内容的合成白线 */
+        margin-bottom: -1px;
+        padding-bottom: 1px;
+        box-shadow: none !important;
+        border: 0 !important;
+        outline: none !important;
+        background: transparent !important;
+      }
+      #theme-heo #nav.heo-nav--fixed::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2px;
+        height: 3px;
+        pointer-events: none;
+        background: transparent;
+      }
+      /* 首页/分类：导航占位与主区同色贯通，不要单独成层 */
+      #theme-heo:not(:has(#post-bg)) > header,
+      #theme-heo:not(:has(#post-bg)) .heo-nav-spacer {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: 0 !important;
+      }
+      #theme-heo:not(:has(#post-bg)) > main#wrapper-outer {
+        padding-top: 0.25rem;
       }
 
       #theme-heo #nav.text-white .heo-nav-chip a,
@@ -446,7 +473,7 @@ const Style = () => {
         padding-top: 1rem;
       }
       #theme-heo #post-bg.heo-post-bg {
-        box-shadow: 0 10px 28px -22px rgba(0, 0, 0, 0.28);
+        box-shadow: none !important;
       }
       #theme-heo .heo-author-card {
         box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.22) !important;
@@ -1107,32 +1134,38 @@ const Style = () => {
       }
 
       #theme-heo .heo-related-posts {
-        margin: 1.5rem 0 2rem;
+        margin-top: 2.25rem;
+        user-select: none;
       }
       #theme-heo .heo-related-posts__head {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
+        gap: 1rem;
+        margin-bottom: 1.125rem;
       }
       #theme-heo .heo-related-posts__title {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
         margin: 0;
-        font-size: 1.15rem;
-        font-weight: 700;
+        font-size: 1.35rem;
+        font-weight: 800;
+        line-height: 1.2;
         color: var(--heo-color-text, #111827);
       }
       #theme-heo .heo-related-posts__star {
-        margin-right: 0.35rem;
-        color: var(--heo-color-primary, #425aef);
+        font-size: 1.15rem;
+        color: var(--heo-color-text, #111827);
       }
       #theme-heo .heo-related-posts__random {
         border: 0;
         background: transparent;
         color: #8b8b91;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         cursor: pointer;
         white-space: nowrap;
+        transition: color 0.2s;
       }
       #theme-heo .heo-related-posts__random:hover {
         color: var(--heo-color-primary, #425aef);
@@ -1140,68 +1173,248 @@ const Style = () => {
       #theme-heo .heo-related-posts__list {
         display: flex;
         flex-direction: column;
-        gap: 0.65rem;
+        gap: 0.75rem;
       }
       #theme-heo .heo-related-card {
-        display: grid;
-        grid-template-columns: minmax(120px, 38%) 1fr;
+        display: flex;
         overflow: hidden;
-        min-height: 108px;
-        border-radius: 14px;
+        height: 220px;
+        border-radius: 12px;
+        border: 1px solid color-mix(in srgb, var(--heo-color-border, #e5e7eb) 40%, transparent);
         background: var(--heo-color-card-muted, #f2f3f7);
         text-decoration: none !important;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: none;
       }
       .dark #theme-heo .heo-related-card {
         background: rgba(255, 255, 255, 0.05);
-      }
-      #theme-heo .heo-related-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px -18px rgba(30, 40, 80, 0.45);
+        border-color: rgba(255, 255, 255, 0.08);
       }
       #theme-heo .heo-related-card__cover {
         position: relative;
-        min-height: 108px;
+        width: 45%;
+        min-width: 45%;
         overflow: hidden;
         background: #1f2937;
       }
+      #theme-heo .heo-related-card__img,
       #theme-heo .heo-related-card__cover img {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 0.6s ease;
+      }
+      #theme-heo .heo-related-card:hover .heo-related-card__img,
+      #theme-heo .heo-related-card:hover .heo-related-card__cover img {
+        transform: scale(1.05);
       }
       #theme-heo .heo-related-card__fallback {
         width: 100%;
         height: 100%;
-        min-height: 108px;
         background: linear-gradient(135deg, #425aef, #7c3aed);
       }
       #theme-heo .heo-related-card__body {
         display: flex;
         align-items: center;
-        padding: 1rem 1.15rem;
+        width: 55%;
+        padding: 1.5rem 1.75rem;
+        background: var(--heo-color-card-muted, #f2f3f7);
+        transition: background 0.3s ease;
+      }
+      .dark #theme-heo .heo-related-card__body {
+        background: rgba(255, 255, 255, 0.04);
       }
       #theme-heo .heo-related-card__title {
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        font-size: 0.98rem;
-        font-weight: 650;
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 800;
         line-height: 1.45;
         color: var(--heo-color-text, #1f2937);
+        transition: color 0.3s ease;
       }
       .dark #theme-heo .heo-related-card__title {
         color: #f3f4f6;
       }
-      @media (max-width: 640px) {
+      #theme-heo .heo-related-card:hover .heo-related-card__body {
+        background: var(--heo-color-primary, #425aef);
+      }
+      #theme-heo .heo-related-card:hover .heo-related-card__title {
+        color: #fff;
+      }
+      @media (max-width: 768px) {
         #theme-heo .heo-related-card {
-          grid-template-columns: 34% 1fr;
-          min-height: 96px;
+          flex-direction: column;
+          height: auto;
         }
-        #theme-heo .heo-related-card__title {
-          font-size: 0.9rem;
-          -webkit-line-clamp: 2;
+        #theme-heo .heo-related-card__cover {
+          width: 100%;
+          min-width: 100%;
+          height: 132px;
+        }
+        #theme-heo .heo-related-card__body {
+          width: 100%;
+          padding: 0.875rem;
+        }
+        #theme-heo .heo-related-card:hover .heo-related-card__body {
+          background: var(--heo-color-card-muted, #f2f3f7);
+        }
+        #theme-heo .heo-related-card:hover .heo-related-card__title {
+          color: var(--heo-color-text, #1f2937);
+        }
+      }
+
+      /* 分享海报弹窗（对齐 anheyu-app） */
+      #theme-heo .heo-poster-overlay,
+      .heo-poster-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 220;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .heo-poster-dialog {
+        width: min(720px, 96vw);
+        max-height: 90vh;
+        overflow: hidden;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.28);
+      }
+      .dark .heo-poster-dialog {
+        background: #1e1f26;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .heo-poster-dialog__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+      .dark .heo-poster-dialog__head {
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+      }
+      .heo-poster-dialog__head h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .heo-poster-dialog__close {
+        width: 32px;
+        height: 32px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #8b8b91;
+        cursor: pointer;
+      }
+      .heo-poster-dialog__close:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      .heo-poster-dialog__body {
+        display: flex;
+        gap: 1.25rem;
+        padding: 1rem 1.25rem 1.25rem;
+        overflow: auto;
+        max-height: calc(90vh - 64px);
+      }
+      .heo-poster-preview {
+        flex: 0 0 300px;
+        max-width: 300px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      }
+      .heo-poster-preview img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .heo-poster-loading {
+        padding: 3rem 1rem;
+        text-align: center;
+        color: #8b8b91;
+        font-size: 14px;
+      }
+      .heo-poster-actions {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1.15rem;
+        justify-content: center;
+        min-width: 0;
+      }
+      .heo-poster-label {
+        margin-bottom: 0.55rem;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .heo-poster-url {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 13px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: #f5f5f7;
+        color: inherit;
+        cursor: pointer;
+      }
+      .dark .heo-poster-url {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      .heo-share-btn {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        margin-bottom: 0.55rem;
+        padding: 12px 16px;
+        border: 0;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .heo-share-btn--weibo { background: #e6162d; }
+      .heo-share-btn--qq { background: #12b7f5; }
+      .heo-share-btn--qzone { background: #fcee21; color: #333; }
+      .heo-poster-download {
+        width: 100%;
+        padding: 12px 16px;
+        border: 0;
+        border-radius: 6px;
+        background: #4a4a4a;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .heo-poster-download:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      @media (max-width: 768px) {
+        .heo-poster-dialog__body {
+          flex-direction: column;
+        }
+        .heo-poster-preview {
+          flex: none;
+          max-width: 100%;
+          width: min(280px, 100%);
+          margin: 0 auto;
         }
       }
 
@@ -1219,34 +1432,10 @@ const Style = () => {
       #theme-heo .heo-post-comment__title {
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.45rem;
         font-size: 1.15rem;
         font-weight: 700;
         color: var(--heo-color-text, #111827);
-      }
-      #theme-heo .heo-post-comment__dot {
-        color: var(--heo-color-primary, #425aef);
-        font-size: 0.75rem;
-      }
-      #theme-heo .heo-post-comment__icon {
-        display: none;
-      }
-      #theme-heo .heo-post-comment__links {
-        display: flex;
-        align-items: center;
-        gap: 0.85rem;
-        font-size: 0.82rem;
-        color: #8b8b91;
-      }
-      #theme-heo .heo-post-comment__link {
-        color: inherit;
-        cursor: default;
-      }
-      #theme-heo a.heo-post-comment__link {
-        cursor: pointer;
-      }
-      #theme-heo a.heo-post-comment__link:hover {
-        color: var(--heo-color-primary, #425aef);
       }
 
       /* Waline：对齐安知鱼评论框气质 */

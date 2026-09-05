@@ -27,14 +27,12 @@ export default function SearchButton(props) {
 
   return (
     <>
-      <button
-        type='button'
+      <div
         onClick={handleSearch}
         title={locale.NAV.SEARCH}
-        aria-label={locale.NAV.SEARCH}
-        className='heo-nav-icon-btn flex h-9 w-9 cursor-pointer items-center justify-center rounded-full duration-200 transition-all hover:bg-black/10 dark:hover:bg-white/10'>
-        <i className='fa-solid fa-magnifying-glass text-[14px]' aria-hidden />
-      </button>
+        className='flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-all duration-200 hover:bg-black hover:bg-opacity-10'>
+        <i title={locale.NAV.SEARCH} className='fa-solid fa-magnifying-glass' />
+      </div>
       <AlgoliaSearchModal cRef={searchModal} {...props} />
     </>
   )

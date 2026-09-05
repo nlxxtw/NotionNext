@@ -68,24 +68,11 @@ const LayoutBase = props => {
 
   const headerSlot = (
     <header className='relative bg-transparent'>
-      {/* 顶部导航：整条透明，仅悬浮毛玻璃胶囊（首页 CategoryBar/Hero 移出 header，避免底部分层横线） */}
+      {/* 顶部导航：与分类页同一结构，首页不再在 header 外挂额外层 */}
       <Header {...props} />
-
-      {/* 通知横幅（HEO_NOTICE_BAR 为空则不渲染） */}
-      {router.route === '/' ? <NoticeBar /> : null}
       {fullWidth ? null : <PostHeader {...props} isDarkMode={isDarkMode} />}
     </header>
   )
-
-  const homeHeroSlot =
-    router.route === '/' ? (
-      <div className='relative z-[1] mx-auto mb-3 w-full max-w-[86rem] bg-transparent px-5 pt-3'>
-        <CategoryBar {...props} />
-        <div className='mt-3'>
-          <Hero {...props} />
-        </div>
-      </div>
-    ) : null
 
   // 右侧栏 用户信息+标签列表
   const hideAside =
@@ -122,7 +109,6 @@ const LayoutBase = props => {
 
       {/* 顶部嵌入 导航栏，首页放hero，文章页放文章详情 */}
       {headerSlot}
-      {homeHeroSlot}
 
       {/* 主区块 */}
       <main
@@ -164,7 +150,14 @@ const LayoutBase = props => {
 const LayoutIndex = props => {
   return (
     <div id='post-outer-wrapper' className='w-full'>
-      {/* 首页分类条已上移至英雄区上方，此处不再重复 */}
+      {/* 与分类页同一套：分类条/英雄区在 main 内，避免 header 外再挂一层造成底部分层线 */}
+      <NoticeBar />
+      <div className='relative mb-3 w-full bg-transparent pt-1'>
+        <CategoryBar {...props} />
+        <div className='mt-3'>
+          <Hero {...props} />
+        </div>
+      </div>
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
         <BlogPostListPage {...props} />
       ) : (
@@ -363,22 +356,8 @@ const LayoutSlug = props => {
                 <div className='overflow-x-auto px-4 sm:px-5'>
                   <div className='heo-post-comment__head'>
                     <div className='heo-post-comment__title'>
-                      <span className='heo-post-comment__dot' aria-hidden>
-                        ●
-                      </span>
-                      <i className='fas fa-comment heo-post-comment__icon' />
-                      {locale.COMMON.COMMENTS}
-                    </div>
-                    <div className='heo-post-comment__links'>
-                      <span className='heo-post-comment__link'>匿名评论</span>
-                      <a
-                        href={
-                          siteConfig('HEO_PRIVACY_URL', '', CONFIG) ||
-                          '#post-comment'
-                        }
-                        className='heo-post-comment__link'>
-                        隐私政策
-                      </a>
+                      <i className='fas fa-comments' aria-hidden />
+                      <span>{locale.COMMON.COMMENTS}</span>
                     </div>
                   </div>
                   <div id='comment' className='heo-post-comment__body'>

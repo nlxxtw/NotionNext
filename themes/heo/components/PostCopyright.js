@@ -5,9 +5,11 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import CONFIG from '../config'
+import { downloadPoster, generatePoster } from '../lib/posterGenerator'
 
 /**
- * 安知鱼风格文章版权卡：头像悬顶 + 打赏/订阅/分享 + CC 声明
+ * 文章版权卡（对齐 anheyu-app-frontend PostCopyright）
+ * 打赏 / 订阅 / 分享海报
  */
 export default function PostCopyright(props) {
   const { post, siteInfo, tagOptions } = props
@@ -15,7 +17,9 @@ export default function PostCopyright(props) {
   const { locale } = useGlobal()
   const [pageUrl, setPageUrl] = useState('')
   const [tipOpen, setTipOpen] = useState(false)
-  const [shareTip, setShareTip] = useState('')
+  const [posterOpen, setPosterOpen] = useState(false)
+  const [posterDataUrl, setPosterDataUrl] = useState('')
+  const [generating, setGenerating] = useState(false)
 
   const enabled = siteConfig('HEO_ARTICLE_COPYRIGHT', true, CONFIG)
 
@@ -24,13 +28,12 @@ export default function PostCopyright(props) {
     siteConfig('BIO') ||
     siteConfig('DESCRIPTION') ||
     siteInfo?.description ||
-    ''
+    '生活明朗，万物可爱'
   const avatar =
     siteInfo?.icon ||
     siteConfig('HEO_PROFILE_AVATAR', '', CONFIG) ||
     siteConfig('AVATAR', '', CONFIG) ||
     ''
-
   const tipQr = resolveTipQr()
   const subscribeUrl =
     siteConfig('HEO_HERO_SUBSCRIBE_URL', '/rss', CONFIG) || '/rss'
@@ -51,10 +54,7 @@ export default function PostCopyright(props) {
         const hit = (tagOptions || []).find(
           o => o?.name === t.name || o?.name === t
         )
-        return {
-          name: t.name,
-          count: hit?.count ?? t.count ?? ''
-        }
+        return { name: t.name, count: hit?.count ?? t.count ?? '' }
       })
   }, [post, tagOptions])
 
@@ -64,24 +64,46 @@ export default function PostCopyright(props) {
 
   if (!enabled) return null
 
+  const articleUrl = pageUrl || (typeof window !== 'undefined' ? window.location.href : '')
+
   const handleShare = async () => {
-    const url = pageUrl || window.location.href
+    if (generating) return
     try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url)
-      } else {
-        const input = document.createElement('input')
-        input.value = url
-        document.body.appendChild(input)
-        input.select()
-        document.execCommand('copy')
-        document.body.removeChild(input)
-      }
-      setShareTip('链接已复制')
-      window.setTimeout(() => setShareTip(''), 1800)
+      setGenerating(true)
+      const dataUrl = await generatePoster({
+        title: post?.title || '',
+        description:
+          post?.summary ||
+          post?.description ||
+          (Array.isArray(post?.summaries) ? post.summaries[0] : '') ||
+          '',
+        author,
+        authorAvatar: avatar,
+        siteName: siteConfig('TITLE') || author,
+        siteSubtitle: bio,
+        articleUrl,
+        coverImage:
+          post?.pageCoverThumbnail ||
+          post?.pageCover ||
+          siteInfo?.pageCover ||
+          ''
+      })
+      setPosterDataUrl(dataUrl)
+      setPosterOpen(true)
+    } catch (e) {
+      console.error(e)
+      window.alert('生成海报失败，请稍后重试')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(articleUrl)
+      window.alert('链接已复制到剪贴板')
     } catch {
-      setShareTip('复制失败')
-      window.setTimeout(() => setShareTip(''), 1800)
+      window.alert('复制失败，请手动复制')
     }
   }
 
@@ -123,9 +145,10 @@ export default function PostCopyright(props) {
           <button
             type='button'
             className='heo-post-tool heo-post-tool--share'
+            disabled={generating}
             onClick={handleShare}>
             <i className='fas fa-share-nodes' aria-hidden />
-            {shareTip || '分享'}
+            {generating ? '生成中...' : '分享'}
           </button>
         </div>
 
@@ -170,6 +193,25 @@ export default function PostCopyright(props) {
             document.body
           )
         : null}
+
+      {posterOpen
+        ? createPortal(
+            <PosterModal
+              posterDataUrl={posterDataUrl}
+              articleUrl={articleUrl}
+              title={post?.title || ''}
+              onCopy={copyLink}
+              onDownload={() =>
+                downloadPoster(
+                  posterDataUrl,
+                  `${post?.title || '文章'}_分享海报.png`
+                )
+              }
+              onClose={() => setPosterOpen(false)}
+            />,
+            document.body
+          )
+        : null}
     </section>
   )
 }
@@ -181,6 +223,132 @@ function resolveTipQr() {
     list.find(q => /咖啡|打赏|赞赏|tip|coffee/i.test(String(q.title || ''))) ||
     list[0]
   return String(tip?.img || tip?.qr || '').trim()
+}
+
+function PosterModal({
+  posterDataUrl,
+  articleUrl,
+  title,
+  onCopy,
+  onDownload,
+  onClose
+}) {
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = e => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
+  const shareWeibo = () => {
+    window.open(
+      `https://service.weibo.com/share/share.php?url=${encodeURIComponent(articleUrl)}&title=${encodeURIComponent(title)}`,
+      '_blank',
+      'width=600,height=400'
+    )
+  }
+  const shareQQ = () => {
+    window.open(
+      `https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(articleUrl)}&title=${encodeURIComponent(title)}`,
+      '_blank',
+      'width=600,height=400'
+    )
+  }
+  const shareQzone = () => {
+    window.open(
+      `https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=${encodeURIComponent(articleUrl)}&title=${encodeURIComponent(title)}`,
+      '_blank',
+      'width=600,height=400'
+    )
+  }
+
+  return (
+    <div
+      className='heo-poster-overlay'
+      role='dialog'
+      aria-modal='true'
+      aria-label='分享海报'
+      onClick={onClose}>
+      <div
+        className='heo-poster-dialog'
+        onClick={e => e.stopPropagation()}>
+        <div className='heo-poster-dialog__head'>
+          <h3>分享海报</h3>
+          <button
+            type='button'
+            className='heo-poster-dialog__close'
+            aria-label='关闭'
+            onClick={onClose}>
+            <i className='fas fa-times' />
+          </button>
+        </div>
+
+        <div className='heo-poster-dialog__body'>
+          <div className='heo-poster-preview'>
+            {posterDataUrl ? (
+              <img src={posterDataUrl} alt='分享海报预览' />
+            ) : (
+              <div className='heo-poster-loading'>正在生成海报...</div>
+            )}
+          </div>
+
+          <div className='heo-poster-actions'>
+            <div className='heo-poster-section'>
+              <div className='heo-poster-label'>点击复制链接:</div>
+              <input
+                className='heo-poster-url'
+                readOnly
+                value={articleUrl}
+                onClick={onCopy}
+              />
+            </div>
+
+            <div className='heo-poster-section'>
+              <div className='heo-poster-label'>分享到:</div>
+              <button
+                type='button'
+                className='heo-share-btn heo-share-btn--weibo'
+                onClick={shareWeibo}>
+                <i className='fab fa-weibo' />
+                微博
+              </button>
+              <button
+                type='button'
+                className='heo-share-btn heo-share-btn--qq'
+                onClick={shareQQ}>
+                <i className='fab fa-qq' />
+                QQ好友
+              </button>
+              <button
+                type='button'
+                className='heo-share-btn heo-share-btn--qzone'
+                onClick={shareQzone}>
+                <i className='fas fa-star' />
+                QQ空间
+              </button>
+            </div>
+
+            <div className='heo-poster-section'>
+              <div className='heo-poster-label'>下载海报:</div>
+              <button
+                type='button'
+                className='heo-poster-download'
+                disabled={!posterDataUrl}
+                onClick={onDownload}>
+                点击下载
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function TipModal({ title, subtitle, qr, onClose }) {

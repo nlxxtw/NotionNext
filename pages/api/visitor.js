@@ -1,6 +1,8 @@
 /**
  * 访客省市：解析客户端 IP → 中文省/市，并记住「最近访客」
  * 无外部 DB：进程内缓存（多实例/冷启动会重置，属预期）
+ *
+ * 定位优先级：太平洋网络（国内准）→ useragentinfo → ip-api
  */
 
 let lastVisitor = null
@@ -38,18 +40,42 @@ export default async function handler(req, res) {
 }
 
 function getClientIp(req) {
-  const xf = req.headers['x-forwarded-for']
-  if (typeof xf === 'string' && xf.trim()) {
-    return xf.split(',')[0].trim()
+  // CDN / 反代常见头：优先取真实访客 IP，避免定位到机房
+  const candidates = [
+    req.headers['cf-connecting-ip'],
+    req.headers['true-client-ip'],
+    req.headers['x-real-ip'],
+    req.headers['x-client-ip'],
+    req.headers['x-forwarded-for']
+  ]
+
+  for (const raw of candidates) {
+    const ip = firstPublicIp(raw)
+    if (ip) return ip
   }
-  if (Array.isArray(xf) && xf[0]) return String(xf[0]).trim()
-  const real = req.headers['x-real-ip']
-  if (real) return String(real).trim()
+
   return (
     req.socket?.remoteAddress ||
     req.connection?.remoteAddress ||
     ''
   ).replace(/^::ffff:/, '')
+}
+
+function firstPublicIp(value) {
+  if (!value) return ''
+  const list = Array.isArray(value) ? value : String(value).split(',')
+  for (const part of list) {
+    const ip = String(part || '')
+      .trim()
+      .replace(/^::ffff:/, '')
+    if (!ip || isPrivateIp(ip)) continue
+    return ip
+  }
+  // 全是内网时仍返回第一个，便于本地调试
+  const first = String(list[0] || '')
+    .trim()
+    .replace(/^::ffff:/, '')
+  return first
 }
 
 function maskIp(ip) {
@@ -80,19 +106,54 @@ async function lookupGeo(ip) {
   }
 
   const providers = [
-    () => lookupIpApi(ip),
-    () => lookupUserAgentInfo(ip)
+    () => lookupPconline(ip),
+    () => lookupUserAgentInfo(ip),
+    () => lookupIpApi(ip)
   ]
 
   for (const run of providers) {
     try {
       const geo = await run()
       if (geo?.label) return geo
-    } catch {
-      // try next
+    } catch (e) {
+      console.warn('[visitor] geo provider failed', e?.message || e)
     }
   }
   return null
+}
+
+/** 太平洋网络 IP 库（国内归属更准）；响应常为 GBK */
+async function lookupPconline(ip) {
+  const url = `https://whois.pconline.com.cn/ipJson.jsp?json=true&ip=${encodeURIComponent(
+    ip
+  )}`
+  const data = await fetchPconlineJson(url, 4000)
+  if (!data || data.err === 'noprovince') return null
+
+  const province = cleanPlace(data.pro)
+  const city = cleanPlace(data.city)
+  // 有些只给 addr，如「广东省深圳市 电信」
+  if (!province && !city && data.addr) {
+    const parsed = parseAddr(data.addr)
+    return normalizeGeo(parsed)
+  }
+
+  return normalizeGeo({
+    country: '中国',
+    province,
+    city
+  })
+}
+
+async function lookupUserAgentInfo(ip) {
+  const url = `https://ip.useragentinfo.com/json?ip=${encodeURIComponent(ip)}`
+  const data = await fetchJson(url, 3500)
+  if (!data) return null
+  return normalizeGeo({
+    country: data.country,
+    province: data.province,
+    city: data.city
+  })
 }
 
 async function lookupIpApi(ip) {
@@ -108,15 +169,21 @@ async function lookupIpApi(ip) {
   })
 }
 
-async function lookupUserAgentInfo(ip) {
-  const url = `https://ip.useragentinfo.com/json?ip=${encodeURIComponent(ip)}`
-  const data = await fetchJson(url, 3500)
-  if (!data) return null
-  return normalizeGeo({
-    country: data.country,
-    province: data.province,
-    city: data.city
-  })
+function parseAddr(addr) {
+  const s = String(addr || '').trim()
+  if (!s) return { country: '中国', province: '', city: '' }
+  // 「广东省深圳市 电信」/「北京市 联通」
+  const m = s.match(
+    /^(?<pro>.+?(?:省|自治区|特别行政区|市))(?<city>.+?(?:市|州|盟|地区))?/
+  )
+  if (m?.groups) {
+    return {
+      country: '中国',
+      province: m.groups.pro || '',
+      city: m.groups.city || ''
+    }
+  }
+  return { country: '中国', province: s.split(/\s+/)[0] || '', city: '' }
 }
 
 function normalizeGeo({ country, province, city }) {
@@ -147,9 +214,50 @@ function cleanPlace(v) {
 }
 
 function stripSuffix(s) {
-  return s
-    .replace(/(特别行政区|自治区|壮族|回族|维吾尔|省|市|都|府|县|地区)$/g, '')
-    .trim() || s
+  return (
+    s
+      .replace(
+        /(特别行政区|自治区|壮族|回族|维吾尔|省|市|都|府|县|地区)$/g,
+        ''
+      )
+      .trim() || s
+  )
+}
+
+async function fetchPconlineJson(url, timeoutMs) {
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs)
+  try {
+    const res = await fetch(url, {
+      signal: ctrl.signal,
+      headers: {
+        Accept: 'application/json,text/plain,*/*',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    })
+    if (!res.ok) return null
+    const buf = Buffer.from(await res.arrayBuffer())
+    // 太平洋接口常见 GBK；先试 GBK，失败再 UTF-8
+    let text = ''
+    try {
+      text = new TextDecoder('gbk').decode(buf)
+    } catch {
+      text = buf.toString('utf8')
+    }
+    text = text.replace(/^\uFEFF/, '').trim()
+    if (!text) return null
+    try {
+      return JSON.parse(text)
+    } catch {
+      // 偶发包一层 callback / 杂讯
+      const m = text.match(/\{[\s\S]*\}/)
+      if (!m) return null
+      return JSON.parse(m[0])
+    }
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 async function fetchJson(url, timeoutMs) {

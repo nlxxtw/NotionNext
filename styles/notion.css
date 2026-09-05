@@ -1359,23 +1359,27 @@ code[class*='language-'] {
 
 .notion-file {
   width: 100%;
-  margin: 1px 0;
+  margin: 8px 0;
 }
 
 .notion-file-link {
   display: flex;
   align-items: center;
-  padding: 3px 2px;
-  border-radius: 3px;
-  transition: background 20ms ease-in 0s;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+  transition: background 20ms ease-in 0s, border-color 20ms ease-in 0s;
   color: inherit;
   text-decoration: none;
 
-  @apply dark:stroke-slate-200;
+  @apply dark:stroke-slate-200 dark:border-white/10 dark:bg-white/5;
 }
 
 .notion-file-link:hover {
   background: var(--bg-color-0);
+  border-color: rgba(0, 0, 0, 0.14);
 }
 
 .notion-file-icon {
@@ -1394,6 +1398,8 @@ code[class*='language-'] {
   display: flex;
   align-items: baseline;
   overflow-x: auto;
+  flex: 1;
+  min-width: 0;
 }
 
 .notion-file-title {
@@ -1412,6 +1418,26 @@ code[class*='language-'] {
   margin-left: 6px;
 
   @apply dark:text-gray-400 !important;
+}
+
+/* 右侧明确「下载」提示：整行本就可点，避免看起来像纯展示 */
+.notion-file-link::after {
+  content: '下载';
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #fff;
+  background: #425aef;
+  pointer-events: none;
+}
+
+.dark .notion-file-link::after,
+.dark-mode .notion-file-link::after {
+  background: #5b73ff;
 }
 
 .notion-audio {
