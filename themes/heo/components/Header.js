@@ -82,13 +82,13 @@ const Header = props => {
 
   return (
     <>
-      <div className='heo-nav-spacer h-16 shrink-0' aria-hidden />
+      <div className='heo-nav-spacer h-[4.25rem] shrink-0' aria-hidden />
 
       <nav
         id='nav'
         className={`heo-nav heo-nav--fixed heo-nav--plain fixed left-0 right-0 top-0 z-[60] w-full
             ${textWhite ? 'text-white heo-nav--on-post' : 'text-black dark:text-white'}`}>
-        <div className='heo-nav-inner mx-auto grid h-16 max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6'>
+        <div className='heo-nav-inner mx-auto grid h-[4.25rem] max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6'>
           <div className='flex min-w-0 items-center justify-start gap-2'>
             <Logo {...props} />
             {showUpdateBadge && (
