@@ -76,7 +76,6 @@ const LayoutBase = props => {
       {router.route === '/' ? (
         <>
           <NoticeBar />
-          {/* 与主内容同宽同边距，避免轮播与文章列表错位 */}
           <div className='mx-auto mb-3 w-full max-w-[86rem] px-5'>
             <CategoryBar {...props} />
             <div className='mt-3'>

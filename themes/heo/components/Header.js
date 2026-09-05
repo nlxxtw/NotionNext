@@ -14,8 +14,7 @@ import CONFIG from '../config'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 顶栏：始终透明，无实心白/黑条、无毛玻璃胶囊
- * 仅保留图标与文字；兼容 Safari safe-area
+ * 顶栏：整条透明 + 悬浮毛玻璃胶囊；封面顶满视口不分层
  */
 const Header = props => {
   const [textWhite, setTextWhite] = useState(false)
@@ -118,7 +117,7 @@ const Header = props => {
                   ? 'opacity-100'
                   : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='px-1 py-1'>
+              <div className='heo-nav-chip rounded-full px-2.5 py-1.5'>
                 <MenuListTop {...props} />
               </div>
             </div>
@@ -128,7 +127,7 @@ const Header = props => {
                   ? 'opacity-100'
                   : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='px-2 py-1'>
+              <div className='heo-nav-chip rounded-full px-4 py-1.5'>
                 <h1 className='text-center text-sm font-bold text-gray-700 dark:text-gray-200'>
                   {siteConfig('AUTHOR') || siteConfig('TITLE')}
                   {siteConfig('BIO') && <> · </>}
@@ -139,7 +138,7 @@ const Header = props => {
           </div>
 
           <div className='flex items-center justify-end gap-1'>
-            <div className='flex items-center gap-0.5 px-0.5 py-1'>
+            <div className='heo-nav-chip flex items-center gap-0.5 rounded-full px-1.5 py-1'>
               <RandomPostButton {...props} />
               <SearchButton {...props} />
               <ReadingProgress />

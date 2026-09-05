@@ -147,7 +147,7 @@ const Logo = props => {
 
   const pill = (
     <div
-      className='heo-logo-trigger heo-nav-home-pill inline-flex items-center gap-1.5 rounded-full py-1 pl-1 pr-2'
+      className='heo-logo-trigger heo-nav-chip heo-nav-home-pill inline-flex items-center gap-1.5 rounded-full py-1 pl-1 pr-2.5'
       onMouseEnter={() => setPillHover(true)}
       onMouseLeave={() => {
         setPillHover(false)

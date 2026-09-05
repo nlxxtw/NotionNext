@@ -196,19 +196,19 @@ const Style = () => {
         box-shadow: none;
       }
 
-      /* 顶栏：无胶囊毛玻璃、无实心底条 */
+      /* 顶栏悬浮胶囊：半透明毛玻璃（非整条实心白底） */
       #theme-heo .heo-nav-chip {
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        box-shadow: 0 4px 16px -8px rgba(40, 50, 80, 0.22);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
       }
 
       .dark #theme-heo .heo-nav-chip {
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
+        background: rgba(40, 42, 50, 0.45);
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: none;
       }
 
       /* 左上角回主页胶囊：文章头图上用白底深色图标（见下方更具体规则） */
@@ -264,11 +264,11 @@ const Style = () => {
         overflow: visible;
       }
 
-      /* 文章页头上：透明底，仅白字可读 */
+      /* 文章页头上：胶囊略加深可读，仍非实心白条 */
       #theme-heo #nav.text-white .heo-nav-chip {
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
+        background: rgba(255, 255, 255, 0.22) !important;
+        border-color: rgba(255, 255, 255, 0.28) !important;
+        box-shadow: none;
         color: #fff !important;
       }
 
@@ -301,7 +301,7 @@ const Style = () => {
         height: calc(4rem + env(safe-area-inset-top, 0px));
       }
 
-      /* 顶栏始终透明：无白/黑实心条、无整条毛玻璃 */
+      /* 顶栏整条始终透明：封面色顶到视口最上，消灭白条分层 */
       #theme-heo .heo-nav--top,
       #theme-heo .heo-nav--scrolled,
       #theme-heo .heo-nav--plain {
@@ -318,6 +318,19 @@ const Style = () => {
         background: transparent !important;
         border-bottom: 0 !important;
         box-shadow: none !important;
+      }
+
+      /* 文章封面上移盖住导航占位，颜色铺满顶部 */
+      #theme-heo #post-bg.heo-post-bg {
+        margin-top: calc(-1 * (4rem + env(safe-area-inset-top, 0px)));
+        padding-top: calc(4rem + env(safe-area-inset-top, 0px));
+        min-height: calc(28rem + 4rem + env(safe-area-inset-top, 0px));
+        height: auto;
+      }
+      @media (min-width: 768px) {
+        #theme-heo #post-bg.heo-post-bg {
+          min-height: calc(30rem + 4rem + env(safe-area-inset-top, 0px));
+        }
       }
 
       /* 无彩色更新徽章 */
