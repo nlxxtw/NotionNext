@@ -30,7 +30,7 @@ const CONFIG = {
   // Logo 项目大菜单（截图：博客/应用/服务/表情）
   // Notion 写法：创建 type=Menu 的分组页，并打上标签 LogoMega；
   // 其下按顺序创建 type=SubMenu 的子项，页面图标即菜单图标（可传图）
-  HEO_LOGO_MEGA_ENABLE: false, // 默认关；true 时仅点击左上图标才弹菜单，悬停回主页不弹
+  HEO_LOGO_MEGA_ENABLE: true, // 悬停加大后的 Logo 图标/站名弹出菜单；回主页按钮不弹
   HEO_LOGO_MEGA_FILTER: 'tag', // tag | category | all
   HEO_LOGO_MEGA_TAG: 'LogoMega', // 与 Notion 标签/分类名一致
   HEO_LOGO_MEGA_FOOTER_TEXT: '更多我的项目',
