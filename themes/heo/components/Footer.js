@@ -143,6 +143,13 @@ const Footer = () => {
                   {quickLinks.map((link, index) =>
                     link.qr ? (
                       <QrHoverText key={`${link.title}-${index}`} item={link} />
+                    ) : isStaticFileHref(link.href) ? (
+                      <a
+                        key={`${link.title}-${index}`}
+                        href={link.href}
+                        className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
+                        {link.title}
+                      </a>
                     ) : (
                       <SmartLink
                         key={`${link.title}-${index}`}
@@ -353,7 +360,7 @@ function TipQrModal({ title, subtitle, qr, onClose }) {
             />
           </div>
           <p className='mt-3 text-center text-[12px] text-gray-500 dark:text-gray-400'>
-            微信 / 支付宝扫码均可
+            微信扫码即可
           </p>
         </div>
       </div>
@@ -392,6 +399,14 @@ const DEFAULT_QUICK_LINKS = [
   { title: '资源', href: '#', qrFrom: '资源' },
   { title: '地图', href: '/sitemap.xml' }
 ]
+
+function isStaticFileHref(href) {
+  const value = String(href || '').trim()
+  if (!value || value.startsWith('http') || value.startsWith('#')) return false
+  return /\.(xml|txt|json|pdf|zip|rar|7z|gz|mp3|mp4|webp|png|jpe?g|gif|svg)(?:$|\?)/i.test(
+    value
+  )
+}
 
 function normalizeQrList(value) {
   if (!value) return DEFAULT_QR_LIST

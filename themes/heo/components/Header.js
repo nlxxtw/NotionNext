@@ -3,7 +3,6 @@ import { isBrowser } from '@/lib/utils'
 import throttle from 'lodash.throttle'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import DarkModeButton from './DarkModeButton'
 import Logo from './Logo'
 import { MenuListTop } from './MenuListTop'
 import RandomPostButton from './RandomPostButton'
@@ -197,10 +196,15 @@ const Header = props => {
                 <i className='fas fa-th' />
               </button>
             </div>
-            {!textWhite && !JSON.parse(siteConfig('THEME_SWITCH')) && (
-              <div className='hidden md:block'>
-                <DarkModeButton {...props} />
-              </div>
+            {!textWhite && (
+              <SmartLink
+                href='/archives'
+                title='全部文章'
+                aria-label='全部文章'
+                className='heo-nav-chip hidden h-8 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-gray-700 transition hover:text-[var(--heo-color-primary)] dark:text-white dark:hover:text-[var(--heo-color-accent)] md:inline-flex'>
+                <i className='fas fa-archive text-[12px] opacity-80' aria-hidden />
+                全部文章
+              </SmartLink>
             )}
           </div>
 

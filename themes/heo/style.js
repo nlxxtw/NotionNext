@@ -267,10 +267,11 @@ const Style = () => {
         background: var(--heo-color-card, #fff);
         box-shadow: 0 8px 24px -10px rgba(20, 30, 60, 0.28);
         opacity: 0;
+        visibility: hidden;
         pointer-events: none;
-        transform: translateX(-50%) translateY(-8px) scale(0.92);
+        transform: translateX(-50%) translateY(-8px) scale(0);
         transform-origin: top center;
-        transition: opacity 0.2s ease, transform 0.2s ease;
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
       }
       .dark #theme-heo .heo-menus-item-child {
         background: var(--heo-color-card-dark, #1b1c20);
@@ -289,6 +290,7 @@ const Style = () => {
       #theme-heo .heo-menus-item:hover > .heo-menus-item-child,
       #theme-heo .heo-menus-item:focus-within > .heo-menus-item-child {
         opacity: 1;
+        visibility: visible;
         pointer-events: auto;
         transform: translateX(-50%) translateY(0) scale(1);
       }
@@ -389,6 +391,12 @@ const Style = () => {
         -webkit-backdrop-filter: none !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
+      }
+
+      /* 减轻 fixed 顶栏底边合成接缝 */
+      #theme-heo #nav.heo-nav--fixed {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
       }
 
       #theme-heo #nav.text-white .heo-nav-chip a,

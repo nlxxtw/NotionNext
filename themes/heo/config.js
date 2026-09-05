@@ -186,7 +186,7 @@ const CONFIG = {
   HEO_MASCOT_ENABLE: true,
   // 默认用安知鱼同款狗头图；也可改其它透明 PNG/SVG
   HEO_MASCOT_IMG: 'https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png',
-  HEO_MASCOT_SIZE: 132,
+  HEO_MASCOT_SIZE: 88,
   HEO_MASCOT_TIP_MS: 5200,
   HEO_MASCOT_BOTTOM: '5.5rem',
   HEO_MASCOT_RIGHT: '1.25rem',

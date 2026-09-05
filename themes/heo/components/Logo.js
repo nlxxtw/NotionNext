@@ -177,23 +177,23 @@ const Logo = props => {
       onMouseLeave={scheduleClose}>
       {pill}
 
-      {/* pt-3 桥接缝隙，鼠标移入下拉不断开 */}
+      {/* pt-2 桥接缝隙，鼠标移入下拉不断开 */}
       <div
-        className={`absolute left-0 top-full z-[80] w-[min(460px,calc(100vw-1.5rem))] origin-top-left pt-3 transition duration-200 ${
+        className={`absolute left-0 top-full z-[80] w-[min(300px,calc(100vw-1.5rem))] origin-top-left pt-2 transition duration-200 ${
           open
             ? 'pointer-events-auto translate-y-0 opacity-100'
             : 'pointer-events-none -translate-y-1 opacity-0'
         }`}
         onMouseEnter={openMenu}
         onMouseLeave={scheduleClose}>
-        <div className='rounded-2xl bg-[var(--heo-color-card)] p-4 shadow-[0_18px_44px_-18px_rgba(40,50,90,0.45)] ring-1 ring-black/5 dark:bg-[var(--heo-color-card-dark)] dark:ring-white/10'>
-          <div className='max-h-[70vh] space-y-4 overflow-y-auto pr-0.5'>
+        <div className='rounded-2xl bg-[var(--heo-color-card)] p-2.5 shadow-[0_14px_36px_-16px_rgba(40,50,90,0.42)] ring-1 ring-black/5 dark:bg-[var(--heo-color-card-dark)] dark:ring-white/10'>
+          <div className='max-h-[min(60vh,28rem)] space-y-2.5 overflow-y-auto pr-0.5'>
             {groups.map(group => (
               <section key={group.id || group.title}>
-                <div className='mb-2 px-1.5 text-[12px] font-bold tracking-wide text-gray-400'>
+                <div className='mb-1 px-1.5 text-[11px] font-bold tracking-wide text-gray-400'>
                   {group.title}
                 </div>
-                <div className='grid grid-cols-2 gap-1.5'>
+                <div className='grid grid-cols-2 gap-1'>
                   {(group.items || []).map((item, idx) => (
                     <MegaItem
                       key={item.id || item.href || idx}
@@ -205,7 +205,7 @@ const Logo = props => {
               </section>
             ))}
             {!groups.length && (
-              <div className='px-2 py-6 text-center text-sm leading-relaxed text-gray-400'>
+              <div className='px-2 py-4 text-center text-[12px] leading-relaxed text-gray-400'>
                 暂无项目菜单。
                 <br />
                 在 Notion 创建带标签「
@@ -219,12 +219,12 @@ const Logo = props => {
             <SmartLink
               href={footerUrl || '/'}
               onClick={() => setOpen(false)}
-              className='mt-4 flex items-center justify-center gap-2 rounded-full border border-black/[0.06] bg-transparent px-3 py-2.5 text-[14px] font-bold text-gray-800 transition hover:bg-[#2c2f36] hover:text-white dark:border-white/10 dark:text-gray-100 dark:hover:bg-[#3a3d46]'>
+              className='mt-2.5 flex items-center justify-center gap-1.5 rounded-full border border-black/[0.06] bg-transparent px-2.5 py-2 text-[12px] font-bold text-gray-800 transition hover:bg-[#2c2f36] hover:text-white dark:border-white/10 dark:text-gray-100 dark:hover:bg-[#3a3d46]'>
               {footerIcon && (
                 <LazyImage
                   src={footerIcon}
                   alt=''
-                  className='h-5 w-5 rounded-full object-cover'
+                  className='h-4 w-4 rounded-full object-cover'
                 />
               )}
               {footerText}
@@ -246,9 +246,9 @@ function MegaItem({ item, onNavigate }) {
       href={href}
       target={item.target}
       onClick={onNavigate}
-      className='heo-mega-item group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-gray-800 transition duration-150 hover:bg-[var(--heo-color-primary)] hover:text-white dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)] dark:hover:text-gray-900'>
+      className='heo-mega-item group flex items-center gap-2 rounded-xl px-2 py-1.5 text-gray-800 transition duration-150 hover:bg-[var(--heo-color-primary)] hover:text-white dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)] dark:hover:text-gray-900'>
       <MegaIcon icon={icon} title={title} />
-      <span className='truncate text-[14px] font-semibold'>{title}</span>
+      <span className='truncate text-[13px] font-semibold'>{title}</span>
     </SmartLink>
   )
 }
@@ -256,8 +256,8 @@ function MegaItem({ item, onNavigate }) {
 function MegaIcon({ icon, title }) {
   if (!icon) {
     return (
-      <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-gray-700 transition group-hover:bg-white/20 group-hover:text-white dark:bg-white/10 dark:text-gray-200 dark:group-hover:bg-black/15 dark:group-hover:text-gray-900'>
-        <i className='fas fa-link text-[11px]' />
+      <span className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-gray-700 transition group-hover:bg-white/20 group-hover:text-white dark:bg-white/10 dark:text-gray-200 dark:group-hover:bg-black/15 dark:group-hover:text-gray-900'>
+        <i className='fas fa-link text-[10px]' />
       </span>
     )
   }
@@ -266,19 +266,19 @@ function MegaIcon({ icon, title }) {
       <LazyImage
         src={icon}
         alt={title}
-        className='h-8 w-8 shrink-0 rounded-full object-cover'
+        className='h-7 w-7 shrink-0 rounded-full object-cover'
       />
     )
   }
   if (icon.includes('fa-') || icon.startsWith('fa')) {
     return (
-      <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-gray-700 transition group-hover:bg-white/20 group-hover:text-white dark:bg-white/10 dark:text-gray-200 dark:group-hover:bg-black/15 dark:group-hover:text-gray-900'>
-        <i className={`${icon} text-[12px]`} />
+      <span className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-gray-700 transition group-hover:bg-white/20 group-hover:text-white dark:bg-white/10 dark:text-gray-200 dark:group-hover:bg-black/15 dark:group-hover:text-gray-900'>
+        <i className={`${icon} text-[11px]`} />
       </span>
     )
   }
   return (
-    <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-[16px] leading-none transition group-hover:bg-white/20 dark:bg-white/10'>
+    <span className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-[14px] leading-none transition group-hover:bg-white/20 dark:bg-white/10'>
       {icon}
     </span>
   )
