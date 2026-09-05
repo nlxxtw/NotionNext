@@ -242,6 +242,7 @@ const Style = () => {
         background: transparent !important;
         border: 0 !important;
         box-shadow: none !important;
+        display: block;
       }
       @keyframes heo-mascot-float {
         0%, 100% { transform: rotateY(-8deg) rotateX(6deg) translateY(0); }

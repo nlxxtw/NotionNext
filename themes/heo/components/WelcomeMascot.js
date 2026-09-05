@@ -1,21 +1,27 @@
-import LazyImage from '@/components/LazyImage'
 import { siteConfig } from '@/lib/config'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import CONFIG from '../config'
 
 /**
- * 右下角欢迎挂件：横向气泡 + 轻 3D 浮动图
+ * 右下角欢迎挂件：横向气泡 + 透明 SVG 小狗（无白底方块）
  * 首页滑到底隐藏，往上滑再悬浮显示
+ * 若 Notion 配置了 HEO_MASCOT_IMG（非默认 png），才用自定义图
  */
 export default function WelcomeMascot() {
   const enabled = parseBool(siteConfig('HEO_MASCOT_ENABLE', true, CONFIG))
-  const img =
-    siteConfig('HEO_MASCOT_IMG', '/images/heo-mascot.png', CONFIG) ||
-    '/images/heo-mascot.png'
+  const rawImg = String(
+    siteConfig('HEO_MASCOT_IMG', '', CONFIG) || ''
+  ).trim()
+  // 默认空 / 旧白底 png → 改用内联 SVG
+  const useCustomImg =
+    rawImg &&
+    !/\/images\/heo-mascot\.png$/i.test(rawImg) &&
+    rawImg !== '/images/heo-mascot.png'
+
   const size = Math.max(
-    56,
-    Number(siteConfig('HEO_MASCOT_SIZE', 88, CONFIG)) || 88
+    64,
+    Number(siteConfig('HEO_MASCOT_SIZE', 96, CONFIG)) || 96
   )
   const tipMs = Math.max(
     2000,
@@ -122,18 +128,24 @@ export default function WelcomeMascot() {
               window.setTimeout(() => setShowTip(false), tipMs)
             }
           }}
-          className='heo-mascot-3d block select-none'>
-          <LazyImage
-            src={img}
-            alt='欢迎挂件'
-            width={size}
-            height={size}
-            className='heo-mascot-img h-auto w-auto object-contain'
-            style={{ width: size, height: 'auto', maxHeight: size + 12 }}
-          />
+          className='heo-mascot-3d block select-none bg-transparent p-0'>
+          {useCustomImg ? (
+            <img
+              src={rawImg}
+              alt='欢迎挂件'
+              width={size}
+              height={size}
+              className='heo-mascot-img h-auto w-auto bg-transparent object-contain'
+              style={{ width: size, height: 'auto', maxHeight: size + 12 }}
+            />
+          ) : (
+            <MascotDogSvg
+              className='heo-mascot-img'
+              style={{ width: size, height: size }}
+            />
+          )}
         </button>
 
-        {/* 横向气泡，避免竖排压扁 */}
         <div
           className={`heo-mascot-tip mb-6 max-w-[14rem] origin-bottom-right transition-all duration-500 sm:max-w-[16rem] ${
             showTip && welcome
@@ -152,6 +164,89 @@ export default function WelcomeMascot() {
         </div>
       </div>
     </div>
+  )
+}
+
+/** 透明背景矢量小狗（无白底方块） */
+function MascotDogSvg({ className = '', style }) {
+  return (
+    <svg
+      className={className}
+      style={style}
+      viewBox='0 0 120 120'
+      xmlns='http://www.w3.org/2000/svg'
+      aria-hidden
+      role='img'>
+      <title>欢迎挂件</title>
+      {/* 阴影 */}
+      <ellipse cx='60' cy='108' rx='28' ry='6' fill='rgba(0,0,0,0.18)' />
+      {/* 身体 */}
+      <ellipse cx='60' cy='78' rx='32' ry='26' fill='#F5E6D3' />
+      {/* 头 */}
+      <circle cx='60' cy='48' r='30' fill='#F8ECDD' />
+      {/* 耳朵 */}
+      <ellipse
+        cx='32'
+        cy='42'
+        rx='14'
+        ry='20'
+        fill='#E8C9A8'
+        transform='rotate(-18 32 42)'
+      />
+      <ellipse
+        cx='88'
+        cy='42'
+        rx='14'
+        ry='20'
+        fill='#E8C9A8'
+        transform='rotate(18 88 42)'
+      />
+      <ellipse
+        cx='32'
+        cy='44'
+        rx='7'
+        ry='11'
+        fill='#D4A574'
+        transform='rotate(-18 32 44)'
+      />
+      <ellipse
+        cx='88'
+        cy='44'
+        rx='7'
+        ry='11'
+        fill='#D4A574'
+        transform='rotate(18 88 44)'
+      />
+      {/* 脸斑 */}
+      <ellipse cx='42' cy='55' rx='10' ry='8' fill='#FFE4EC' opacity='0.9' />
+      <ellipse cx='78' cy='55' rx='10' ry='8' fill='#FFE4EC' opacity='0.9' />
+      {/* 眼睛 */}
+      <circle cx='48' cy='46' r='4.2' fill='#2C2A28' />
+      <circle cx='72' cy='46' r='4.2' fill='#2C2A28' />
+      <circle cx='49.2' cy='44.8' r='1.4' fill='#fff' />
+      <circle cx='73.2' cy='44.8' r='1.4' fill='#fff' />
+      {/* 鼻子嘴巴 */}
+      <ellipse cx='60' cy='56' rx='5' ry='3.8' fill='#2C2A28' />
+      <path
+        d='M54 60 Q60 66 66 60'
+        fill='none'
+        stroke='#2C2A28'
+        strokeWidth='2'
+        strokeLinecap='round'
+      />
+      {/* 前爪 */}
+      <ellipse cx='46' cy='92' rx='9' ry='7' fill='#F8ECDD' />
+      <ellipse cx='74' cy='92' rx='9' ry='7' fill='#F8ECDD' />
+      {/* 项圈 */}
+      <path
+        d='M38 68 Q60 78 82 68'
+        fill='none'
+        stroke='#E85D4C'
+        strokeWidth='4'
+        strokeLinecap='round'
+      />
+      <circle cx='60' cy='74' r='4' fill='#FFD666' />
+    </svg>
   )
 }
 

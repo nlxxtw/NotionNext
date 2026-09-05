@@ -184,7 +184,10 @@ const CONFIG = {
 
   // 右下角欢迎挂件（省市欢迎语 + 滑到底隐藏）
   HEO_MASCOT_ENABLE: true,
-  HEO_MASCOT_IMG: '/images/heo-mascot.png',
+  // 欢迎挂件：默认内联透明 SVG；自定义图填透明 PNG/SVG 地址
+  HEO_MASCOT_ENABLE: true,
+  HEO_MASCOT_IMG: '', // 留空用矢量小狗；勿填带白底的 jpg/png
+  HEO_MASCOT_SIZE: 96,
   HEO_MASCOT_SIZE: 88,
   HEO_MASCOT_TIP_MS: 5200,
   HEO_MASCOT_BOTTOM: '5.5rem',
