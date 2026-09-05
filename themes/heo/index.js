@@ -31,6 +31,7 @@ import FloatTocButton from './components/FloatTocButton'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import Hero from './components/Hero'
+import HeoMusicPlayer from './components/HeoMusicPlayer'
 import LatestPostsGroup from './components/LatestPostsGroup'
 import { NoticeBar } from './components/NoticeBar'
 import PostAdjacent from './components/PostAdjacent'
@@ -40,6 +41,7 @@ import { PostLock } from './components/PostLock'
 import PostRecommend from './components/PostRecommend'
 import SearchNav from './components/SearchNav'
 import SideRight from './components/SideRight'
+import StatsPage from './components/StatsPage'
 import CONFIG from './config'
 import { Style } from './style'
 import AISummary from '@/components/AISummary'
@@ -63,10 +65,14 @@ const LayoutBase = props => {
       {/* 顶部导航 */}
       <Header {...props} />
 
-      {/* 通知横幅 */}
+      {/* 通知横幅（HEO_NOTICE_BAR 为空则不渲染） */}
       {router.route === '/' ? (
         <>
           <NoticeBar />
+          {/* 分类胶囊条：放在英雄区上方，对齐截图 */}
+          <div className='mx-auto mb-3 w-full max-w-[86rem] px-5'>
+            <CategoryBar {...props} />
+          </div>
           <Hero {...props} />
         </>
       ) : null}
@@ -126,6 +132,9 @@ const LayoutBase = props => {
       {/* 页脚 */}
       <Footer />
 
+      {/* Heo 玻璃胶囊音乐条；同时用 CSS 隐藏默认 APlayer 固定条 */}
+      <HeoMusicPlayer />
+
       {HEO_LOADING_COVER && <LoadingCover />}
     </div>
   )
@@ -140,8 +149,7 @@ const LayoutBase = props => {
 const LayoutIndex = props => {
   return (
     <div id='post-outer-wrapper' className='px-5 md:px-0'>
-      {/* 文章分类条 */}
-      <CategoryBar {...props} />
+      {/* 首页分类条已上移至英雄区上方，此处不再重复 */}
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
         <BlogPostListPage {...props} />
       ) : (
@@ -458,45 +466,45 @@ const LayoutCategoryIndex = props => {
 }
 
 /**
- * 标签列表
- * @param {*} props
- * @returns
+ * 标签列表页
  */
 const LayoutTagIndex = props => {
   const { tagOptions } = props
   const { locale } = useGlobal()
 
   return (
-    <div id='tag-outer-wrapper' className='px-5 mt-8 md:px-0'>
-      <div className='text-4xl font-extrabold dark:text-gray-200 mb-5'>
-        {locale.COMMON.TAGS}
+    <div id='tag-outer-wrapper' className='px-5 mt-6 md:px-0'>
+      <div className='mb-5 flex items-end justify-between gap-3'>
+        <div>
+          <h1 className='text-3xl font-extrabold text-gray-900 dark:text-gray-100'>
+            {locale.COMMON.TAGS}
+          </h1>
+          <p className='mt-1 text-sm text-gray-500'>共 {tagOptions?.length || 0} 个标签</p>
+        </div>
       </div>
-      <div
-        id='tag-list'
-        className='duration-200 flex flex-wrap space-x-5 space-y-5 m-10 justify-center'>
-        {tagOptions.map(tag => {
-          return (
-            <SmartLink
-              key={tag.name}
-              href={`/tag/${tag.name}`}
-              passHref
-              legacyBehavior>
-              <div
-                className={
-                  'group flex flex-nowrap items-center border bg-[var(--heo-color-card)] text-2xl rounded-xl dark:hover:text-white px-4 cursor-pointer py-3 hover:text-[var(--heo-color-primary-text)] hover:bg-[var(--heo-color-primary)] transition-all hover:scale-110 duration-150'
-                }>
-                <HashTag className={'w-5 h-5 stroke-gray-500 stroke-2'} />
-                {tag.name}
-                <div className='bg-[var(--heo-color-card-muted)] ml-1 px-2 rounded-lg group-hover:text-[var(--heo-color-primary)] '>
-                  {tag.count}
-                </div>
-              </div>
-            </SmartLink>
-          )
-        })}
+      <div id='tag-list' className='flex flex-wrap gap-2.5'>
+        {tagOptions?.map(tag => (
+          <SmartLink
+            key={tag.name}
+            href={`/tag/${encodeURIComponent(tag.name)}`}
+            className='inline-flex items-center gap-1.5 rounded-full border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] px-4 py-2 text-sm font-medium text-gray-800 transition hover:border-[var(--heo-color-primary)] hover:bg-[var(--heo-color-primary)] hover:text-white dark:border-gray-600 dark:bg-[var(--heo-color-card-dark)] dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)]'>
+            <HashTag className='h-4 w-4 stroke-current stroke-2 opacity-70' />
+            {tag.name}
+            <span className='rounded-full bg-black/5 px-2 py-0.5 text-xs opacity-70 dark:bg-white/10'>
+              {tag.count}
+            </span>
+          </SmartLink>
+        ))}
       </div>
     </div>
   )
+}
+
+/**
+ * 网站统计页
+ */
+const LayoutStats = props => {
+  return <StatsPage {...props} />
 }
 
 export {
@@ -508,6 +516,7 @@ export {
   LayoutPostList,
   LayoutSearch,
   LayoutSlug,
+  LayoutStats,
   LayoutTagIndex,
   CONFIG as THEME_CONFIG
 }

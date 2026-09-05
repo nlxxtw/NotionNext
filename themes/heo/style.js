@@ -10,17 +10,17 @@ const Style = () => {
   return (
     <style jsx global>{`
       #theme-heo {
-        --heo-color-primary: #4f65f0;
-        --heo-color-primary-hover: #4f46e5;
+        --heo-color-primary: #425aef;
+        --heo-color-primary-hover: #425aef;
         --heo-color-primary-text: #ffffff;
-        --heo-color-accent: #ca8a04;
+        --heo-color-accent: #ffc848;
         --heo-color-bg: #f7f9fe;
         --heo-color-bg-dark: #18171d;
         --heo-color-card: #ffffff;
         --heo-color-card-dark: #1e1e1e;
         --heo-color-card-muted: #f1f3f8;
-        --heo-color-border: #4f46e5;
-        --heo-color-border-dark: #ca8a04;
+        --heo-color-border: #425aef;
+        --heo-color-border-dark: #ffc848;
         --heo-color-text-light: #000000;
         --heo-color-text-secondary-light: #4b5563;
         --heo-color-text-dark: #f3f4f6;
@@ -49,7 +49,9 @@ const Style = () => {
         background-color: var(--heo-color-card-dark);
       }
 
-      #theme-heo .bg-\[\#4f65f0\] {
+      #theme-heo .bg-\[\#4f65f0\],
+      #theme-heo .bg-\[\#425AEF\],
+      #theme-heo .bg-\[\#425aef\] {
         background-color: var(--heo-color-primary);
       }
 
@@ -112,6 +114,50 @@ const Style = () => {
 
       body {
         background-color: #f7f9fe;
+      }
+
+      #theme-heo {
+        --heo-card-border: #e3e8f7;
+        --heo-shadow-border: 0 8px 16px -4px #2c2d300c;
+        --heo-shadow-main: 0 8px 12px -3px rgba(66, 90, 239, 0.2);
+      }
+
+      .dark #theme-heo {
+        --heo-card-border: #42444a;
+      }
+
+      /* Heo 玻璃胶囊音乐条 */
+      #theme-heo .heo-nav-music-inner {
+        background: linear-gradient(
+          120deg,
+          rgba(45, 78, 110, 0.82),
+          rgba(36, 64, 96, 0.78)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-top-color: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(18px) saturate(160%);
+        -webkit-backdrop-filter: blur(18px) saturate(160%);
+        box-shadow:
+          0 10px 30px rgba(20, 40, 70, 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+
+      .dark #theme-heo .heo-nav-music-inner {
+        background: linear-gradient(
+          120deg,
+          rgba(40, 48, 62, 0.88),
+          rgba(28, 34, 46, 0.85)
+        );
+      }
+
+      /* 使用 Heo 音乐条时隐藏默认 APlayer 固定底栏，避免双播放器 */
+      body:has(#theme-heo) .aplayer.aplayer-fixed,
+      body:has(#heo-nav-music) .aplayer.aplayer-fixed {
+        display: none !important;
+      }
+
+      #theme-heo .heo-aside-card {
+        box-shadow: var(--heo-shadow-border, 0 8px 16px -4px #2c2d300c);
       }
 
       // 公告栏中的字体固定白色

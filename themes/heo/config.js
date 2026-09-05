@@ -6,26 +6,65 @@ const CONFIG = {
 
   HEO_INFO_CARD_AVATAR_BLUR: true, // 文章详情页个人资料卡头像样式。true：显示为模糊装饰头像；false：与首页头像保持一致
 
-  HEO_COLOR_PRIMARY: '#4f65f0',
-  HEO_COLOR_PRIMARY_HOVER: '#4f46e5',
+  // 主色对齐 blog.zhheo.com（白天蓝紫 / 夜晚金黄）
+  HEO_COLOR_PRIMARY: '#425AEF',
+  HEO_COLOR_PRIMARY_HOVER: '#425AEF',
   HEO_COLOR_PRIMARY_TEXT: '#ffffff',
-  HEO_COLOR_ACCENT: '#dca846',
+  HEO_COLOR_ACCENT: '#ffc848',
   HEO_COLOR_BG: '#f7f9fe',
   HEO_COLOR_BG_DARK: '#18171d',
   HEO_COLOR_CARD: '#ffffff',
   HEO_COLOR_CARD_DARK: '#1e1e1e',
   HEO_COLOR_CARD_MUTED: '#f1f3f8',
-  HEO_COLOR_BORDER: '#4f46e5',
-  HEO_COLOR_BORDER_DARK: '#dca846',
+  HEO_COLOR_BORDER: '#425AEF',
+  HEO_COLOR_BORDER_DARK: '#ffc848',
   HEO_COLOR_TEXT: '#111827',
   HEO_COLOR_TEXT_SECONDARY: '#4b5563',
 
   HEO_SITE_CREATE_TIME: '2021-09-21', // 建站日期，用于计算网站运行的第几天
 
-  // 首页顶部通知条滚动内容，如不需要可以留空 []
-  HEO_NOTICE_BAR: [
-    { title: '欢迎来到我的博客', url: 'https://blog.tangly1024.com' },
-    { title: '访问文档中心获取更多帮助', url: 'https://docs.tangly1024.com' }
+  // 顶栏「新更新」徽章；留空 '' 则不显示
+  HEO_NAV_UPDATE_BADGE: '新更新',
+  HEO_NAV_UPDATE_BADGE_URL: '/',
+
+  // Logo 项目大菜单（截图：博客/应用/服务/表情）
+  // Notion 写法：创建 type=Menu 的分组页，并打上标签 LogoMega；
+  // 其下按顺序创建 type=SubMenu 的子项，页面图标即菜单图标（可传图）
+  HEO_LOGO_MEGA_ENABLE: true,
+  HEO_LOGO_MEGA_FILTER: 'tag', // tag | category | all
+  HEO_LOGO_MEGA_TAG: 'LogoMega', // 与 Notion 标签/分类名一致
+  HEO_LOGO_MEGA_FOOTER_TEXT: '更多我的项目',
+  HEO_LOGO_MEGA_FOOTER_URL: '/about',
+  HEO_LOGO_MEGA_FOOTER_ICON: '', // 留空用站点头像
+  // Notion 尚未配置时的本地回退示例（有 Notion 数据后自动忽略）
+  HEO_LOGO_MEGA_GROUPS: [
+    {
+      title: '博客',
+      items: [
+        { title: '主页', href: '/', icon: 'fas fa-house' },
+        { title: '博客', href: '/', icon: 'fas fa-book' },
+        { title: '归档', href: '/archive', icon: 'fas fa-box-archive' }
+      ]
+    },
+    {
+      title: '服务',
+      items: [
+        { title: '关于', href: '/about', icon: 'fas fa-user' },
+        { title: '标签', href: '/tag', icon: 'fas fa-tags' },
+        { title: '统计', href: '/stats', icon: 'fas fa-chart-simple' }
+      ]
+    }
+  ],
+
+  // 首页顶部通知条；高相似度首页建议先留空 []，需要再自行加内容
+  HEO_NOTICE_BAR: [],
+
+  // 分类条置顶快捷入口（精选之后、Notion 分类之前）
+  // href 可指向 /tag/xxx 或 /category/xxx 或任意站内路径
+  HEO_CATEGORY_BAR_PINNED: [
+    { name: '热门', href: '/tag/热门', icon: 'fas fa-fire' },
+    { name: '必看', href: '/tag/必看', icon: 'fas fa-bolt' },
+    { name: '全部文章', href: '/archive', icon: 'fas fa-book' }
   ],
 
   // 英雄区左右侧组件颠倒位置
@@ -33,38 +72,44 @@ const CONFIG = {
   // 博客主体区左右侧组件颠倒位置
   HEO_HERO_BODY_REVERSE: false,
 
-  // 英雄区(首页顶部大卡)
+  // 英雄区轮播（Notion 文章封面 + 标题）
+  HEO_HERO_BANNER_TAG: '全站推荐', // 轮播底部角标文案
+  HEO_HERO_BANNER_MAX: 6, // 最多轮播几篇
+  HEO_HERO_BANNER_AUTOPLAY: true, // 自动轮播
+  HEO_HERO_BANNER_INTERVAL: 5000, // 轮播间隔 ms
+
+  // 英雄区右侧订阅/社群按钮（截图中的绿色条）
+  HEO_HERO_SUBSCRIBE_ENABLE: true,
+  HEO_HERO_SUBSCRIBE_TITLE: '公众号订阅',
+  HEO_HERO_SUBSCRIBE_URL: '', // 留空则回退到 HEO_SOCIAL_CARD_URL
+  HEO_HERO_SUBSCRIBE_ICON: 'fab fa-weixin',
+  HEO_HERO_SUBSCRIBE_COLOR: '#57bd6a',
+
+  // 兼容旧配置（旧版 Banner 文案，新英雄区不再主用）
   HEO_HERO_TITLE_1: '分享编程',
   HEO_HERO_TITLE_2: '与思维认知',
   HEO_HERO_TITLE_3: 'TANGLY1024.COM',
   HEO_HERO_TITLE_4: '新版上线',
   HEO_HERO_TITLE_5: 'NotionNext4.0 轻松定制主题',
   HEO_HERO_TITLE_LINK: 'https://tangly1024.com',
-  // 英雄区遮罩文字
   HEO_HERO_COVER_TITLE: '随便逛逛',
-
-  // 英雄区显示三个置顶分类
   HEO_HERO_CATEGORY_1: { title: '必看精选', url: '/tag/必看精选' },
   HEO_HERO_CATEGORY_2: { title: '热门文章', url: '/tag/热门文章' },
   HEO_HERO_CATEGORY_3: { title: '实用教程', url: '/tag/实用教程' },
 
-  // 英雄区右侧推荐文章标签, 例如 [推荐] , 最多六篇文章; 若留空白''，则推荐最近更新文章
+  // 轮播数据源：文章需带此 Notion 标签；留空 '' 则用最新文章
   HEO_HERO_RECOMMEND_POST_TAG: '推荐',
-  HEO_HERO_RECOMMEND_POST_SORT_BY_UPDATE_TIME: false, // 推荐文章排序，为`true`时将强制按最后修改时间倒序
-  //   HERO_RECOMMEND_COVER: 'https://cdn.pixabay.com/photo/2015/10/30/20/13/sunrise-1014712_1280.jpg', // 英雄区右侧图片
-
-  // 英雄区右侧推荐文章遮罩控制
-  HEO_HERO_RECOMMEND_COVER_ENABLE: false, // 是否显示推荐文章遮罩图片，true显示遮罩需点击查看，false直接显示推荐文章
+  HEO_HERO_RECOMMEND_POST_SORT_BY_UPDATE_TIME: false,
+  HEO_HERO_RECOMMEND_COVER_ENABLE: false,
 
   // 右侧个人资料卡牌欢迎语，点击可自动切换
   HEO_INFOCARD_GREETINGS: [
+    '出门走走，休息一下吧',
     '你好！我是',
-    '🔍 分享与热心帮助',
-    '🤝 专修交互与设计',
-    '🏃 脚踏实地行动派',
-    '🏠 智能家居小能手',
-    '🤖️ 数码科技爱好者',
-    '🧱 团队小组发动机'
+    '分享设计与科技生活',
+    '专修交互与设计',
+    '脚踏实地行动派',
+    '数码科技爱好者'
   ],
 
   // 个人资料底部按钮
@@ -142,11 +187,20 @@ const CONFIG = {
   HEO_SOCIAL_CARD_TITLE_3: '点击加入社群',
   HEO_SOCIAL_CARD_URL: 'https://docs.tangly1024.com/article/how-to-question',
 
+  // 侧栏「今日热门」：优先取带此标签的 Notion 文章，否则回退最新文章
+  HEO_WIDGET_HOT_POSTS: true,
+  HEO_HOT_POSTS_TAG: '热门',
+  HEO_HOT_POSTS_COUNT: 5,
+  HEO_HOT_POSTS_MORE_URL: '/tag/热门',
+  HEO_SIDE_TAG_LIMIT: 24,
+  HEO_STATS_MORE_URL: '/stats',
+  HEO_ANALYTICS_SHOW_HEADER: true,
+
   // 底部统计面板文案
-  HEO_POST_COUNT_TITLE: '文章数:',
-  HEO_SITE_TIME_TITLE: '建站天数:',
-  HEO_SITE_VISIT_TITLE: '访问量:',
-  HEO_SITE_VISITOR_TITLE: '访客数:',
+  HEO_POST_COUNT_TITLE: '文章数',
+  HEO_SITE_TIME_TITLE: '建站天数',
+  HEO_SITE_VISIT_TITLE: '访问量',
+  HEO_SITE_VISITOR_TITLE: '访客数',
 
   // *****  以下配置无效，只是预留开发 ****
   // 菜单配置
@@ -169,8 +223,8 @@ const CONFIG = {
   HEO_ARTICLE_NOT_BY_AI: false, // 显示非AI写作
   HEO_ARTICLE_RECOMMEND: true, // 文章关联推荐
 
-  HEO_WIDGET_LATEST_POSTS: true, // 显示最新文章卡
-  HEO_WIDGET_ANALYTICS: false, // 显示统计卡
+  HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）
+  HEO_WIDGET_ANALYTICS: true, // 显示统计卡
   HEO_WIDGET_TO_TOP: true,
   HEO_WIDGET_TO_COMMENT: true, // 跳到评论区
   HEO_WIDGET_DARK_MODE: true, // 夜间模式

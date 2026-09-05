@@ -1,6 +1,7 @@
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import CONFIG from '../config'
+import { excludeMegaMenus } from './Logo'
 import { MenuItemCollapse } from './MenuItemCollapse'
 
 export const MenuListSide = props => {
@@ -38,9 +39,11 @@ export const MenuListSide = props => {
     links = customNav.concat(links)
   }
 
-  // 如果 开启自定义菜单，则覆盖Page生成的菜单
   if (siteConfig('CUSTOM_MENU')) {
-    links = customMenu
+    const navMenus = excludeMegaMenus(customMenu, CONFIG)
+    if (Array.isArray(navMenus) && navMenus.length) {
+      links = navMenus
+    }
   }
 
   if (!links || links.length === 0) {

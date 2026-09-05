@@ -1,12 +1,15 @@
 import Live2D from '@/components/Live2D'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import { siteConfig } from '@/lib/config'
 import { AnalyticsCard } from './AnalyticsCard'
-import Card from './Card'
 import Catalog from './Catalog'
 import { InfoCard } from './InfoCard'
+import HotPostsCard from './HotPostsCard'
 import LatestPostsGroupMini from './LatestPostsGroupMini'
 import TagGroups from './TagGroups'
 import TouchMeCard from './TouchMeCard'
+import CONFIG from '../config'
 
 const FaceBookPage = dynamic(
   () => {
@@ -22,55 +25,56 @@ const FaceBookPage = dynamic(
 )
 
 /**
- * Hexo主题右侧栏
- * @param {*} props
- * @returns
+ * 右侧栏：今日热门 / 标签 / 网站统计（对齐 blog.zhheo.com）
  */
 export default function SideRight(props) {
-  const { post, lock, tagOptions, currentTag, rightAreaSlot } = props
-
-  // 只摘取标签的前60个，防止右侧过长
-  const sortedTags = tagOptions?.slice(0, 60) || []
+  const { post, lock, tagOptions, rightAreaSlot } = props
+  const router = useRouter()
+  const isHome = router.route === '/'
+  const showHot = siteConfig('HEO_WIDGET_HOT_POSTS', true, CONFIG)
+  const showLatest = siteConfig('HEO_WIDGET_LATEST_POSTS', false, CONFIG)
+  const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
+  const sortedTags = tagOptions?.slice(0, tagLimit) || []
 
   return (
-    <div id='sideRight' className='hidden xl:block w-72 space-y-4 h-full'>
-      <InfoCard {...props} className='w-72 wow fadeInUp' />
+    <div id='sideRight' className='hidden h-full w-72 space-y-3 xl:block'>
+      {!isHome && <InfoCard {...props} className='w-72 wow fadeInUp' />}
 
-      <div className='sticky top-20 space-y-4'>
-        {/* 文章页显示目录（上锁文章不显示） */}
+      <div className='sticky top-20 space-y-3'>
         {!lock && post && post.toc && post.toc.length > 0 && (
-          <Card className='bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] wow fadeInUp'>
+          <div className='heo-aside-card wow fadeInUp rounded-xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-3 dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
             <Catalog toc={post.toc} />
-          </Card>
+          </div>
         )}
 
-        {/* 联系交流群 */}
-        <div className='wow fadeInUp'>
-          <TouchMeCard />
-        </div>
+        {!isHome && (
+          <div className='wow fadeInUp'>
+            <TouchMeCard />
+          </div>
+        )}
 
-        {/* 最新文章列表 */}
-        <div
-          className={
-            'border wow fadeInUp  hover:border-[var(--heo-color-border)] dark:hover:border-[var(--heo-color-border-dark)] duration-200 dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)] dark:text-white rounded-xl lg:p-6 p-4 hidden lg:block bg-[var(--heo-color-card)]'
-          }>
-          <LatestPostsGroupMini {...props} />
-        </div>
+        {showHot && <HotPostsCard {...props} />}
+
+        {showLatest && (
+          <div className='heo-aside-card wow fadeInUp rounded-xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-3 dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+            <LatestPostsGroupMini {...props} />
+          </div>
+        )}
 
         {rightAreaSlot}
 
         <FaceBookPage />
         <Live2D />
 
-        {/* 标签和成绩 */}
-        <Card
-          className={
-            'bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] dark:text-white hover:border-[var(--heo-color-border)] dark:hover:border-[var(--heo-color-border-dark)] duration-200'
-          }>
-          <TagGroups tags={sortedTags} currentTag={currentTag} />
-          <hr className='mx-1 flex border-dashed relative my-4' />
+        {sortedTags.length > 0 && (
+          <div className='heo-aside-card wow fadeInUp rounded-xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-3 dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)] dark:text-white'>
+            <TagGroups tags={sortedTags} max={tagLimit} />
+          </div>
+        )}
+
+        <div className='heo-aside-card wow fadeInUp rounded-xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-3 dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)] dark:text-white'>
           <AnalyticsCard {...props} />
-        </Card>
+        </div>
       </div>
     </div>
   )

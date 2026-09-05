@@ -1,6 +1,7 @@
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import CONFIG from '../config'
+import { excludeMegaMenus } from './Logo'
 import { MenuItemDrop } from './MenuItemDrop'
 
 export const MenuListTop = props => {
@@ -35,9 +36,12 @@ export const MenuListTop = props => {
     links = links.concat(customNav)
   }
 
-  // 如果 开启自定义菜单，则覆盖Page生成的菜单
+  // 开启自定义菜单后用 Notion Menu；并排除 Logo 大菜单分组
   if (siteConfig('CUSTOM_MENU')) {
-    links = customMenu
+    const navMenus = excludeMegaMenus(customMenu, CONFIG)
+    if (Array.isArray(navMenus) && navMenus.length) {
+      links = navMenus
+    }
   }
 
   if (!links || links.length === 0) {
@@ -45,15 +49,14 @@ export const MenuListTop = props => {
   }
 
   return (
-    <>
-      <nav
-        id='nav-mobile'
-        className='leading-8 justify-center font-light w-full flex'>
-        {links?.map(
-          (link, index) =>
-            link && link.show && <MenuItemDrop key={index} link={link} />
-        )}
-      </nav>
-    </>
+    <nav
+      id='nav-mobile'
+      className='flex w-full justify-center font-light leading-8'>
+      {links?.map(
+        (link, index) =>
+          link &&
+          link.show !== false && <MenuItemDrop key={index} link={link} />
+      )}
+    </nav>
   )
 }
