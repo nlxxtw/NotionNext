@@ -1,4 +1,5 @@
 import { siteConfig } from '@/lib/config'
+import { useGlobal } from '@/lib/global'
 import { isBrowser } from '@/lib/utils'
 import throttle from 'lodash.throttle'
 import { useRouter } from 'next/router'
@@ -20,6 +21,7 @@ const Header = props => {
   const [activeIndex, setActiveIndex] = useState(0)
 
   const router = useRouter()
+  const { isDarkMode, toggleDarkMode } = useGlobal()
   const slideOverRef = useRef()
   const postBgRef = useRef(null)
   const post = props?.post
@@ -174,26 +176,40 @@ const Header = props => {
             </div>
           </div>
 
-          <div className='flex items-center justify-end gap-1'>
+          <div className='flex items-center justify-end gap-1.5'>
+            {/* 对齐安知鱼 #nav-right：中控台 / 骰子随机 / 搜索 / 回顶 / 菜单网格 */}
             <div
               className={`flex items-center gap-0.5 ${
                 textWhite
                   ? 'px-0.5 py-1'
-                  : 'heo-nav-chip rounded-full px-1.5 py-1'
+                  : 'heo-nav-chip rounded-full px-1 py-1'
               }`}>
+              <button
+                type='button'
+                aria-label={isDarkMode ? '浅色模式' : '深色模式'}
+                title={isDarkMode ? '浅色模式' : '深色模式'}
+                onClick={toggleDarkMode}
+                className={`heo-nav-icon-btn flex h-9 w-9 items-center justify-center rounded-full transition ${
+                  textWhite
+                    ? 'text-white hover:bg-white/15'
+                    : 'text-gray-700 hover:bg-black/5 dark:text-white dark:hover:bg-white/10'
+                }`}>
+                <i className='fas fa-desktop text-[15px]' aria-hidden />
+              </button>
               <RandomPostButton {...props} />
               <SearchButton {...props} />
               <ReadingProgress />
               <button
                 type='button'
                 aria-label='打开菜单'
+                title='菜单'
                 onClick={toggleMenuOpen}
-                className={`flex h-8 w-8 items-center justify-center rounded-full transition lg:hidden ${
+                className={`heo-nav-icon-btn flex h-9 w-9 items-center justify-center rounded-full transition ${
                   textWhite
                     ? 'text-white hover:bg-white/15'
                     : 'text-gray-700 hover:bg-black/5 dark:text-white dark:hover:bg-white/10'
                 }`}>
-                <i className='fas fa-th' />
+                <i className='fas fa-table-cells-large text-[14px]' aria-hidden />
               </button>
             </div>
             {!textWhite && (
@@ -201,8 +217,8 @@ const Header = props => {
                 href='/archives'
                 title='全部文章'
                 aria-label='全部文章'
-                className='heo-nav-chip hidden h-8 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-gray-700 transition hover:text-[var(--heo-color-primary)] dark:text-white dark:hover:text-[var(--heo-color-accent)] md:inline-flex'>
-                <i className='fas fa-archive text-[12px] opacity-80' aria-hidden />
+                className='heo-nav-chip hidden h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-gray-700 transition hover:text-[var(--heo-color-primary)] dark:text-white dark:hover:text-[var(--heo-color-accent)] md:inline-flex'>
+                <i className='fas fa-folder-open text-[12px] opacity-80' aria-hidden />
                 全部文章
               </SmartLink>
             )}

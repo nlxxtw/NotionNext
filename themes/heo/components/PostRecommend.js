@@ -2,63 +2,81 @@ import LazyImage from '@/components/LazyImage'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import SmartLink from '@/components/SmartLink'
+import { useRouter } from 'next/router'
 import CONFIG from '../config'
 
 /**
- * 关联推荐文章
- * @param {prev,next} param0
- * @returns
+ * 安知鱼风格相关推荐：左右分栏封面卡 +「随便逛逛」
  */
-export default function PostRecommend({ recommendPosts, siteInfo }) {
+export default function PostRecommend({ recommendPosts, siteInfo, latestPosts }) {
   const { locale } = useGlobal()
+  const router = useRouter()
 
   if (
     !siteConfig('HEO_ARTICLE_RECOMMEND', null, CONFIG) ||
     !recommendPosts ||
     recommendPosts.length === 0
   ) {
-    return <></>
+    return null
+  }
+
+  const list = recommendPosts.slice(0, 4)
+
+  const handleRandom = () => {
+    const pool = (latestPosts?.length ? latestPosts : recommendPosts).filter(
+      Boolean
+    )
+    if (!pool.length) return
+    const pick = pool[Math.floor(Math.random() * pool.length)]
+    if (pick?.slug || pick?.href) {
+      router.push(pick.href || `/${pick.slug}`)
+    }
   }
 
   return (
-    <div className='pt-8 hidden md:block'>
-      {/* 推荐文章 */}
-      <div className=' mb-2 px-1 flex flex-nowrap justify-between'>
-        <div className='dark:text-gray-300 text-lg font-bold'>
-          <i className='mr-2 fas fa-thumbs-up' />
-          {locale.COMMON.RELATE_POSTS}
-        </div>
+    <div className='heo-related-posts'>
+      <div className='heo-related-posts__head'>
+        <h3 className='heo-related-posts__title'>
+          <span className='heo-related-posts__star' aria-hidden>
+            ★
+          </span>
+          喜欢这篇文章的人也看了
+        </h3>
+        <button
+          type='button'
+          className='heo-related-posts__random'
+          onClick={handleRandom}
+          title={locale.MENU.WALK_AROUND}>
+          {locale.MENU.WALK_AROUND}
+        </button>
       </div>
 
-      {/* 文章列表 */}
-
-      <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
-        {recommendPosts.map(post => {
-          const headerImage = post?.pageCoverThumbnail
-            ? post?.pageCoverThumbnail
-            : siteInfo?.pageCover
-
+      <div className='heo-related-posts__list'>
+        {list.map(post => {
+          const cover =
+            post?.pageCoverThumbnail ||
+            post?.pageCover ||
+            siteInfo?.pageCover ||
+            ''
           return (
             <SmartLink
-              key={post?.id}
+              key={post?.id || post?.slug}
               title={post?.title}
-              href={post?.href}
-              passHref
-              className='flex h-40 cursor-pointer overflow-hidden rounded-2xl'>
-              <div className='h-full w-full relative group'>
-                <div className='flex items-center justify-center w-full h-full duration-300 '>
-                  <div className='z-10 text-lg px-4 font-bold text-white text-center shadow-text select-none'>
-                    {post.title}
-                  </div>
-                </div>
-                <LazyImage
-                  src={headerImage}
-                  className='absolute top-0 w-full h-full object-cover object-center group-hover:scale-110 group-hover:brightness-50 transform duration-200'
-                />
-                {/* 卡片的阴影遮罩，为了凸显图片上的文字 */}
-                <div className='h-3/4 w-full absolute left-0 bottom-0'>
-                  <div className='h-full w-full absolute opacity-80 group-hover:opacity-100 transition-all duration-1000 bg-gradient-to-b from-transparent to-black'></div>
-                </div>
+              href={post?.href || `/${post?.slug}`}
+              className='heo-related-card'>
+              <div className='heo-related-card__cover'>
+                {cover ? (
+                  <LazyImage
+                    src={cover}
+                    alt={post?.title || ''}
+                    className='h-full w-full object-cover'
+                  />
+                ) : (
+                  <div className='heo-related-card__fallback' />
+                )}
+              </div>
+              <div className='heo-related-card__body'>
+                <span className='heo-related-card__title'>{post.title}</span>
               </div>
             </SmartLink>
           )

@@ -4,11 +4,13 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useRef } from 'react'
 
-const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal'), { ssr: false })
+const AlgoliaSearchModal = dynamic(
+  () => import('@/components/AlgoliaSearchModal'),
+  { ssr: false }
+)
 
 /**
  * 搜索按钮
- * @returns
  */
 export default function SearchButton(props) {
   const { locale } = useGlobal()
@@ -23,10 +25,17 @@ export default function SearchButton(props) {
     }
   }
 
-  return <>
-        <div onClick={handleSearch} title={locale.NAV.SEARCH} alt={locale.NAV.SEARCH} className='cursor-pointer hover:bg-black hover:bg-opacity-10 rounded-full w-10 h-10 flex justify-center items-center duration-200 transition-all'>
-            <i title={locale.NAV.SEARCH} className="fa-solid fa-magnifying-glass" />
-        </div>
-        <AlgoliaSearchModal cRef={searchModal} {...props}/>
+  return (
+    <>
+      <button
+        type='button'
+        onClick={handleSearch}
+        title={locale.NAV.SEARCH}
+        aria-label={locale.NAV.SEARCH}
+        className='heo-nav-icon-btn flex h-9 w-9 cursor-pointer items-center justify-center rounded-full duration-200 transition-all hover:bg-black/10 dark:hover:bg-white/10'>
+        <i className='fa-solid fa-magnifying-glass text-[14px]' aria-hidden />
+      </button>
+      <AlgoliaSearchModal cRef={searchModal} {...props} />
     </>
+  )
 }

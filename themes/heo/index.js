@@ -12,7 +12,6 @@ import LazyImage from '@/components/LazyImage'
 import LoadingCover from '@/components/LoadingCover'
 import replaceSearchResult from '@/components/Mark'
 import NotionPage from '@/components/NotionPage'
-import ShareBar from '@/components/ShareBar'
 import WWAds from '@/components/WWAds'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
@@ -69,24 +68,24 @@ const LayoutBase = props => {
 
   const headerSlot = (
     <header className='relative bg-transparent'>
-      {/* 顶部导航：整条透明，仅悬浮毛玻璃胶囊 */}
+      {/* 顶部导航：整条透明，仅悬浮毛玻璃胶囊（首页 CategoryBar/Hero 移出 header，避免底部分层横线） */}
       <Header {...props} />
 
       {/* 通知横幅（HEO_NOTICE_BAR 为空则不渲染） */}
-      {router.route === '/' ? (
-        <>
-          <NoticeBar />
-          <div className='relative z-[1] mx-auto mb-3 w-full max-w-[86rem] bg-transparent px-5 pt-3'>
-            <CategoryBar {...props} />
-            <div className='mt-3'>
-              <Hero {...props} />
-            </div>
-          </div>
-        </>
-      ) : null}
+      {router.route === '/' ? <NoticeBar /> : null}
       {fullWidth ? null : <PostHeader {...props} isDarkMode={isDarkMode} />}
     </header>
   )
+
+  const homeHeroSlot =
+    router.route === '/' ? (
+      <div className='relative z-[1] mx-auto mb-3 w-full max-w-[86rem] bg-transparent px-5 pt-3'>
+        <CategoryBar {...props} />
+        <div className='mt-3'>
+          <Hero {...props} />
+        </div>
+      </div>
+    ) : null
 
   // 右侧栏 用户信息+标签列表
   const hideAside =
@@ -123,6 +122,7 @@ const LayoutBase = props => {
 
       {/* 顶部嵌入 导航栏，首页放hero，文章页放文章详情 */}
       {headerSlot}
+      {homeHeroSlot}
 
       {/* 主区块 */}
       <main
@@ -344,33 +344,46 @@ const LayoutSlug = props => {
               {/* 上一篇\下一篇文章 */}
               <PostAdjacent {...props} />
 
-              {/* 分享 */}
-              <ShareBar post={post} />
               {post?.type === 'Post' && (
-                <div className='px-5'>
-                  {/* 版权 */}
+                <div className='px-4 sm:px-5'>
                   <PostCopyright {...props} />
-                  {/* 文章推荐 */}
                   <PostRecommend {...props} />
                 </div>
               )}
             </article>
 
-            {/* 评论区 */}
+            {/* 评论区：安知鱼风格标题栏 */}
             {fullWidth ? null : (
-              <div className={`${commentEnable && post ? '' : 'hidden'}`}>
-                <hr className='my-4 border-dashed' />
-                {/* 评论区上方广告 */}
+              <div
+                id='post-comment'
+                className={`heo-post-comment ${commentEnable && post ? '' : 'hidden'}`}>
                 <div className='py-2'>
                   <AdSlot />
                 </div>
-                {/* 评论互动 */}
-                <div className='duration-200 overflow-x-auto px-5'>
-                  <div className='text-2xl dark:text-white'>
-                    <i className='fas fa-comment mr-1' />
-                    {locale.COMMON.COMMENTS}
+                <div className='overflow-x-auto px-4 sm:px-5'>
+                  <div className='heo-post-comment__head'>
+                    <div className='heo-post-comment__title'>
+                      <span className='heo-post-comment__dot' aria-hidden>
+                        ●
+                      </span>
+                      <i className='fas fa-comment heo-post-comment__icon' />
+                      {locale.COMMON.COMMENTS}
+                    </div>
+                    <div className='heo-post-comment__links'>
+                      <span className='heo-post-comment__link'>匿名评论</span>
+                      <a
+                        href={
+                          siteConfig('HEO_PRIVACY_URL', '', CONFIG) ||
+                          '#post-comment'
+                        }
+                        className='heo-post-comment__link'>
+                        隐私政策
+                      </a>
+                    </div>
                   </div>
-                  <Comment frontMatter={post} className='' />
+                  <div id='comment' className='heo-post-comment__body'>
+                    <Comment frontMatter={post} className='' />
+                  </div>
                 </div>
               </div>
             )}

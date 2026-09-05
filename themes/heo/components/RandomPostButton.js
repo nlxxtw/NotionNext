@@ -3,24 +3,28 @@ import { useGlobal } from '@/lib/global'
 import { useRouter } from 'next/router'
 
 /**
- * 随机跳转到一个文章
+ * 随机跳转到一个文章（安知鱼骰子图标）
  */
 export default function RandomPostButton(props) {
   const { latestPosts } = props
   const router = useRouter()
   const { locale } = useGlobal()
-  /**
-   * 随机跳转文章
-   */
+
   function handleClick() {
+    if (!latestPosts?.length) return
     const randomIndex = Math.floor(Math.random() * latestPosts.length)
     const randomPost = latestPosts[randomIndex]
     router.push(`${siteConfig('SUB_PATH', '')}/${randomPost?.slug}`)
   }
 
   return (
-        <div title={locale.MENU.WALK_AROUND} className='cursor-pointer hover:bg-black hover:bg-opacity-10 rounded-full w-10 h-10 flex justify-center items-center duration-200 transition-all' onClick={handleClick}>
-            <i className="fa-solid fa-podcast"></i>
-        </div>
+    <button
+      type='button'
+      title={locale.MENU.WALK_AROUND}
+      aria-label={locale.MENU.WALK_AROUND}
+      className='heo-nav-icon-btn flex h-9 w-9 cursor-pointer items-center justify-center rounded-full duration-200 transition-all hover:bg-black/10 dark:hover:bg-white/10'
+      onClick={handleClick}>
+      <i className='fa-solid fa-dice text-[15px]' aria-hidden />
+    </button>
   )
 }

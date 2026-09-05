@@ -961,6 +961,336 @@ const Style = () => {
         padding-bottom: 0.5rem;
       }
 
+      /* ========== 安知鱼风格：文章版权卡 / 标签 / 相关推荐 / 评论 ========== */
+      #theme-heo .heo-post-copyright-wrap {
+        margin-top: 4.5rem;
+      }
+      #theme-heo .heo-post-copyright {
+        position: relative;
+        margin: 2.5rem 0 1.25rem;
+        padding: 2.25rem 1.25rem 1rem;
+        border-radius: 12px;
+        background: var(--heo-color-card-muted, #f7f7f9);
+        border: 1px solid color-mix(in srgb, var(--heo-color-border, #e5e7eb) 35%, transparent);
+      }
+      .dark #theme-heo .heo-post-copyright {
+        background: color-mix(in srgb, #2a2b31 92%, #000);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+      #theme-heo .heo-post-copyright__avatar {
+        position: absolute;
+        left: 50%;
+        top: -33px;
+        width: 66px;
+        height: 66px;
+        margin-left: -33px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid #fff;
+        box-shadow: 0 8px 20px -10px rgba(40, 50, 90, 0.45);
+        z-index: 2;
+      }
+      .dark #theme-heo .heo-post-copyright__avatar {
+        border-color: #2a2b31;
+      }
+      #theme-heo .heo-post-copyright__avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #theme-heo .heo-post-copyright__author {
+        text-align: center;
+      }
+      #theme-heo .heo-post-copyright__name {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--heo-color-text, #111827);
+      }
+      #theme-heo .heo-post-copyright__bio {
+        margin-top: 6px;
+        font-size: 14px;
+        color: #8b8b91;
+      }
+      #theme-heo .heo-post-copyright__tools {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+      #theme-heo .heo-post-tool {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        min-width: 110px;
+        height: 40px;
+        padding: 0 1rem;
+        border-radius: 8px;
+        border: 0;
+        color: #fff !important;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        text-decoration: none !important;
+      }
+      #theme-heo .heo-post-tool:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+      #theme-heo .heo-post-tool--tip {
+        background: #ff4d4f;
+        box-shadow: 0 8px 16px -8px rgba(255, 77, 79, 0.75);
+      }
+      #theme-heo .heo-post-tool--sub {
+        background: #57bd6a;
+        box-shadow: 0 8px 16px -8px rgba(87, 189, 106, 0.75);
+      }
+      #theme-heo .heo-post-tool--share {
+        background: #425aef;
+        box-shadow: 0 8px 16px -8px rgba(66, 90, 239, 0.7);
+      }
+      #theme-heo .heo-post-copyright__notice {
+        margin: 0.9rem 0 0;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #8b8b91;
+      }
+      #theme-heo .heo-post-copyright__site {
+        color: var(--heo-color-primary, #425aef);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      #theme-heo .heo-post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.25rem 0 1.5rem;
+      }
+      #theme-heo .heo-post-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 0.85em;
+        color: var(--heo-color-text, #333);
+        background: var(--heo-color-card-muted, #f2f3f7);
+        transition: 0.2s ease;
+      }
+      .dark #theme-heo .heo-post-tag {
+        background: rgba(255, 255, 255, 0.06);
+        color: #e5e7eb;
+      }
+      #theme-heo .heo-post-tag:hover {
+        background: var(--heo-color-primary, #425aef);
+        color: #fff;
+      }
+      #theme-heo .heo-post-tag__hash {
+        opacity: 0.7;
+      }
+      #theme-heo .heo-post-tag__count {
+        min-width: 1.25rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        line-height: 1;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.06);
+      }
+      #theme-heo .heo-post-tag:hover .heo-post-tag__count {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      #theme-heo .heo-related-posts {
+        margin: 1.5rem 0 2rem;
+      }
+      #theme-heo .heo-related-posts__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+      }
+      #theme-heo .heo-related-posts__title {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--heo-color-text, #111827);
+      }
+      #theme-heo .heo-related-posts__star {
+        margin-right: 0.35rem;
+        color: var(--heo-color-primary, #425aef);
+      }
+      #theme-heo .heo-related-posts__random {
+        border: 0;
+        background: transparent;
+        color: #8b8b91;
+        font-size: 0.85rem;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      #theme-heo .heo-related-posts__random:hover {
+        color: var(--heo-color-primary, #425aef);
+      }
+      #theme-heo .heo-related-posts__list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+      }
+      #theme-heo .heo-related-card {
+        display: grid;
+        grid-template-columns: minmax(120px, 38%) 1fr;
+        overflow: hidden;
+        min-height: 108px;
+        border-radius: 14px;
+        background: var(--heo-color-card-muted, #f2f3f7);
+        text-decoration: none !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .dark #theme-heo .heo-related-card {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      #theme-heo .heo-related-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px -18px rgba(30, 40, 80, 0.45);
+      }
+      #theme-heo .heo-related-card__cover {
+        position: relative;
+        min-height: 108px;
+        overflow: hidden;
+        background: #1f2937;
+      }
+      #theme-heo .heo-related-card__cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #theme-heo .heo-related-card__fallback {
+        width: 100%;
+        height: 100%;
+        min-height: 108px;
+        background: linear-gradient(135deg, #425aef, #7c3aed);
+      }
+      #theme-heo .heo-related-card__body {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.15rem;
+      }
+      #theme-heo .heo-related-card__title {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.98rem;
+        font-weight: 650;
+        line-height: 1.45;
+        color: var(--heo-color-text, #1f2937);
+      }
+      .dark #theme-heo .heo-related-card__title {
+        color: #f3f4f6;
+      }
+      @media (max-width: 640px) {
+        #theme-heo .heo-related-card {
+          grid-template-columns: 34% 1fr;
+          min-height: 96px;
+        }
+        #theme-heo .heo-related-card__title {
+          font-size: 0.9rem;
+          -webkit-line-clamp: 2;
+        }
+      }
+
+      #theme-heo .heo-post-comment {
+        margin-top: 1.5rem;
+        padding-bottom: 1.5rem;
+      }
+      #theme-heo .heo-post-comment__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.85rem;
+      }
+      #theme-heo .heo-post-comment__title {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--heo-color-text, #111827);
+      }
+      #theme-heo .heo-post-comment__dot {
+        color: var(--heo-color-primary, #425aef);
+        font-size: 0.75rem;
+      }
+      #theme-heo .heo-post-comment__icon {
+        display: none;
+      }
+      #theme-heo .heo-post-comment__links {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        font-size: 0.82rem;
+        color: #8b8b91;
+      }
+      #theme-heo .heo-post-comment__link {
+        color: inherit;
+        cursor: default;
+      }
+      #theme-heo a.heo-post-comment__link {
+        cursor: pointer;
+      }
+      #theme-heo a.heo-post-comment__link:hover {
+        color: var(--heo-color-primary, #425aef);
+      }
+
+      /* Waline：对齐安知鱼评论框气质 */
+      #theme-heo .heo-post-comment__body .wl-panel,
+      #theme-heo .heo-post-comment__body .wl-editor {
+        border-radius: 12px !important;
+        background: var(--heo-color-card-muted, #f7f7f9) !important;
+        border: 1px solid transparent !important;
+        box-shadow: none !important;
+      }
+      .dark #theme-heo .heo-post-comment__body .wl-panel,
+      .dark #theme-heo .heo-post-comment__body .wl-editor {
+        background: rgba(255, 255, 255, 0.05) !important;
+      }
+      #theme-heo .heo-post-comment__body .wl-editor {
+        min-height: 140px !important;
+        padding: 0.85rem 1rem !important;
+        font-size: 0.95rem !important;
+      }
+      #theme-heo .heo-post-comment__body .wl-editor:focus {
+        border-color: color-mix(
+          in srgb,
+          var(--heo-color-primary, #425aef) 45%,
+          transparent
+        ) !important;
+      }
+      #theme-heo .heo-post-comment__body .wl-card,
+      #theme-heo .heo-post-comment__body .wl-item {
+        border-radius: 12px;
+        border: none;
+        border-top: 1px dashed rgba(0, 0, 0, 0.08);
+        background: transparent;
+        padding-top: 1rem;
+        margin-top: 0;
+      }
+      .dark #theme-heo .heo-post-comment__body .wl-card,
+      .dark #theme-heo .heo-post-comment__body .wl-item {
+        border-top-color: rgba(255, 255, 255, 0.1);
+      }
+      #theme-heo .heo-post-comment__body .wl-btn.primary {
+        border-radius: 8px !important;
+        background: var(--heo-color-primary, #425aef) !important;
+      }
+
       /* Waline：隐藏底部 RSS / Powered by / 空评论提示 */
       #theme-heo .wl-footer,
       #theme-heo .wl-power,

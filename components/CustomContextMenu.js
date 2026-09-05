@@ -1,7 +1,7 @@
 import useWindowSize from '@/hooks/useWindowSize'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
-import { THEMES, saveDarkModeToLocalStorage } from '@/themes/theme'
+import { saveDarkModeToLocalStorage } from '@/themes/theme'
 import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
@@ -102,16 +102,6 @@ export default function CustomContextMenu(props) {
   }
 
   /**
-   * 切换主题
-   */
-  function handleChangeTheme() {
-    const randomTheme = THEMES[Math.floor(Math.random() * THEMES.length)] // 从THEMES数组中 随机取一个主题
-    const query = router.query
-    query.theme = randomTheme
-    router.push({ pathname: router.pathname, query })
-  }
-
-  /**
    * 复制内容
    */
   function handleCopy() {
@@ -192,7 +182,7 @@ export default function CustomContextMenu(props) {
               onClick={handleJumpToRandomPost}
               title={locale.MENU.WALK_AROUND}
               className='w-full px-2 h-10 flex justify-start items-center flex-nowrap cursor-pointer hover:bg-blue-600 hover:text-white rounded-lg duration-200 transition-all'>
-              <i className='fa-solid fa-podcast mr-2' />
+              <i className='fa-solid fa-dice mr-2' />
               <div className='whitespace-nowrap'>{locale.MENU.WALK_AROUND}</div>
             </div>
           )}
@@ -262,15 +252,13 @@ export default function CustomContextMenu(props) {
           )}
 
           {CUSTOM_RIGHT_CLICK_CONTEXT_MENU_THEME_SWITCH && (
-            <div
-              onClick={handleChangeTheme}
-              title={locale.MENU.THEME_SWITCH}
+            <SmartLink
+              href='/archives'
+              title='全部文章'
               className='w-full px-2 h-10 flex justify-start items-center flex-nowrap cursor-pointer hover:bg-blue-600 hover:text-white rounded-lg duration-200 transition-all'>
-              <i className='fa-solid fa-palette mr-2' />
-              <div className='whitespace-nowrap'>
-                {locale.MENU.THEME_SWITCH}
-              </div>
-            </div>
+              <i className='fa-solid fa-archive mr-2' />
+              <div className='whitespace-nowrap'>全部文章</div>
+            </SmartLink>
           )}
         </div>
       </div>

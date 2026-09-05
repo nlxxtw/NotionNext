@@ -76,7 +76,7 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
           POST_TWO_COLS ? '' : 'md:h-44 md:flex-row'
         }`}>
         {pinned && showPageCover ? (
-          <span className='absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-[var(--heo-color-primary)]/92 px-2 py-0.5 text-[11px] font-bold text-white shadow-sm backdrop-blur-sm dark:bg-[var(--heo-color-accent)]/90 dark:text-gray-900'>
+          <span className='absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-[#ef4444] px-2 py-0.5 text-[11px] font-bold text-white shadow-sm'>
             <i className='fas fa-thumbtack text-[9px]' aria-hidden />
             置顶
           </span>
@@ -108,7 +108,7 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
           {showMeta ? (
             <div className='mb-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12px] font-medium leading-none text-gray-400 dark:text-gray-500'>
               {pinned && !showPageCover ? (
-                <span className='inline-flex items-center gap-1 rounded-full bg-[var(--heo-color-primary)]/10 px-2 py-0.5 text-[11px] font-bold text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]/15 dark:text-[var(--heo-color-accent)]'>
+                <span className='inline-flex items-center gap-1 rounded-full bg-[#ef4444]/12 px-2 py-0.5 text-[11px] font-bold text-[#ef4444] dark:bg-[#ef4444]/20 dark:text-[#f87171]'>
                   <i className='fas fa-thumbtack text-[9px]' aria-hidden />
                   置顶
                 </span>

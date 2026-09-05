@@ -147,6 +147,13 @@ const Footer = () => {
                       <a
                         key={`${link.title}-${index}`}
                         href={link.href}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        onClick={e => {
+                          // 部分部署下 SPA 拦截会让 .xml 点不动，强制新开
+                          e.preventDefault()
+                          window.open(link.href, '_blank', 'noopener,noreferrer')
+                        }}
                         className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
                         {link.title}
                       </a>

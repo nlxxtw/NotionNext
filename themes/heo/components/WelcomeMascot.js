@@ -22,9 +22,9 @@ export default function WelcomeMascot() {
       : rawImg
   const useCustomImg = Boolean(imgSrc)
 
-  const size = Math.max(
+  const size = Math.min(
     64,
-    Number(siteConfig('HEO_MASCOT_SIZE', 88, CONFIG)) || 88
+    Math.max(48, Number(siteConfig('HEO_MASCOT_SIZE', 56, CONFIG)) || 56)
   )
   const tipMs = Math.max(
     2000,

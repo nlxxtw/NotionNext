@@ -35,7 +35,12 @@ const WalineComponent = (props) => {
         noCopyright: true,
         noRss: true,
         locale: {
-          sofa: '' // 去掉 “No comment yet.”
+          sofa: '', // 去掉 “No comment yet.”
+          placeholder: '欢迎留下宝贵的建议啦~',
+          comment: '发送',
+          nick: '昵称',
+          mail: '邮箱',
+          link: '网址'
         },
         emoji: [
           '//npm.elemecdn.com/@waline/emojis@1.1.0/tieba',
