@@ -35,9 +35,9 @@ const TagGroups = ({ tags, className, max = 24, showHeader = true }) => {
             <SmartLink
               key={tag.name}
               href={`/tag/${encodeURIComponent(tag.name)}`}
-              className={`heo-tag-chip inline-flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-bold transition ${
+              className={`heo-tag-chip inline-flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-bold duration-75 ${
                 selected
-                  ? 'heo-tag-chip--active bg-[var(--heo-color-primary)] text-white dark:bg-[var(--heo-color-accent)] dark:text-black'
+                  ? 'heo-tag-chip--active bg-[#2c2f36] text-white dark:bg-[#3a3d46]'
                   : 'bg-[#f2f3f8] text-gray-700 dark:bg-white/[0.07] dark:text-gray-100'
               }`}>
               <span>{tag.name}</span>

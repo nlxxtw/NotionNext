@@ -129,7 +129,7 @@ const Logo = props => {
             <SmartLink
               href={footerUrl || '/'}
               onClick={() => setOpen(false)}
-              className='mt-3 flex items-center justify-center gap-2 rounded-full border-0 bg-[#f2f3f8] px-3 py-2 text-[13px] font-bold text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/[0.08] dark:text-gray-100 dark:hover:bg-[var(--heo-color-primary)]'>
+              className='mt-3 flex items-center justify-center gap-2 rounded-full border border-black/[0.06] bg-transparent px-3 py-2 text-[13px] font-bold text-gray-800 duration-75 hover:bg-[#2c2f36] hover:text-white dark:border-white/10 dark:text-gray-100 dark:hover:bg-[#3a3d46]'>
               {footerIcon && (
                 <LazyImage
                   src={footerIcon}
@@ -156,11 +156,9 @@ function MegaItem({ item, onNavigate }) {
       href={href}
       target={item.target}
       onClick={onNavigate}
-      className='group flex items-center gap-2 rounded-lg px-1.5 py-1.5 transition hover:bg-[var(--heo-color-card-muted)] dark:hover:bg-white/5'>
+      className='heo-mega-item group flex items-center gap-2 rounded-full px-2 py-1.5 text-gray-800 duration-75 hover:bg-[#2c2f36] hover:text-white dark:text-gray-100 dark:hover:bg-[#3a3d46]'>
       <MegaIcon icon={icon} title={title} />
-      <span className='truncate text-[13px] font-medium text-gray-800 group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)]'>
-        {title}
-      </span>
+      <span className='truncate text-[13px] font-medium'>{title}</span>
     </SmartLink>
   )
 }
@@ -168,7 +166,7 @@ function MegaItem({ item, onNavigate }) {
 function MegaIcon({ icon, title }) {
   if (!icon) {
     return (
-      <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)]/15 text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]/20 dark:text-[var(--heo-color-accent)]'>
+      <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-gray-700 duration-75 group-hover:bg-white/15 group-hover:text-white dark:bg-white/10 dark:text-gray-200'>
         <i className='fas fa-link text-[10px]' />
       </span>
     )
@@ -186,14 +184,14 @@ function MegaIcon({ icon, title }) {
   // FontAwesome
   if (icon.includes('fa-') || icon.startsWith('fa')) {
     return (
-      <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-card-muted)] text-gray-700 dark:bg-white/10 dark:text-gray-200'>
+      <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-gray-700 duration-75 group-hover:bg-white/15 group-hover:text-white dark:bg-white/10 dark:text-gray-200'>
         <i className={`${icon} text-[11px]`} />
       </span>
     )
   }
   // Emoji
   return (
-    <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-card-muted)] text-[15px] leading-none dark:bg-white/10'>
+    <span className='flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[#eef0f4] text-[15px] leading-none duration-75 group-hover:bg-white/15 dark:bg-white/10'>
       {icon}
     </span>
   )

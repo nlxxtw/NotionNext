@@ -67,16 +67,16 @@ export default function HotPostsCard(props) {
           <li key={post.id || post.slug || i}>
             <SmartLink
               href={post.href || `${siteConfig('SUB_PATH', '')}/${post.slug}`}
-              className='group flex items-start gap-2.5 rounded-xl px-1.5 py-2 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:hover:bg-[var(--heo-color-accent)]'>
+              className='group flex items-start gap-2.5 rounded-xl px-1.5 py-2 text-gray-800 duration-75 hover:bg-[#2c2f36] hover:text-white dark:text-gray-100 dark:hover:bg-[#3a3d46]'>
               <span
-                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold duration-75 ${
                   i === 0
-                    ? 'bg-[var(--heo-color-primary)] text-white group-hover:bg-white group-hover:text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]'
-                    : 'bg-[var(--heo-color-card-muted)] text-gray-600 group-hover:bg-white/25 group-hover:text-white dark:bg-white/10 dark:text-gray-300'
+                    ? 'bg-[#2c2f36] text-white group-hover:bg-white/20 dark:bg-[#3a3d46]'
+                    : 'bg-[#eef0f4] text-gray-600 group-hover:bg-white/20 group-hover:text-white dark:bg-white/10 dark:text-gray-300'
                 }`}>
                 {i + 1}
               </span>
-              <span className='line-clamp-2 text-[13px] font-medium leading-snug text-gray-800 group-hover:text-white dark:text-gray-100'>
+              <span className='line-clamp-2 text-[13px] font-medium leading-snug'>
                 {post.title}
               </span>
             </SmartLink>

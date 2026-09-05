@@ -446,26 +446,28 @@ const Style = () => {
         transform: scale(1.1);
       }
 
-      /* 标签云：无描边、无 #，浅底胶囊 */
+      /* 标签云：瞬时悬停，深色胶囊（对齐 Heo，无延迟上浮） */
       #theme-heo .heo-tag-chip {
         border: 0 !important;
         box-shadow: none !important;
         outline: none !important;
+        transition: background-color 75ms linear, color 75ms linear !important;
+        transform: none !important;
       }
 
       #theme-heo .heo-tag-chip:hover {
-        background: var(--heo-color-primary) !important;
+        background: #2c2f36 !important;
         color: #fff !important;
-        transform: translateY(-1px);
+        transform: none !important;
       }
 
       .dark #theme-heo .heo-tag-chip:hover {
-        background: var(--heo-color-accent) !important;
-        color: #111 !important;
+        background: #3a3d46 !important;
+        color: #fff !important;
       }
 
       #theme-heo .heo-tag-chip--active:hover {
-        filter: brightness(1.05);
+        filter: none;
       }
 
       #theme-heo .heo-tag-chip:hover sup {
