@@ -14,11 +14,10 @@ import CONFIG from '../config'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 顶栏：始终 fixed 悬浮胶囊；下滑才出淡毛玻璃底
- * 无实心白/黑导航条；兼容 Safari safe-area
+ * 顶栏：始终透明，无实心白/黑条、无毛玻璃胶囊
+ * 仅保留图标与文字；兼容 Safari safe-area
  */
 const Header = props => {
-  const [scrolled, setScrolled] = useState(false)
   const [textWhite, setTextWhite] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -40,7 +39,6 @@ const Header = props => {
       throttle(() => {
         const scrollS = window.scrollY || document.documentElement.scrollTop || 0
         const onPostHero = Boolean(postBgRef.current) && scrollS <= 1
-        setScrolled(scrollS > 8)
         setTextWhite(onPostHero)
       }, 80),
     []
@@ -53,7 +51,6 @@ const Header = props => {
 
   useEffect(() => {
     window.addEventListener('scroll', scrollTrigger, { passive: true })
-    // Safari 回弹 / 地址栏伸缩时补一次
     window.addEventListener('resize', scrollTrigger, { passive: true })
     return () => {
       window.removeEventListener('scroll', scrollTrigger)
@@ -86,16 +83,13 @@ const Header = props => {
 
   return (
     <>
-      {/* 占位：始终 fixed，避免内容顶到导航下；含 Safari 安全区 */}
       <div className='heo-nav-spacer h-16 shrink-0' aria-hidden />
 
       <nav
         id='nav'
-        className={`heo-nav heo-nav--fixed fixed left-0 right-0 top-0 z-[60] w-full transition-[background,box-shadow,backdrop-filter,-webkit-backdrop-filter,border-color] duration-300
-            ${textWhite ? 'text-white heo-nav--on-post' : 'text-black dark:text-white'}
-            ${scrolled ? 'heo-nav--scrolled' : 'heo-nav--top'}`}>
+        className={`heo-nav heo-nav--fixed heo-nav--plain fixed left-0 right-0 top-0 z-[60] w-full
+            ${textWhite ? 'text-white heo-nav--on-post' : 'text-black dark:text-white'}`}>
         <div className='heo-nav-inner mx-auto grid h-16 max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6'>
-          {/* 左：Logo + 徽章 */}
           <div className='flex min-w-0 items-center justify-start gap-2'>
             <Logo {...props} />
             {showUpdateBadge && (
@@ -115,7 +109,6 @@ const Header = props => {
             )}
           </div>
 
-          {/* 中：菜单胶囊 */}
           <div
             id='nav-bar-swipe'
             className='relative hidden h-full items-center justify-center lg:flex'>
@@ -125,7 +118,7 @@ const Header = props => {
                   ? 'opacity-100'
                   : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='heo-nav-chip rounded-full px-2.5 py-1.5'>
+              <div className='px-1 py-1'>
                 <MenuListTop {...props} />
               </div>
             </div>
@@ -135,7 +128,7 @@ const Header = props => {
                   ? 'opacity-100'
                   : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='heo-nav-chip rounded-full px-4 py-1.5'>
+              <div className='px-2 py-1'>
                 <h1 className='text-center text-sm font-bold text-gray-700 dark:text-gray-200'>
                   {siteConfig('AUTHOR') || siteConfig('TITLE')}
                   {siteConfig('BIO') && <> · </>}
@@ -145,9 +138,8 @@ const Header = props => {
             </div>
           </div>
 
-          {/* 右：工具胶囊 */}
-          <div className='flex items-center justify-end gap-2'>
-            <div className='heo-nav-chip flex items-center gap-0.5 rounded-full px-1.5 py-1'>
+          <div className='flex items-center justify-end gap-1'>
+            <div className='flex items-center gap-0.5 px-0.5 py-1'>
               <RandomPostButton {...props} />
               <SearchButton {...props} />
               <ReadingProgress />

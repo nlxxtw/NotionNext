@@ -6,17 +6,15 @@ import CONFIG from '../config'
 import { TagCloverIcon } from './TagGroups'
 
 /**
- * 左上角 Logo：默认「四瓣 + 站名」；悬停换成「回主页」按钮
- * 大菜单无缝衔接，不会鼠标一移就关掉
- * Notion 可配：TITLE / HEO_LOGO_* / Menu 标签 LogoMega
+ * 左上角 Logo：默认「四瓣 + 站名」；悬停换成「回主页」
+ * 悬停不弹窗；HEO_LOGO_MEGA_ENABLE 时仅点击图标才打开大菜单
  */
 const Logo = props => {
   const { siteInfo, customMenu } = props
-  const enable = siteConfig('HEO_LOGO_MEGA_ENABLE', true, CONFIG)
+  const enable = parseBool(siteConfig('HEO_LOGO_MEGA_ENABLE', false, CONFIG))
   const [open, setOpen] = useState(false)
   const [pillHover, setPillHover] = useState(false)
   const wrapRef = useRef(null)
-  const closeTimer = useRef(null)
 
   const groups = useMemo(
     () => buildMegaGroups(customMenu, CONFIG),
@@ -37,7 +35,6 @@ const Logo = props => {
     '返回博客主页',
     CONFIG
   )
-  // Notion Config 里 TITLE；也可用 HEO_LOGO_TITLE 单独覆盖显示名
   const logoTitle =
     siteConfig('HEO_LOGO_TITLE', '', CONFIG) ||
     siteConfig('TITLE') ||
@@ -47,28 +44,6 @@ const Logo = props => {
     siteConfig('HEO_LOGO_USE_SITE_ICON', false, CONFIG)
   )
   const logoIcon = useSiteIcon ? siteInfo?.icon : ''
-
-  const clearClose = () => {
-    if (closeTimer.current) {
-      window.clearTimeout(closeTimer.current)
-      closeTimer.current = null
-    }
-  }
-
-  const openMenu = () => {
-    if (!enable) return
-    clearClose()
-    setOpen(true)
-  }
-
-  const scheduleClose = () => {
-    clearClose()
-    closeTimer.current = window.setTimeout(() => setOpen(false), 160)
-  }
-
-  useEffect(() => {
-    return () => clearClose()
-  }, [])
 
   useEffect(() => {
     if (!open) return undefined
@@ -94,7 +69,10 @@ const Logo = props => {
       aria-expanded={open}
       aria-haspopup='true'
       aria-label='打开菜单'
-      onClick={() => (enable ? setOpen(v => !v) : null)}
+      onClick={e => {
+        e.stopPropagation()
+        setOpen(v => !v)
+      }}
       className='heo-logo-menu-btn flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-800 transition hover:bg-black/[0.05] dark:text-gray-100 dark:hover:bg-white/10'>
       {logoIcon ? (
         <LazyImage
@@ -110,7 +88,6 @@ const Logo = props => {
     </button>
   )
 
-  // 默认站名；悬停胶囊时换成回主页
   const titleOrHome = (
     <div className='relative flex h-9 min-w-[3.25rem] items-center'>
       <span
@@ -125,33 +102,27 @@ const Logo = props => {
         href='/'
         aria-label={homeTip}
         title={homeTip}
-        className={`heo-logo-home-btn group/home relative flex h-9 shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)] px-3.5 text-white shadow-[0_8px_16px_-10px_rgba(66,90,239,0.9)] transition duration-150 hover:brightness-105 dark:bg-[var(--heo-color-accent)] dark:text-gray-900 dark:shadow-none ${
+        className={`heo-logo-home-btn relative flex h-9 shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)] px-3.5 text-white shadow-[0_8px_16px_-10px_rgba(66,90,239,0.9)] transition duration-150 hover:brightness-105 dark:bg-[var(--heo-color-accent)] dark:text-gray-900 dark:shadow-none ${
           pillHover
             ? 'relative opacity-100'
             : 'pointer-events-none absolute opacity-0'
         }`}>
         <i className='fas fa-home text-[14px]' aria-hidden />
-        <span className='heo-logo-home-tip pointer-events-none absolute left-1/2 top-[calc(100%+10px)] z-[90] -translate-x-1/2 whitespace-nowrap rounded-lg border border-black/[0.06] bg-white px-2.5 py-1.5 text-[12px] font-semibold text-gray-700 opacity-0 shadow-[0_10px_24px_-12px_rgba(40,50,90,0.45)] transition duration-150 group-hover/home:opacity-100 dark:border-white/10 dark:bg-[#2a2b31] dark:text-gray-100'>
-          {homeTip}
-        </span>
       </SmartLink>
     </div>
   )
 
   const pill = (
     <div
-      className='heo-logo-trigger heo-nav-chip heo-nav-home-pill inline-flex items-center gap-1 rounded-full py-1 pl-1 pr-2.5'
-      onMouseEnter={() => {
-        setPillHover(true)
-        openMenu()
-      }}
+      className='heo-logo-trigger heo-nav-home-pill inline-flex items-center gap-1 rounded-full py-1 pl-0.5 pr-1.5'
+      onMouseEnter={() => setPillHover(true)}
       onMouseLeave={() => setPillHover(false)}>
       {enable ? (
         menuBtn
       ) : (
         <SmartLink
           href='/'
-          className='flex h-9 w-9 items-center justify-center rounded-full text-gray-800 dark:text-gray-100'
+          className='flex h-9 w-9 items-center justify-center rounded-full text-gray-800 transition hover:bg-black/[0.05] dark:text-gray-100 dark:hover:bg-white/10'
           aria-label='首页'>
           <TagCloverIcon className='h-4 w-4' />
         </SmartLink>
@@ -161,25 +132,13 @@ const Logo = props => {
   )
 
   if (!enable) {
-    return (
-      <div
-        className='relative inline-flex'
-        onMouseEnter={() => setPillHover(true)}
-        onMouseLeave={() => setPillHover(false)}>
-        {pill}
-      </div>
-    )
+    return <div className='relative inline-flex'>{pill}</div>
   }
 
   return (
-    <div
-      ref={wrapRef}
-      className='relative inline-flex'
-      onMouseEnter={openMenu}
-      onMouseLeave={scheduleClose}>
+    <div ref={wrapRef} className='relative inline-flex'>
       {pill}
 
-      {/* pt-2 填满缝隙，鼠标移入下拉不会断 hover */}
       <div
         className={`absolute left-0 top-full z-[80] w-[min(440px,calc(100vw-1.5rem))] origin-top-left pt-2 transition duration-200 ${
           open

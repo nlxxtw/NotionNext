@@ -171,19 +171,19 @@ const Style = () => {
         box-shadow: none;
       }
 
-      /* 顶栏胶囊：半透明毛玻璃，对齐 Heo 悬浮感 */
+      /* 顶栏：无胶囊毛玻璃、无实心底条 */
       #theme-heo .heo-nav-chip {
-        background: rgba(255, 255, 255, 0.55);
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        box-shadow: 0 4px 16px -8px rgba(40, 50, 80, 0.22);
-        backdrop-filter: blur(16px) saturate(180%);
-        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
       }
 
       .dark #theme-heo .heo-nav-chip {
-        background: rgba(40, 42, 50, 0.45);
-        border-color: rgba(255, 255, 255, 0.1);
-        box-shadow: none;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
       }
 
       /* 左上角回主页胶囊：文章头图上用白底深色图标（见下方更具体规则） */
@@ -239,11 +239,11 @@ const Style = () => {
         overflow: visible;
       }
 
-      /* 文章页头上：胶囊略加深，保证白字可读 */
+      /* 文章页头上：透明底，仅白字可读 */
       #theme-heo #nav.text-white .heo-nav-chip {
-        background: rgba(0, 0, 0, 0.18) !important;
-        border-color: rgba(255, 255, 255, 0.18) !important;
-        box-shadow: none;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
         color: #fff !important;
       }
 
@@ -276,28 +276,23 @@ const Style = () => {
         height: calc(4rem + env(safe-area-inset-top, 0px));
       }
 
-      /* 页顶：完全透明，只剩悬浮胶囊 */
-      #theme-heo .heo-nav--top {
+      /* 顶栏始终透明：无白/黑实心条、无整条毛玻璃 */
+      #theme-heo .heo-nav--top,
+      #theme-heo .heo-nav--scrolled,
+      #theme-heo .heo-nav--plain {
         background: transparent !important;
         border-bottom: 0 !important;
         box-shadow: none !important;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
       }
 
-      /* 下滑：淡毛玻璃整条，不是实心白/黑 */
-      #theme-heo .heo-nav--scrolled {
-        background: rgba(255, 255, 255, 0.28) !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-        box-shadow: 0 10px 36px -24px rgba(40, 50, 80, 0.35);
-        backdrop-filter: blur(22px) saturate(190%);
-        -webkit-backdrop-filter: blur(22px) saturate(190%);
-      }
-
-      .dark #theme-heo .heo-nav--scrolled {
-        background: rgba(18, 18, 22, 0.42) !important;
-        border-bottom-color: rgba(255, 255, 255, 0.06);
-        box-shadow: none;
+      .dark #theme-heo .heo-nav--top,
+      .dark #theme-heo .heo-nav--scrolled,
+      .dark #theme-heo .heo-nav--plain {
+        background: transparent !important;
+        border-bottom: 0 !important;
+        box-shadow: none !important;
       }
 
       /* 无彩色更新徽章 */
@@ -679,21 +674,16 @@ const Style = () => {
         color: rgba(235, 235, 245, 0.48) !important;
       }
 
-      /* Logo 白胶囊：文章头白字时仍可读 */
-      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip {
-        background: rgba(255, 255, 255, 0.92) !important;
-        border-color: rgba(255, 255, 255, 0.7) !important;
-        color: #111827 !important;
-      }
-      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip .heo-logo-menu-btn,
-      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip span,
-      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip svg {
-        color: #111827 !important;
+      /* Logo：文章头图上用白字，无白胶囊底 */
+      #theme-heo #nav.text-white .heo-logo-trigger .heo-logo-menu-btn,
+      #theme-heo #nav.text-white .heo-logo-trigger span:not(.heo-logo-home-btn),
+      #theme-heo #nav.text-white .heo-logo-trigger svg {
+        color: #fff !important;
         fill: currentColor;
       }
-      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip a:not(.heo-logo-home-btn),
-      #theme-heo #nav.text-white .heo-logo-trigger.heo-nav-chip button {
-        color: #111827 !important;
+      #theme-heo #nav.text-white .heo-logo-trigger a:not(.heo-logo-home-btn),
+      #theme-heo #nav.text-white .heo-logo-trigger button {
+        color: #fff !important;
       }
 
       /* 右侧栏吸顶跟随到底 */
