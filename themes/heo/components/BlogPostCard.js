@@ -2,14 +2,14 @@ import LazyImage from '@/components/LazyImage'
 import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 import { isPostPinned } from '@/lib/utils/pinnedPosts'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CONFIG from '../config'
 import CommentAvatarStack from './CommentAvatarStack'
 import { isPostRead, postReadKey } from '../lib/readPosts'
 
 /**
  * 文章卡（对齐 blog.zhheo.com）
- * 标题上方只保留「未读」；去掉分类/标签/四瓣图标
+ * 标题上方：分类 + 标签 + 未读；底栏头像与日期
  */
 const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
   const showPreview =
@@ -35,6 +35,27 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
   const [unread, setUnread] = useState(false)
   const topTag = siteConfig('TOP_TAG', '置顶')
   const pinned = isPostPinned(post, topTag)
+
+  const cardTags = useMemo(() => {
+    const items = Array.isArray(post?.tagItems)
+      ? post.tagItems
+      : Array.isArray(post?.tags)
+        ? post.tags.map(t => (typeof t === 'string' ? { name: t } : t))
+        : []
+    return items
+      .map(t => ({
+        name: String(t?.name || t?.title || '').trim()
+      }))
+      .filter(t => t.name && t.name !== topTag)
+      .slice(0, 3)
+  }, [post?.tagItems, post?.tags, topTag])
+
+  const categoryName = String(post?.category || '').trim()
+  const showMeta =
+    Boolean(categoryName) ||
+    cardTags.length > 0 ||
+    unread ||
+    (pinned && !showPageCover)
 
   useEffect(() => {
     const sync = () => setUnread(Boolean(readKey) && !isPostRead(readKey))
@@ -83,15 +104,30 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
           className={`flex flex-1 flex-col px-4 pb-4 pt-3.5 ${
             POST_TWO_COLS ? 'min-h-[148px]' : 'md:w-7/12'
           }`}>
-          {/* 「未读」；读过后整行消失；无封面时置顶也在此显示 */}
-          {unread || (pinned && !showPageCover) ? (
-            <div className='mb-2 flex flex-wrap items-center gap-2 text-[12px] font-medium leading-none text-gray-400 dark:text-gray-500'>
+          {/* 分类 / 标签 / 未读 —— 对齐 Heo 灰字标签行 */}
+          {showMeta ? (
+            <div className='mb-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12px] font-medium leading-none text-gray-400 dark:text-gray-500'>
               {pinned && !showPageCover ? (
                 <span className='inline-flex items-center gap-1 rounded-full bg-[var(--heo-color-primary)]/10 px-2 py-0.5 text-[11px] font-bold text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]/15 dark:text-[var(--heo-color-accent)]'>
                   <i className='fas fa-thumbtack text-[9px]' aria-hidden />
                   置顶
                 </span>
               ) : null}
+              {categoryName ? (
+                <SmartLink
+                  href={`/category/${encodeURIComponent(categoryName)}`}
+                  className='transition hover:text-[var(--heo-color-primary)] dark:hover:text-[var(--heo-color-accent)]'>
+                  {categoryName}
+                </SmartLink>
+              ) : null}
+              {cardTags.map(tag => (
+                <SmartLink
+                  key={tag.name}
+                  href={`/tag/${encodeURIComponent(tag.name)}`}
+                  className='transition hover:text-[var(--heo-color-primary)] dark:hover:text-[var(--heo-color-accent)]'>
+                  {tag.name}
+                </SmartLink>
+              ))}
               {unread ? <span>未读</span> : null}
             </div>
           ) : null}
