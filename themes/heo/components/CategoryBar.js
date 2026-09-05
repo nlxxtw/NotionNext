@@ -7,7 +7,7 @@ import { ChevronDoubleLeft, ChevronDoubleRight } from '@/components/HeroIcons'
 import CONFIG from '../config'
 
 /**
- * 分类条：纯文字胶囊，无前置图标（对齐 blog.zhheo.com）
+ * 分类条：半透明白胶囊 + 更大触控高度（对齐现网比例）
  */
 export default function CategoryBar(props) {
   const { categoryOptions, tagOptions } = props
@@ -41,25 +41,17 @@ export default function CategoryBar(props) {
   return (
     <div
       id='category-bar'
-      className='home-category-bar mb-0 flex w-full flex-nowrap items-center justify-between gap-2'>
+      className='home-category-bar mb-3 flex w-full flex-nowrap items-center justify-between gap-2.5'>
       <div
         id='category-bar-items'
         ref={categoryBarItemsRef}
-        className='scroll-hidden scroll-smooth flex max-w-full flex-nowrap items-center gap-2 overflow-x-auto pr-1'>
+        className='scroll-hidden scroll-smooth flex max-w-full flex-nowrap items-center gap-2.5 overflow-x-auto py-0.5 pr-1'>
         {showHome && <MenuItem href='/' name={homeLabel} featured />}
         {pinned.map((item, index) => (
-          <MenuItem
-            key={`pin-${index}`}
-            href={item.href}
-            name={item.name}
-          />
+          <MenuItem key={`pin-${index}`} href={item.href} name={item.name} />
         ))}
         {notionTagShortcuts.map((item, index) => (
-          <MenuItem
-            key={`tag-${index}`}
-            href={item.href}
-            name={item.name}
-          />
+          <MenuItem key={`tag-${index}`} href={item.href} name={item.name} />
         ))}
         {categoryOptions?.map((c, index) => (
           <MenuItem
@@ -70,11 +62,11 @@ export default function CategoryBar(props) {
         ))}
       </div>
 
-      <div className='flex shrink-0 items-center gap-1.5'>
+      <div className='flex shrink-0 items-center gap-2'>
         <button
           type='button'
           aria-label='滚动分类'
-          className='flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-black/5 hover:text-[var(--heo-color-primary)] dark:hover:bg-white/10 dark:hover:text-[var(--heo-color-accent)]'
+          className='heo-cat-chip flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'
           onClick={handleToggleScroll}>
           {scrollRight ? (
             <ChevronDoubleLeft className='h-4 w-4' />
@@ -84,7 +76,7 @@ export default function CategoryBar(props) {
         </button>
         <SmartLink
           href='/categories'
-          className='inline-flex h-8 items-center rounded-full bg-[var(--heo-color-card-muted)] px-3.5 text-sm font-bold text-gray-700 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/10 dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)] dark:hover:text-black'>
+          className='heo-cat-chip inline-flex h-10 items-center rounded-full px-4 text-[15px] font-bold text-gray-700 transition hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'>
           {locale.COMMON.MORE || '更多'}
         </SmartLink>
       </div>
@@ -106,10 +98,10 @@ const MenuItem = ({ href, name, featured = false }) => {
   return (
     <SmartLink
       href={href}
-      className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3.5 text-sm font-bold leading-none transition ${
+      className={`inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full px-4 text-[15px] font-bold leading-none transition ${
         selected
-          ? 'bg-[var(--heo-color-primary)] text-white shadow-[0_8px_12px_-3px_rgba(66,90,239,0.28)] dark:bg-[var(--heo-color-accent)] dark:text-black'
-          : 'bg-transparent text-gray-600 hover:bg-black/[0.04] hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-[var(--heo-color-accent)]'
+          ? 'bg-[var(--heo-color-primary)] text-white shadow-[0_8px_16px_-4px_rgba(122,93,250,0.35)] dark:bg-[var(--heo-color-accent)] dark:text-black'
+          : 'heo-cat-chip text-gray-700 hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'
       }`}>
       <span>{name}</span>
     </SmartLink>

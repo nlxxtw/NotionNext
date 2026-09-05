@@ -7,20 +7,32 @@ import { themeConsoleStyle } from '@/lib/themeConsoleStyle'
  * @returns
  */
 const Style = () => {
+  const primary = CONFIG.HEO_COLOR_PRIMARY || '#7a5dfa'
+  const primaryHover = CONFIG.HEO_COLOR_PRIMARY_HOVER || primary
+  const primaryText = CONFIG.HEO_COLOR_PRIMARY_TEXT || '#ffffff'
+  const accent = CONFIG.HEO_COLOR_ACCENT || '#ffc848'
+  const bg = CONFIG.HEO_COLOR_BG || '#f7f9fe'
+  const bgDark = CONFIG.HEO_COLOR_BG_DARK || '#18171d'
+  const card = CONFIG.HEO_COLOR_CARD || '#ffffff'
+  const cardDark = CONFIG.HEO_COLOR_CARD_DARK || '#1e1e1e'
+  const cardMuted = CONFIG.HEO_COLOR_CARD_MUTED || '#f1f3f8'
+  const border = CONFIG.HEO_COLOR_BORDER || primary
+  const borderDark = CONFIG.HEO_COLOR_BORDER_DARK || accent
+
   return (
     <style jsx global>{`
       #theme-heo {
-        --heo-color-primary: #425aef;
-        --heo-color-primary-hover: #425aef;
-        --heo-color-primary-text: #ffffff;
-        --heo-color-accent: #ffc848;
-        --heo-color-bg: #f7f9fe;
-        --heo-color-bg-dark: #18171d;
-        --heo-color-card: #ffffff;
-        --heo-color-card-dark: #1e1e1e;
-        --heo-color-card-muted: #f1f3f8;
-        --heo-color-border: #425aef;
-        --heo-color-border-dark: #ffc848;
+        --heo-color-primary: ${primary};
+        --heo-color-primary-hover: ${primaryHover};
+        --heo-color-primary-text: ${primaryText};
+        --heo-color-accent: ${accent};
+        --heo-color-bg: ${bg};
+        --heo-color-bg-dark: ${bgDark};
+        --heo-color-card: ${card};
+        --heo-color-card-dark: ${cardDark};
+        --heo-color-card-muted: ${cardMuted};
+        --heo-color-border: ${border};
+        --heo-color-border-dark: ${borderDark};
         --heo-color-text-light: #000000;
         --heo-color-text-secondary-light: #4b5563;
         --heo-color-text-dark: #f3f4f6;
@@ -113,17 +125,32 @@ const Style = () => {
       }
 
       body {
-        background-color: #f7f9fe;
+        background-color: ${bg};
       }
 
       #theme-heo {
         --heo-card-border: rgba(0, 0, 0, 0.06);
         --heo-shadow-border: 0 8px 16px -4px rgba(44, 45, 48, 0.08);
-        --heo-shadow-main: 0 8px 12px -3px rgba(66, 90, 239, 0.2);
+        --heo-shadow-main: 0 8px 12px -3px ${primary}33;
       }
 
       .dark #theme-heo {
         --heo-card-border: rgba(255, 255, 255, 0.1);
+      }
+
+      /* 分类条半透明白胶囊 */
+      #theme-heo .heo-cat-chip {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        box-shadow: 0 4px 14px -6px rgba(44, 45, 48, 0.12);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+      }
+
+      .dark #theme-heo .heo-cat-chip {
+        background: rgba(40, 42, 50, 0.72);
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: none;
       }
 
       /* 柔和卡片：浅灰边，去掉蓝色描边 */
@@ -172,9 +199,23 @@ const Style = () => {
 
       #theme-heo #darkModeButton,
       #theme-heo #darkModeButton:focus,
-      #theme-heo #darkModeButton:focus-visible {
+      #theme-heo #darkModeButton:focus-visible,
+      #theme-heo #darkModeButton:hover,
+      #theme-heo .heo-dark-toggle {
         outline: none !important;
+        border: 0 !important;
         box-shadow: none !important;
+        background: #e9ebf2 !important;
+      }
+
+      .dark #theme-heo #darkModeButton,
+      .dark #theme-heo .heo-dark-toggle {
+        background: #2a2c34 !important;
+      }
+
+      #theme-heo .heo-dark-toggle-knob {
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+        color: #374151;
       }
 
       /* Heo 玻璃胶囊音乐条 */

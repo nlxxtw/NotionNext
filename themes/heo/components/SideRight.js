@@ -32,7 +32,13 @@ export default function SideRight(props) {
   const isHome = router.route === '/'
   const showHot = siteConfig('HEO_WIDGET_HOT_POSTS', true, CONFIG)
   const showLatest = siteConfig('HEO_WIDGET_LATEST_POSTS', false, CONFIG)
-  const showSocial = siteConfig('HEO_SOCIAL_CARD', true, CONFIG)
+  // 首页英雄区已有公众号订阅时，侧栏不再重复
+  const heroSubscribe = parseBool(
+    siteConfig('HEO_HERO_SUBSCRIBE_ENABLE', true, CONFIG)
+  )
+  const showSocial =
+    parseBool(siteConfig('HEO_SOCIAL_CARD', true, CONFIG)) &&
+    !(isHome && heroSubscribe)
   const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', false, CONFIG)
   const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
   const sortedTags = tagOptions?.slice(0, tagLimit) || []
@@ -86,4 +92,16 @@ export default function SideRight(props) {
       </div>
     </aside>
   )
+}
+
+function parseBool(value) {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value)
+    } catch {
+      return value.toLowerCase() === 'true'
+    }
+  }
+  return Boolean(value)
 }

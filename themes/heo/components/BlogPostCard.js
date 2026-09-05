@@ -6,7 +6,7 @@ import CONFIG from '../config'
 import TagItemMini from './TagItemMini'
 
 /**
- * 文章卡：大屏双列、封面在上；无蓝色描边
+ * 文章卡：双列紧凑比例，封面略矮，避免压过分类条
  */
 const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
   const showPreview =
@@ -29,14 +29,16 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
     <article className='h-full'>
       <div
         data-wow-delay='.2s'
-        className={`heo-card wow fadeInUp group flex h-full w-full flex-col overflow-hidden rounded-xl bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] ${
-          POST_TWO_COLS ? '' : 'md:h-52 md:flex-row'
+        className={`heo-card wow fadeInUp group flex h-full w-full flex-col overflow-hidden rounded-[18px] bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] ${
+          POST_TWO_COLS ? '' : 'md:h-44 md:flex-row'
         }`}>
         {showPageCover && (
           <SmartLink href={post?.href} className='block shrink-0'>
             <div
               className={`w-full overflow-hidden ${
-                POST_TWO_COLS ? 'aspect-[16/9]' : 'h-48 md:h-full md:w-5/12'
+                POST_TWO_COLS
+                  ? 'aspect-[2/1] max-h-[168px]'
+                  : 'h-36 md:h-full md:w-5/12'
               }`}>
               <LazyImage
                 priority={index === 0}
@@ -49,12 +51,12 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
         )}
 
         <div
-          className={`flex flex-1 flex-col justify-between p-5 ${
+          className={`flex flex-1 flex-col justify-between px-4 py-3.5 ${
             POST_TWO_COLS ? '' : 'md:w-7/12'
           }`}>
           <header>
             {post?.category && (
-              <div className='mb-1 hidden text-xs text-gray-500 md:block dark:text-gray-400'>
+              <div className='mb-0.5 hidden text-[11px] text-gray-500 md:block dark:text-gray-400'>
                 <SmartLink
                   href={`/category/${post.category}`}
                   className='hover:text-[var(--heo-color-primary)] dark:hover:text-[var(--heo-color-accent)]'>
@@ -64,11 +66,11 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
             )}
             <SmartLink
               href={post?.href}
-              className='line-clamp-2 text-lg font-extrabold leading-snug text-gray-900 transition group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)]'>
+              className='line-clamp-2 text-[15px] font-extrabold leading-snug text-gray-900 transition group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)] sm:text-base'>
               {siteConfig('POST_TITLE_ICON') && (
                 <NotionIcon
                   icon={post.pageIcon}
-                  className='heo-icon mr-1 inline h-5 w-5 align-middle'
+                  className='heo-icon mr-1 inline h-4 w-4 align-middle'
                 />
               )}
               <span>{post.title}</span>
@@ -76,13 +78,13 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
           </header>
 
           {(!showPreview || showSummary) && post.summary && (
-            <main className='mt-2 line-clamp-2 text-sm font-light leading-relaxed text-gray-600 dark:text-gray-300'>
+            <main className='mt-1.5 line-clamp-2 text-[13px] font-light leading-relaxed text-gray-500 dark:text-gray-400'>
               {post.summary}
             </main>
           )}
 
-          <div className='mt-3 flex flex-wrap gap-1'>
-            {post.tagItems?.map(tag => (
+          <div className='mt-2 flex flex-wrap gap-1'>
+            {post.tagItems?.slice(0, 3).map(tag => (
               <TagItemMini key={tag.name} tag={tag} />
             ))}
           </div>

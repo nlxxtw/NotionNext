@@ -205,9 +205,12 @@ function HeroAside(props) {
   )
   const subscribeColor = siteConfig(
     'HEO_HERO_SUBSCRIBE_COLOR',
-    '#57bd6a',
+    'linear-gradient(135deg, #3ddc5a 0%, #22c43e 55%, #1db954 100%)',
     CONFIG
   )
+  const subscribeStyle = String(subscribeColor).includes('gradient')
+    ? { backgroundImage: subscribeColor }
+    : { backgroundColor: subscribeColor }
 
   const nextGreeting = () => {
     if (greetings.length <= 1) return
@@ -268,12 +271,12 @@ function HeroAside(props) {
         <SmartLink
           href={subscribeUrl}
           className='group flex h-[54px] items-center justify-between rounded-[18px] px-4 text-white shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] transition hover:brightness-105 active:scale-[0.98]'
-          style={{ backgroundColor: subscribeColor }}>
+          style={subscribeStyle}>
           <span className='flex items-center gap-2.5 text-[15px] font-bold'>
             <i className={`${subscribeIcon} text-lg`} />
             {subscribeTitle}
           </span>
-          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white text-[var(--heo-color-text)] transition group-hover:translate-x-0.5'>
+          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/25 text-white transition group-hover:translate-x-0.5'>
             <i className='fas fa-arrow-right text-sm' />
           </span>
         </SmartLink>
@@ -296,7 +299,9 @@ function SocialIcon({ href, icon }) {
  * 斜向滚动图标底纹（无封面时使用）
  */
 function TagsGroupBar() {
-  let groupIcons = siteConfig('HEO_GROUP_ICONS', null, CONFIG)
+  const enabled = siteConfig('HEO_GROUP_ICONS_ENABLE', false, CONFIG)
+  if (!enabled) return null
+  let groupIcons = siteConfig('HEO_GROUP_ICONS', [], CONFIG)
   if (!groupIcons?.length) return null
   groupIcons = groupIcons.concat(groupIcons)
 

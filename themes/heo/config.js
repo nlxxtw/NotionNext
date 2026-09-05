@@ -6,9 +6,9 @@ const CONFIG = {
 
   HEO_INFO_CARD_AVATAR_BLUR: true, // 文章详情页个人资料卡头像样式。true：显示为模糊装饰头像；false：与首页头像保持一致
 
-  // 主色对齐 blog.zhheo.com（白天蓝紫 / 夜晚金黄）
-  HEO_COLOR_PRIMARY: '#425AEF',
-  HEO_COLOR_PRIMARY_HOVER: '#425AEF',
+  // 主色：对齐现网资料卡紫色
+  HEO_COLOR_PRIMARY: '#7a5dfa',
+  HEO_COLOR_PRIMARY_HOVER: '#6a4ff0',
   HEO_COLOR_PRIMARY_TEXT: '#ffffff',
   HEO_COLOR_ACCENT: '#ffc848',
   HEO_COLOR_BG: '#f7f9fe',
@@ -16,7 +16,7 @@ const CONFIG = {
   HEO_COLOR_CARD: '#ffffff',
   HEO_COLOR_CARD_DARK: '#1e1e1e',
   HEO_COLOR_CARD_MUTED: '#f1f3f8',
-  HEO_COLOR_BORDER: '#425AEF',
+  HEO_COLOR_BORDER: '#7a5dfa',
   HEO_COLOR_BORDER_DARK: '#ffc848',
   HEO_COLOR_TEXT: '#111827',
   HEO_COLOR_TEXT_SECONDARY: '#4b5563',
@@ -74,14 +74,14 @@ const CONFIG = {
     {
       name: '风を共に舞う気持ち',
       artist: 'Falcom Sound Team jdk',
-      url: 'https://music.163.com/song/media/outer/url?id=731419.mp3',
+      url: 'https://music.163.com/outchain/player?type=2&id=1833834371.mp3',
       cover:
         'https://p2.music.126.net/kn6ugISTonvqJh3LHLaPtQ==/599233837187278.jpg'
     },
     {
       name: '王都グランセル',
       artist: 'Falcom Sound Team jdk',
-      url: 'https://music.163.com/song/media/outer/url?id=731355.mp3',
+      url: 'https://music.163.com/song/media/outer/url?id=1833834371.mp3',
       cover:
         'https://p1.music.126.net/kn6ugISTonvqJh3LHLaPtQ==/599233837187278.jpg'
     }
@@ -120,7 +120,8 @@ const CONFIG = {
   HEO_HERO_SUBSCRIBE_TITLE: '公众号订阅',
   HEO_HERO_SUBSCRIBE_URL: '/rss', // 订阅落地页；也可填公众号外链
   HEO_HERO_SUBSCRIBE_ICON: 'fab fa-weixin',
-  HEO_HERO_SUBSCRIBE_COLOR: '#57bd6a',
+  // 对齐 zhheo 微信绿渐变（勿改成灰绿）
+  HEO_HERO_SUBSCRIBE_COLOR: 'linear-gradient(135deg, #3ddc5a 0%, #22c43e 55%, #1db954 100%)',
 
   // 兼容旧配置（旧版 Banner 文案，新英雄区不再主用）
   HEO_HERO_TITLE_1: '分享编程',
@@ -137,7 +138,7 @@ const CONFIG = {
   // 轮播数据源：文章需带此 Notion 标签；留空 '' 则用最新文章
   HEO_HERO_RECOMMEND_POST_TAG: '推荐',
   HEO_HERO_RECOMMEND_POST_SORT_BY_UPDATE_TIME: false,
-  HEO_HERO_RECOMMEND_COVER_ENABLE: false,
+  HEO_HERO_RECOMMEND_COVER_ENABLE: true,
 
   // 右侧个人资料卡牌欢迎语，点击可自动切换
   HEO_INFOCARD_GREETINGS: [
@@ -158,86 +159,36 @@ const CONFIG = {
   HEO_INFO_CARD_URL3: 'https://www.tangly1024.com',
   HEO_INFO_CARD_TEXT3: '了解更多',
 
-  // 用户技能图标
-  HEO_GROUP_ICONS: [
-    {
-      title_1: 'AfterEffect',
-      img_1: '/images/heo/20239df3f66615b532ce571eac6d14ff21cf072602.webp',
-      color_1: '#989bf8',
-      title_2: 'Sketch',
-      img_2: '/images/heo/2023e0ded7b724a39f12d59c3dc8fbdc7cbe074202.webp',
-      color_2: '#ffffff'
-    },
-    {
-      title_1: 'Docker',
-      img_1: '/images/heo/20231108a540b2862d26f8850172e4ea58ed075102.webp',
-      color_1: '#57b6e6',
-      title_2: 'Photoshop',
-      img_2: '/images/heo/2023e4058a91608ea41751c4f102b131f267075902.webp',
-      color_2: '#4082c3'
-    },
-    {
-      title_1: 'FinalCutPro',
-      img_1: '/images/heo/20233e777652412247dd57fd9b48cf997c01070702.webp',
-      color_1: '#ffffff',
-      title_2: 'Python',
-      img_2: '/images/heo/20235c0731cd4c0c95fc136a8db961fdf963071502.webp',
-      color_2: '#ffffff'
-    },
-    {
-      title_1: 'Swift',
-      img_1: '/images/heo/202328bbee0b314297917b327df4a704db5c072402.webp',
-      color_1: '#eb6840',
-      title_2: 'Principle',
-      img_2: '/images/heo/2023f76570d2770c8e84801f7e107cd911b5073202.webp',
-      color_2: '#8f55ba'
-    },
-    {
-      title_1: 'illustrator',
-      img_1: '/images/heo/20237359d71b45ab77829cee5972e36f8c30073902.webp',
-      color_1: '#f29e39',
-      title_2: 'CSS3',
-      img_2: '/images/heo/20237c548846044a20dad68a13c0f0e1502f074602.webp',
-      color_2: '#2c51db'
-    },
-    {
-      title_1: 'JS',
-      img_1: '/images/heo/2023786e7fc488f453d5fb2be760c96185c0075502.webp',
-      color_1: '#f7cb4f',
-      title_2: 'HTML',
-      img_2: '/images/heo/202372b4d760fd8a497d442140c295655426070302.webp',
-      color_2: '#e9572b'
-    },
-    {
-      title_1: 'Git',
-      img_1: '/images/heo/2023ffa5707c4e25b6beb3e6a3d286ede4c6071102.webp',
-      color_1: '#df5b40',
-      title_2: 'Rhino',
-      img_2: '/images/heo/20231ca53fa0b09a3ff1df89acd7515e9516173302.webp',
-      color_2: '#1f1f1f'
-    }
-  ],
+  // 用户技能图标底纹（前端框架等）默认关闭
+  HEO_GROUP_ICONS_ENABLE: false,
+  HEO_GROUP_ICONS: [],
 
-  HEO_SOCIAL_CARD: true, // 是否显示右侧，点击加入社群按钮
+  // 侧栏订阅：首页英雄区已有时自动隐藏，避免重复；非首页可显示
+  HEO_SOCIAL_CARD: true,
   HEO_SOCIAL_CARD_TITLE_1: '公众号订阅',
   HEO_SOCIAL_CARD_TITLE_2: '加入我们的社群讨论分享',
   HEO_SOCIAL_CARD_TITLE_3: '点击加入社群',
   HEO_SOCIAL_CARD_URL: '/rss',
 
-  // 侧栏「今日热门」：优先取带此标签的 Notion 文章，否则回退最新文章
+  // 侧栏「今日热门」：优先「热门」标签，不足用最新文章补齐
   HEO_WIDGET_HOT_POSTS: true,
   HEO_HOT_POSTS_TAG: '热门',
-  HEO_HOT_POSTS_COUNT: 5,
+  HEO_HOT_POSTS_COUNT: 6,
   HEO_HOT_POSTS_MORE_URL: '/tag/热门',
   HEO_SIDE_TAG_LIMIT: 24,
   HEO_STATS_MORE_URL: '/stats',
   HEO_ANALYTICS_SHOW_HEADER: true,
 
   // 底部统计面板文案
-  HEO_POST_COUNT_TITLE: '文章数',
+  HEO_POST_COUNT_TITLE: '文章总数',
   HEO_SITE_TIME_TITLE: '建站天数',
+  HEO_SITE_WORD_TITLE: '全站字数',
+  HEO_SITE_COMMENT_TITLE: '评论总数',
   HEO_SITE_VISIT_TITLE: '访问量',
   HEO_SITE_VISITOR_TITLE: '访客数',
+  // 可选：手动覆盖字数/评论；留空则自动估算字数，评论显示不统计(—)
+  HEO_SITE_WORD_COUNT: '',
+  HEO_SITE_COMMENT_COUNT: '',
 
   // *****  以下配置无效，只是预留开发 ****
   // 菜单配置
@@ -263,6 +214,25 @@ const CONFIG = {
   HEO_ARTICLE_RECOMMEND: true, // 文章关联推荐
 
   HEO_INFO_CARD_EMOJI: '😆', // 资料卡头像角标
+
+  // 页脚（原先定制：访问须知 + 二维码）
+  HEO_FOOTER_NOTICE_TITLE: '访问须知',
+  HEO_FOOTER_NOTICE_TEXT:
+    '本站为非经营性个人博客，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系博主删除！',
+  HEO_FOOTER_QR_LIST: [
+    {
+      title: '局长请喝咖啡',
+      img: 'https://img.19492035.xyz/file/1742989667091.png'
+    },
+    {
+      title: '资源下载',
+      img: 'https://img.19492035.xyz/file/1742824264213.jpg'
+    },
+    {
+      title: '官方微信',
+      img: 'https://img.19492035.xyz/file/1743351194450.jpg'
+    }
+  ],
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）
   HEO_HOME_SHOW_INFO_CARD: false, // 首页是否强制显示资料卡；有 Notion 公告页时仍会显示

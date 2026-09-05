@@ -8,11 +8,11 @@ const TagItemMini = ({ tag, selected = false }) => {
       href={selected ? '/' : `/tag/${encodeURIComponent(tag.name)}`}
       passHref
       className={
-        'cursor-pointer inline-block hover:text-[var(--heo-color-primary-text)] hover:bg-[var(--heo-color-primary)] dark:hover:bg-[var(--heo-color-accent)] px-2 py-1 rounded-2xl dark:text-white duration-200 text-sm whitespace-nowrap '
+        'inline-block cursor-pointer whitespace-nowrap rounded-full px-2 py-0.5 text-xs duration-200 hover:bg-[var(--heo-color-primary)] hover:text-[var(--heo-color-primary-text)] dark:text-white dark:hover:bg-[var(--heo-color-accent)]'
       }>
-      <div className='font-light flex items-center'>
-        <HashTag className='stroke-2 mr-0.5 w-3 h-3' />{' '}
-        {tag.name + (tag.count ? `(${tag.count})` : '')}{' '}
+      <div className='flex items-center font-light'>
+        <HashTag className='mr-0.5 h-2.5 w-2.5 stroke-2' />
+        {tag.name + (tag.count ? `(${tag.count})` : '')}
       </div>
     </SmartLink>
   )

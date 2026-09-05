@@ -3,23 +3,15 @@ import { Moon, Sun } from '@/components/HeroIcons'
 import { useImperativeHandle } from 'react'
 
 /**
- * 深色模式按钮（无蓝色描边）
+ * 夜间模式开关：无绿/蓝线框，柔和轨道 + 白滑块
  */
 const DarkModeButton = props => {
   const { cRef, className } = props
   const { isDarkMode, toggleDarkMode } = useGlobal()
 
-  useImperativeHandle(cRef, () => {
-    return {
-      handleChangeDarkMode: () => {
-        handleChangeDarkMode()
-      }
-    }
-  })
-
-  const handleChangeDarkMode = () => {
-    toggleDarkMode()
-  }
+  useImperativeHandle(cRef, () => ({
+    handleChangeDarkMode: () => toggleDarkMode()
+  }))
 
   return (
     <button
@@ -27,12 +19,12 @@ const DarkModeButton = props => {
       id='darkModeButton'
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-pressed={isDarkMode}
-      onClick={handleChangeDarkMode}
-      className={`${className || ''} relative flex h-8 w-16 shrink-0 cursor-pointer items-center overflow-hidden rounded-full border border-black/[0.06] bg-gray-200/90 p-2 shadow-none outline-none transition-colors duration-300 focus:outline-none focus-visible:outline-none dark:border-white/10 dark:bg-gray-700/90`}>
+      onClick={() => toggleDarkMode()}
+      className={`${className || ''} heo-dark-toggle relative flex h-8 w-[3.25rem] shrink-0 cursor-pointer items-center rounded-full border-0 p-1 outline-none ring-0 transition-colors duration-300 focus:outline-none focus-visible:outline-none`}>
       <span
         aria-hidden='true'
-        className={`absolute flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 motion-reduce:transition-none ${
-          isDarkMode ? 'translate-x-6' : 'translate-x-0'
+        className={`heo-dark-toggle-knob absolute flex h-[1.35rem] w-[1.35rem] items-center justify-center rounded-full bg-white transition-transform duration-300 motion-reduce:transition-none ${
+          isDarkMode ? 'translate-x-[1.5rem]' : 'translate-x-0'
         }`}>
         {isDarkMode ? <Moon /> : <Sun />}
       </span>
