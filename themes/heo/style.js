@@ -382,7 +382,7 @@ const Style = () => {
       }
 
       #theme-heo .heo-nav-spacer {
-        height: calc(4.25rem + env(safe-area-inset-top, 0px));
+        height: calc(3.5rem + env(safe-area-inset-top, 0px));
       }
 
       /* 顶栏整条始终透明：封面色顶到视口最上，消灭白条分层 */

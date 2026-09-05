@@ -76,7 +76,7 @@ const LayoutBase = props => {
       {router.route === '/' ? (
         <>
           <NoticeBar />
-          <div className='relative z-[1] mx-auto mb-3 w-full max-w-[86rem] bg-transparent px-5'>
+          <div className='relative z-[1] mx-auto mb-3 w-full max-w-[86rem] bg-transparent px-5 pt-3'>
             <CategoryBar {...props} />
             <div className='mt-3'>
               <Hero {...props} />

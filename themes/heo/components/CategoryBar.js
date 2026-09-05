@@ -7,7 +7,7 @@ import { ChevronDoubleLeft, ChevronDoubleRight } from '@/components/HeroIcons'
 import CONFIG from '../config'
 
 /**
- * 分类条：半透明白胶囊 + 更大触控高度（对齐现网比例）
+ * 分类条：半透明白胶囊；与顶栏留出间隔，尺寸对齐 Heo
  */
 export default function CategoryBar(props) {
   const { categoryOptions, tagOptions } = props
@@ -41,11 +41,11 @@ export default function CategoryBar(props) {
   return (
     <div
       id='category-bar'
-      className='home-category-bar mb-3 flex w-full flex-nowrap items-center justify-between gap-2.5'>
+      className='home-category-bar mb-3 flex w-full flex-nowrap items-center justify-between gap-2'>
       <div
         id='category-bar-items'
         ref={categoryBarItemsRef}
-        className='scroll-hidden scroll-smooth flex max-w-full flex-nowrap items-center gap-2.5 overflow-x-auto py-0.5 pr-1'>
+        className='scroll-hidden scroll-smooth flex max-w-full flex-nowrap items-center gap-2 overflow-x-auto py-0.5 pr-1'>
         {showHome && <MenuItem href='/' name={homeLabel} featured />}
         {pinned.map((item, index) => (
           <MenuItem key={`pin-${index}`} href={item.href} name={item.name} />
@@ -66,17 +66,17 @@ export default function CategoryBar(props) {
         <button
           type='button'
           aria-label='滚动分类'
-          className='heo-cat-chip flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'
+          className='heo-cat-chip flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'
           onClick={handleToggleScroll}>
           {scrollRight ? (
-            <ChevronDoubleLeft className='h-4 w-4' />
+            <ChevronDoubleLeft className='h-3.5 w-3.5' />
           ) : (
-            <ChevronDoubleRight className='h-4 w-4' />
+            <ChevronDoubleRight className='h-3.5 w-3.5' />
           )}
         </button>
         <SmartLink
           href='/categories'
-          className='heo-cat-chip inline-flex h-10 items-center rounded-full px-4 text-[15px] font-bold text-gray-700 transition hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'>
+          className='heo-cat-chip inline-flex h-9 items-center rounded-full px-3.5 text-[13px] font-bold text-gray-700 transition hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'>
           {locale.COMMON.MORE || '更多'}
         </SmartLink>
       </div>
@@ -98,14 +98,14 @@ const MenuItem = ({ href, name, featured = false }) => {
   return (
     <SmartLink
       href={href}
-      className={`inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[15px] font-bold leading-none transition ${
+      className={`inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] font-bold leading-none transition ${
         selected
           ? 'bg-[var(--heo-color-primary)] text-white shadow-[0_8px_16px_-4px_rgba(122,93,250,0.35)] dark:bg-[var(--heo-color-accent)] dark:text-black'
           : 'heo-cat-chip text-gray-700 hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'
       }`}>
       {featured ? (
         <i
-          className={`fas fa-star text-[12px] ${
+          className={`fas fa-star text-[11px] ${
             selected ? 'text-white' : 'text-[var(--heo-color-primary)]'
           }`}
           aria-hidden
