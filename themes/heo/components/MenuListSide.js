@@ -24,7 +24,7 @@ export const MenuListSide = props => {
     {
       icon: 'fas fa-folder',
       name: locale.COMMON.CATEGORY,
-      href: '/category',
+      href: '/categories',
       show: siteConfig('HEO_MENU_CATEGORY', null, CONFIG)
     },
     {

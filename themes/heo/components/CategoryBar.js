@@ -7,10 +7,7 @@ import { ChevronDoubleLeft, ChevronDoubleRight } from '@/components/HeroIcons'
 import CONFIG from '../config'
 
 /**
- * 分类条：数据全部来自 Notion
- * - 分类：categoryOptions
- * - 可选标签快捷入口：HEO_CATEGORY_BAR_TAGS（仅当 Notion 里确实有该标签时才显示）
- * - 不写死「热门 / 必看」
+ * 分类条：纯文字胶囊，无前置图标（对齐 blog.zhheo.com）
  */
 export default function CategoryBar(props) {
   const { categoryOptions, tagOptions } = props
@@ -48,16 +45,13 @@ export default function CategoryBar(props) {
       <div
         id='category-bar-items'
         ref={categoryBarItemsRef}
-        className='scroll-hidden scroll-smooth flex max-w-full flex-nowrap items-center gap-2 overflow-x-auto'>
-        {showHome && (
-          <MenuItem href='/' name={homeLabel} icon='fas fa-star' featured />
-        )}
+        className='scroll-hidden scroll-smooth flex max-w-full flex-nowrap items-center gap-2 overflow-x-auto pr-1'>
+        {showHome && <MenuItem href='/' name={homeLabel} featured />}
         {pinned.map((item, index) => (
           <MenuItem
             key={`pin-${index}`}
             href={item.href}
             name={item.name}
-            icon={item.icon}
           />
         ))}
         {notionTagShortcuts.map((item, index) => (
@@ -65,7 +59,6 @@ export default function CategoryBar(props) {
             key={`tag-${index}`}
             href={item.href}
             name={item.name}
-            icon={item.icon}
           />
         ))}
         {categoryOptions?.map((c, index) => (
@@ -73,7 +66,6 @@ export default function CategoryBar(props) {
             key={`cat-${index}`}
             href={`/category/${c.name}`}
             name={c.name}
-            icon={c.icon || 'fas fa-folder'}
           />
         ))}
       </div>
@@ -82,7 +74,7 @@ export default function CategoryBar(props) {
         <button
           type='button'
           aria-label='滚动分类'
-          className='heo-chip flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-gray-500 transition hover:text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-card-dark)] dark:hover:text-[var(--heo-color-accent)]'
+          className='flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-black/5 hover:text-[var(--heo-color-primary)] dark:hover:bg-white/10 dark:hover:text-[var(--heo-color-accent)]'
           onClick={handleToggleScroll}>
           {scrollRight ? (
             <ChevronDoubleLeft className='h-4 w-4' />
@@ -91,16 +83,16 @@ export default function CategoryBar(props) {
           )}
         </button>
         <SmartLink
-          href='/category'
-          className='heo-chip inline-flex h-[36px] items-center rounded-full bg-white px-4 text-sm font-bold text-gray-800 transition hover:text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-card-dark)] dark:text-white dark:hover:text-[var(--heo-color-accent)]'>
-          {locale.COMMON.CATEGORY || '博客分类'}
+          href='/categories'
+          className='inline-flex h-8 items-center rounded-full bg-[var(--heo-color-card-muted)] px-3.5 text-sm font-bold text-gray-700 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/10 dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)] dark:hover:text-black'>
+          {locale.COMMON.MORE || '更多'}
         </SmartLink>
       </div>
     </div>
   )
 }
 
-const MenuItem = ({ href, name, icon, featured = false }) => {
+const MenuItem = ({ href, name, featured = false }) => {
   const router = useRouter()
   const { category, tag } = router.query
   const path = router.asPath?.split('?')[0] || ''
@@ -108,18 +100,17 @@ const MenuItem = ({ href, name, icon, featured = false }) => {
     ? router.pathname === '/'
     : category === name ||
       tag === name ||
-      path === href ||
-      path === `${href}/`
+      decodeURIComponent(path) === href ||
+      decodeURIComponent(path) === `${href}/`
 
   return (
     <SmartLink
       href={href}
-      className={`inline-flex h-[36px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-sm font-bold leading-none transition ${
+      className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3.5 text-sm font-bold leading-none transition ${
         selected
           ? 'bg-[var(--heo-color-primary)] text-white shadow-[0_8px_12px_-3px_rgba(66,90,239,0.28)] dark:bg-[var(--heo-color-accent)] dark:text-black'
-          : 'heo-chip bg-white text-gray-800 hover:text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-card-dark)] dark:text-gray-100 dark:hover:text-[var(--heo-color-accent)]'
+          : 'bg-transparent text-gray-600 hover:bg-black/[0.04] hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-[var(--heo-color-accent)]'
       }`}>
-      {icon && <i className={`${icon} text-xs opacity-90`} />}
       <span>{name}</span>
     </SmartLink>
   )
@@ -141,15 +132,11 @@ function normalizePinned(value) {
       const name = String(item.name || item.title || '').trim()
       const href = String(item.href || item.url || '').trim()
       if (!name || !href) return null
-      return { name, href, icon: item.icon || 'fas fa-hashtag' }
+      return { name, href }
     })
     .filter(Boolean)
 }
 
-/**
- * 仅展示 Notion 中真实存在的标签快捷入口
- * HEO_CATEGORY_BAR_TAGS 例：['热门','必看'] 或 [{name:'热门',icon:'fas fa-fire'}]
- */
 function resolveNotionTagShortcuts(configTags, tagOptions) {
   if (!configTags) return []
   let list = configTags
@@ -176,22 +163,10 @@ function resolveNotionTagShortcuts(configTags, tagOptions) {
       if (!name) return null
       const found = byName.get(name.toLowerCase())
       if (!found) return null
-      const icon =
-        (typeof item === 'object' && item?.icon) ||
-        found.icon ||
-        defaultTagIcon(name)
       return {
         name: found.name,
-        href: `/tag/${encodeURIComponent(found.name)}`,
-        icon
+        href: `/tag/${encodeURIComponent(found.name)}`
       }
     })
     .filter(Boolean)
-}
-
-function defaultTagIcon(name) {
-  if (/热门|hot|fire/i.test(name)) return 'fas fa-fire'
-  if (/必看|must|bolt|flash/i.test(name)) return 'fas fa-bolt'
-  if (/推荐|精选|star/i.test(name)) return 'fas fa-star'
-  return 'fas fa-hashtag'
 }

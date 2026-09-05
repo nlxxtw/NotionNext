@@ -21,7 +21,7 @@ const MenuGroupCard = props => {
     },
     {
       name: locale.COMMON.CATEGORY,
-      href: '/category',
+      href: '/categories',
       slot: categorySlot,
       show: siteConfig('HEO_MENU_CATEGORY', null, CONFIG)
     },

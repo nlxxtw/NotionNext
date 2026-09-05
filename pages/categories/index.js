@@ -4,9 +4,9 @@ import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 
 /**
- * 分类首页 /category
+ * /categories 别名（对齐 blog.zhheo.com/categories）
  */
-export default function Category(props) {
+export default function Categories(props) {
   const theme = siteConfig('THEME', BLOG.THEME, props.NOTION_CONFIG)
   return (
     <DynamicLayout theme={theme} layoutName='LayoutCategoryIndex' {...props} />
@@ -15,7 +15,7 @@ export default function Category(props) {
 
 export async function getStaticProps({ locale }) {
   const props = await fetchGlobalAllData({
-    from: 'category-index-props',
+    from: 'categories-index-props',
     locale
   })
   const posts = props.allPages?.filter(

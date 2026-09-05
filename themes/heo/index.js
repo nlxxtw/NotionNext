@@ -41,6 +41,7 @@ import PostRecommend from './components/PostRecommend'
 import SearchNav from './components/SearchNav'
 import SideRight from './components/SideRight'
 import ArchivesPage from './components/ArchivesPage'
+import CategoriesPage from './components/CategoriesPage'
 import StatsPage from './components/StatsPage'
 import RssPage from './components/RssPage'
 import CONFIG from './config'
@@ -88,6 +89,8 @@ const LayoutBase = props => {
     router.route === '/404' ||
     router.route === '/rss' ||
     router.route === '/stats' ||
+    router.route === '/category' ||
+    router.route === '/categories' ||
     fullWidth
   const slotRight = hideAside ? null : <SideRight {...props} />
 
@@ -405,45 +408,10 @@ const Layout404 = props => {
 }
 
 /**
- * 分类列表
- * @param {*} props
- * @returns
+ * 分类列表（对齐 blog.zhheo.com/categories）
  */
 const LayoutCategoryIndex = props => {
-  const { categoryOptions } = props
-  const { locale } = useGlobal()
-
-  return (
-    <div id='category-outer-wrapper' className='mt-8 px-5 md:px-0'>
-      <div className='text-4xl font-extrabold dark:text-gray-200 mb-5'>
-        {locale.COMMON.CATEGORY}
-      </div>
-      <div
-        id='category-list'
-        className='duration-200 flex flex-wrap m-10 justify-center'>
-        {categoryOptions?.map(category => {
-          return (
-            <SmartLink
-              key={category.name}
-              href={`/category/${category.name}`}
-              passHref
-              legacyBehavior>
-              <div
-                className={
-                  'group mr-5 mb-5 flex flex-nowrap items-center border bg-[var(--heo-color-card)] text-2xl rounded-xl dark:hover:text-white px-4 cursor-pointer py-3 hover:text-[var(--heo-color-primary-text)] hover:bg-[var(--heo-color-primary)] transition-all hover:scale-110 duration-150'
-                }>
-                <HashTag className={'w-5 h-5 stroke-gray-500 stroke-2'} />
-                {category.name}
-                <div className='bg-[var(--heo-color-card-muted)] ml-1 px-2 rounded-lg group-hover:text-[var(--heo-color-primary)] '>
-                  {category.count}
-                </div>
-              </div>
-            </SmartLink>
-          )
-        })}
-      </div>
-    </div>
-  )
+  return <CategoriesPage {...props} />
 }
 
 /**
