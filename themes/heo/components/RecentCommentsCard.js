@@ -1,7 +1,6 @@
 import LazyImage from '@/components/LazyImage'
 import SmartLink from '@/components/SmartLink'
 import { siteConfig } from '@/lib/config'
-import { RecentComments } from '@waline/client'
 import { useEffect, useState } from 'react'
 import CONFIG from '../config'
 import {
@@ -13,6 +12,7 @@ import AsideWidgetHeader from './AsideWidgetHeader'
 
 /**
  * 侧栏「最新评论」（Waline）
+ * 注意：@waline/client 仅在客户端动态加载，避免 SSR/webpack 打包失败
  */
 export default function RecentCommentsCard(props) {
   const enabled = siteConfig('HEO_WIDGET_RECENT_COMMENTS', true, CONFIG)
@@ -40,6 +40,7 @@ export default function RecentCommentsCard(props) {
     let cancelled = false
     ;(async () => {
       try {
+        const { RecentComments } = await import('@waline/client')
         const { comments } = await RecentComments({
           serverURL,
           count: Math.max(count, 5)
@@ -86,7 +87,6 @@ export default function RecentCommentsCard(props) {
     return () => {
       cancelled = true
     }
-    // pages 仅用于标题匹配
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, serverURL, count])
 

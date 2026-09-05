@@ -6,11 +6,15 @@ import Catalog from './Catalog'
 import { InfoCard } from './InfoCard'
 import HotPostsCard from './HotPostsCard'
 import LatestPostsGroupMini from './LatestPostsGroupMini'
-import RecentCommentsCard from './RecentCommentsCard'
 import TagGroups from './TagGroups'
 import TouchMeCard from './TouchMeCard'
 import WechatSubscribeCard from './WechatSubscribeCard'
 import CONFIG from '../config'
+
+const RecentCommentsCard = dynamic(
+  () => import('./RecentCommentsCard'),
+  { ssr: false }
+)
 
 const FaceBookPage = dynamic(
   () => {
