@@ -68,7 +68,7 @@ const LayoutBase = props => {
   const router = useRouter()
 
   const headerSlot = (
-    <header className='relative z-[20] bg-transparent'>
+    <header className='relative bg-transparent'>
       {/* 顶部导航：整条透明，仅悬浮毛玻璃胶囊 */}
       <Header {...props} />
 

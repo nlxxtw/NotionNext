@@ -39,9 +39,16 @@ const Style = () => {
         --heo-color-text-secondary-dark: #d1d5db;
         --heo-color-text: var(--heo-color-text-light);
         --heo-color-text-secondary: var(--heo-color-text-secondary-light);
-        /* 页面底色保持平铺；彩色氛围交给 .heo-atmosphere（模糊光斑），不要顶区实心色带 */
+        /* 顶区氛围：直接铺在页面背景上（不要单独 fixed 层，否则会和顶栏合成出一道色带） */
         background-color: ${bg};
-        background-image: none;
+        background-image:
+          radial-gradient(ellipse 50% 42% at 10% 0%, rgba(186, 156, 255, 0.34), transparent 72%),
+          radial-gradient(ellipse 46% 38% at 92% 0%, rgba(167, 139, 250, 0.26), transparent 70%),
+          radial-gradient(ellipse 42% 34% at 48% 0%, rgba(253, 224, 171, 0.18), transparent 68%),
+          radial-gradient(ellipse 60% 40% at 55% 18%, rgba(196, 181, 253, 0.14), transparent 75%);
+        background-repeat: no-repeat;
+        background-size: 100% 560px;
+        background-position: top center;
         color: var(--heo-color-text);
         --heo-maskbg: rgba(255, 255, 255, 0.38);
         --heo-maskbg-border: rgba(255, 255, 255, 0.58);
@@ -55,49 +62,30 @@ const Style = () => {
         --heo-color-accent: #a794ff;
         --heo-color-border-dark: rgba(255, 255, 255, 0.12);
         background-color: var(--heo-color-bg-dark);
-        background-image: none;
+        background-image:
+          radial-gradient(ellipse 52% 44% at 8% 0%, rgba(122, 93, 250, 0.28), transparent 72%),
+          radial-gradient(ellipse 48% 40% at 94% 0%, rgba(167, 148, 255, 0.16), transparent 70%),
+          radial-gradient(ellipse 56% 36% at 50% 12%, rgba(90, 70, 160, 0.14), transparent 74%);
+        background-repeat: no-repeat;
+        background-size: 100% 560px;
+        background-position: top center;
         --heo-maskbg: rgba(40, 42, 52, 0.42);
         --heo-maskbg-border: rgba(255, 255, 255, 0.1);
         --heo-shadow-glass: none;
       }
 
-      /* 顶区柔焦色雾：fixed 光斑 + blur，导航/分类胶囊共用同一层「空气」 */
+      /* 旧色雾层停用：保留节点以免改 JSX，但不再单独绘制，避免顶栏分层线 */
       #theme-heo .heo-atmosphere {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: min(46vh, 460px);
-        z-index: 0;
-        pointer-events: none;
-        overflow: hidden;
+        display: none !important;
       }
-      #theme-heo .heo-atmosphere::before {
-        content: '';
-        position: absolute;
-        inset: -35% -15% -20%;
-        background:
-          radial-gradient(ellipse 42% 48% at 12% 28%, rgba(186, 156, 255, 0.72), transparent 70%),
-          radial-gradient(ellipse 38% 44% at 88% 18%, rgba(167, 139, 250, 0.55), transparent 68%),
-          radial-gradient(ellipse 36% 40% at 48% 8%, rgba(253, 224, 171, 0.42), transparent 65%),
-          radial-gradient(ellipse 50% 36% at 62% 55%, rgba(196, 181, 253, 0.28), transparent 70%);
-        filter: blur(52px);
-        transform: translateZ(0);
-      }
-      .dark #theme-heo .heo-atmosphere::before {
-        background:
-          radial-gradient(ellipse 42% 48% at 12% 28%, rgba(122, 93, 250, 0.38), transparent 70%),
-          radial-gradient(ellipse 38% 44% at 88% 18%, rgba(167, 148, 255, 0.22), transparent 68%),
-          radial-gradient(ellipse 40% 36% at 50% 40%, rgba(90, 70, 160, 0.18), transparent 70%);
-        filter: blur(56px);
-      }
-      /* 内容压在色雾之上；不要给全体子节点设 z-index，以免压住 fixed 导航 */
+      /* 内容正常文档流；不要给 header/main 强行抬 z-index 挡背景 */
       #theme-heo > header,
       #theme-heo > main,
       #theme-heo > footer,
       #theme-heo .heo-footer {
         position: relative;
-        z-index: 1;
+        z-index: auto;
+        background: transparent !important;
       }
       #theme-heo #nav.heo-nav--fixed {
         z-index: 60;
@@ -363,9 +351,9 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 封面预览卡：落在头图区内，轻阴影，不压到正文空隙 */
+      /* 封面预览卡：头图右侧，略偏下对齐标题区 */
       #theme-heo .heo-post-cover-aside {
-        top: 52% !important;
+        top: 58% !important;
         bottom: auto !important;
         transform: translateY(-50%) !important;
         box-shadow:
@@ -376,9 +364,9 @@ const Style = () => {
         transform: translateY(-50%) scale(1.02) !important;
       }
 
-      /* 文章头图与正文/侧栏之间留白（对齐 Heo：有空隙、阴影轻） */
+      /* 文章头图与正文/侧栏之间留白 */
       #theme-heo:has(#post-bg) > main#wrapper-outer {
-        padding-top: 1.25rem;
+        padding-top: 1rem;
       }
       #theme-heo #post-bg.heo-post-bg {
         box-shadow: 0 10px 28px -22px rgba(0, 0, 0, 0.28);
@@ -408,12 +396,10 @@ const Style = () => {
         border: 0 !important;
       }
 
-      /* 顶栏：始终 fixed + Safari 安全区 */
+      /* 顶栏：始终 fixed + Safari 安全区（不用 translateZ，避免整条顶栏单独成层产生色带） */
       #theme-heo .heo-nav--fixed {
         top: 0;
         padding-top: env(safe-area-inset-top, 0px);
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
       }
 
       #theme-heo .heo-nav-spacer {
@@ -439,16 +425,16 @@ const Style = () => {
         box-shadow: none !important;
       }
 
-      /* 文章封面上移盖住导航占位，颜色铺满顶部 */
+      /* 文章封面上移盖住导航占位；整体高度收紧 */
       #theme-heo #post-bg.heo-post-bg {
         margin-top: calc(-1 * (3.5rem + env(safe-area-inset-top, 0px)));
         padding-top: calc(3.5rem + env(safe-area-inset-top, 0px));
-        min-height: calc(28rem + 3.5rem + env(safe-area-inset-top, 0px));
+        min-height: calc(18rem + 3.5rem + env(safe-area-inset-top, 0px));
         height: auto;
       }
       @media (min-width: 768px) {
         #theme-heo #post-bg.heo-post-bg {
-          min-height: calc(30rem + 3.5rem + env(safe-area-inset-top, 0px));
+          min-height: calc(20rem + 3.5rem + env(safe-area-inset-top, 0px));
         }
       }
 
@@ -592,6 +578,11 @@ const Style = () => {
 
       #theme-heo .heo-qr-hover .heo-qr-popover {
         filter: drop-shadow(0 12px 24px rgba(30, 40, 70, 0.18));
+      }
+      #theme-heo .heo-footer,
+      #theme-heo #footer-bottom,
+      #theme-heo .heo-footer-quick-links {
+        overflow: visible !important;
       }
 
       /* 公众号订阅条：对齐 blog.zhheo.com #card-wechat */
@@ -862,24 +853,14 @@ const Style = () => {
           width: 320px;
         }
       }
+      /* 右侧栏：sticky 跟随页面滚动；正文滚到底才跟着下去；栏内不单独滚动 */
       #theme-heo #sideRight .heo-side-sticky {
         position: sticky;
         top: 5rem;
-        max-height: calc(100vh - 5.5rem);
-        overflow-x: hidden;
-        overflow-y: auto;
-        overscroll-behavior: contain;
+        max-height: none;
+        overflow: visible;
+        overscroll-behavior: auto;
         padding-bottom: 0.5rem;
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE/Edge legacy */
-      }
-      #theme-heo #sideRight .heo-side-sticky::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-        display: none;
-      }
-      #theme-heo #sideRight .heo-side-sticky::-webkit-scrollbar-thumb {
-        background: transparent;
       }
 
       /* Waline：隐藏底部 RSS（WiFi 图标）与 Powered by 版本号 */

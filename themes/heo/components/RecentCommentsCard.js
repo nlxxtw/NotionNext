@@ -12,7 +12,8 @@ import {
 import AsideWidgetHeader from './AsideWidgetHeader'
 
 /**
- * 侧栏「最新评论」：优先 Waline，其次 Twikoo
+ * 侧栏「最新评论」：优先 Waline（直连 API + SDK 双通道），其次 Twikoo
+ * 拉取失败也保留卡片，避免工具栏整块消失
  */
 export default function RecentCommentsCard(props) {
   const enabled = siteConfig('HEO_WIDGET_RECENT_COMMENTS', true, CONFIG)
@@ -24,6 +25,7 @@ export default function RecentCommentsCard(props) {
   )
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const pages = [
     ...(Array.isArray(props?.allNavPages) ? props.allNavPages : []),
     ...(Array.isArray(props?.latestPosts) ? props.latestPosts : []),
@@ -35,6 +37,7 @@ export default function RecentCommentsCard(props) {
     if (!walineURL && !twikooId) {
       setLoading(false)
       setList([])
+      setError('未配置评论服务')
       return
     }
 
@@ -45,13 +48,19 @@ export default function RecentCommentsCard(props) {
         if (walineURL) {
           mapped = await fetchWalineRecent(walineURL, count, pages)
         }
-        if ((!mapped.length || !walineURL) && twikooId) {
+        if (!mapped.length && twikooId) {
           mapped = await fetchTwikooRecent(count, pages)
         }
-        if (!cancelled) setList(mapped)
+        if (!cancelled) {
+          setList(mapped)
+          setError(mapped.length ? '' : '暂时没有评论')
+        }
       } catch (e) {
         console.warn('[RecentComments]', e)
-        if (!cancelled) setList([])
+        if (!cancelled) {
+          setList([])
+          setError('评论加载失败')
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -65,7 +74,6 @@ export default function RecentCommentsCard(props) {
 
   if (!enabled) return null
   if (!walineURL && !twikooId) return null
-  if (!loading && !list.length) return null
 
   return (
     <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] px-4 py-4 dark:bg-[var(--heo-color-card-dark)]'>
@@ -83,7 +91,7 @@ export default function RecentCommentsCard(props) {
             </div>
           ))}
         </div>
-      ) : (
+      ) : list.length ? (
         <ul className='divide-y divide-dotted divide-black/[0.08] dark:divide-white/15'>
           {list.map(item => (
             <li key={item.id}>
@@ -109,17 +117,16 @@ export default function RecentCommentsCard(props) {
             </li>
           ))}
         </ul>
+      ) : (
+        <p className='px-0.5 py-3 text-[13px] text-gray-400 dark:text-gray-500'>
+          {error || '暂时没有评论'}
+        </p>
       )}
     </div>
   )
 }
 
-async function fetchWalineRecent(serverURL, count, pages) {
-  const { RecentComments } = await import('@waline/client')
-  const { comments } = await RecentComments({
-    serverURL: serverURL.replace(/\/$/, ''),
-    count: Math.max(count, 5)
-  })
+function mapWalineItems(comments, count, pages) {
   return (comments || [])
     .map(item => {
       const nick = item.nick || item.mail || '访客'
@@ -143,6 +150,41 @@ async function fetchWalineRecent(serverURL, count, pages) {
     })
     .filter(Boolean)
     .slice(0, count)
+}
+
+async function fetchWalineRecent(serverURL, count, pages) {
+  const base = serverURL.replace(/\/$/, '')
+
+  // 1) 直连 REST（更稳，不依赖 SDK）
+  try {
+    const res = await fetch(
+      `${base}/api/comment?type=recent&count=${Math.max(count, 5)}`,
+      { method: 'GET', mode: 'cors' }
+    )
+    if (res.ok) {
+      const data = await res.json()
+      const comments = Array.isArray(data)
+        ? data
+        : data?.data || data?.comments || []
+      const mapped = mapWalineItems(comments, count, pages)
+      if (mapped.length) return mapped
+    }
+  } catch (e) {
+    console.warn('[RecentComments] waline rest', e)
+  }
+
+  // 2) SDK 回退
+  try {
+    const { RecentComments } = await import('@waline/client')
+    const { comments } = await RecentComments({
+      serverURL: base,
+      count: Math.max(count, 5)
+    })
+    return mapWalineItems(comments, count, pages)
+  } catch (e) {
+    console.warn('[RecentComments] waline sdk', e)
+    return []
+  }
 }
 
 async function fetchTwikooRecent(count, pages) {

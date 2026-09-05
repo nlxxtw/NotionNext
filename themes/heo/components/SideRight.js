@@ -28,7 +28,7 @@ const FaceBookPage = dynamic(
 )
 
 /**
- * 右侧栏：整列拉高 + sticky，随文章滚到底仍贴在视口
+ * 右侧栏：sticky 贴顶跟随；文章滚到底才一起下去；栏内不滚动
  */
 export default function SideRight(props) {
   const { post, lock, tagOptions, rightAreaSlot } = props

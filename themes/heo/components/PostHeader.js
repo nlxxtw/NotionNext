@@ -7,33 +7,21 @@ import SmartLink from '@/components/SmartLink'
 import { useEffect, useState } from 'react'
 
 /**
- * 文章页头：封面色贯通；无波浪；右侧预览卡在内容区中部；元信息高对比白字
+ * 文章页头：紧凑高度；标题上移；右侧始终显示封面预览（有图时）
  */
 export default function PostHeader({ post, siteInfo, lock }) {
   if (!post) return null
 
-  const headerImage = post?.pageCoverThumbnail || post?.pageCover || ''
-  const coverSrc = headerImage || ''
+  const coverSrc =
+    post?.pageCoverThumbnail ||
+    post?.pageCover ||
+    siteInfo?.pageCover ||
+    ''
   const ANALYTICS_BUSUANZI_ENABLE = siteConfig('ANALYTICS_BUSUANZI_ENABLE')
+  const showAside = Boolean(coverSrc)
 
-  const [showAside, setShowAside] = useState(Boolean(coverSrc))
   const [bgColor, setBgColor] = useState('')
   const [bgReady, setBgReady] = useState(false)
-
-  useEffect(() => {
-    if (!coverSrc) {
-      setShowAside(false)
-      return
-    }
-    setShowAside(true)
-    let cancelled = false
-    isCoverTooLight(coverSrc).then(tooLight => {
-      if (!cancelled && tooLight) setShowAside(false)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [coverSrc])
 
   useEffect(() => {
     let cancelled = false
@@ -84,12 +72,16 @@ export default function PostHeader({ post, siteInfo, lock }) {
   }, [post?.id, coverSrc])
 
   const metaPill =
-    'heo-post-meta-pill inline-flex items-center rounded-full border-0 bg-white/18 px-3 py-1.5 text-[13px] font-semibold text-white backdrop-blur-[6px]'
+    'heo-post-meta-pill inline-flex items-center rounded-full border-0 bg-white/18 px-2.5 py-1 text-[12px] font-semibold text-white backdrop-blur-[6px]'
+
+  const showEdited =
+    post.lastEditedDay &&
+    post.lastEditedDay !== post.publishDay
 
   return (
     <div
       id='post-bg'
-      className='heo-post-bg relative z-10 mb-0 h-[28rem] w-full overflow-hidden md:h-[30rem] md:flex-shrink-0'
+      className='heo-post-bg relative z-10 mb-0 h-[18rem] w-full overflow-hidden md:h-[20rem] md:flex-shrink-0'
       style={{
         backgroundColor: bgReady ? bgColor : '#1e1f26',
         opacity: bgReady ? 1 : 0.92,
@@ -100,21 +92,21 @@ export default function PostHeader({ post, siteInfo, lock }) {
         className='pointer-events-none absolute inset-0'
         style={{
           background:
-            'radial-gradient(ellipse 70% 50% at 82% 36%, rgba(255,255,255,0.1), transparent 62%), linear-gradient(180deg, rgba(0,0,0,0.08) 0%, transparent 45%, rgba(0,0,0,0.1) 100%)'
+            'radial-gradient(ellipse 70% 50% at 82% 40%, rgba(255,255,255,0.1), transparent 62%), linear-gradient(180deg, rgba(0,0,0,0.06) 0%, transparent 50%, rgba(0,0,0,0.12) 100%)'
         }}
       />
 
-      <div className='relative z-[1] flex h-full w-full items-center justify-center py-10'>
+      <div className='relative z-[1] flex h-full w-full items-start justify-center'>
         <div
           id='post-info'
-          className={`absolute top-40 z-10 flex w-full max-w-[86rem] flex-col space-y-4 px-5 md:top-44 lg:-mt-6 ${
-            showAside ? 'lg:pr-[340px]' : ''
+          className={`absolute top-[4.75rem] z-10 flex w-full max-w-[86rem] flex-col gap-2.5 px-5 md:top-[5.25rem] md:gap-3 ${
+            showAside ? 'lg:pr-[300px]' : ''
           }`}>
-          <div className='flex items-center justify-center gap-3 md:justify-start'>
+          <div className='flex items-center justify-center gap-2.5 md:justify-start'>
             {post.category && (
               <SmartLink
                 href={`/category/${post.category}`}
-                className='rounded-full border-0 bg-white/18 px-3 py-1 text-sm font-bold text-white backdrop-blur-[6px] transition hover:bg-white/28'>
+                className='rounded-full border-0 bg-white/18 px-2.5 py-0.5 text-[13px] font-bold text-white backdrop-blur-[6px] transition hover:bg-white/28'>
                 {post.category}
               </SmartLink>
             )}
@@ -124,7 +116,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
                   <SmartLink
                     key={index}
                     href={`/tag/${encodeURIComponent(tag.name)}`}
-                    className='whitespace-nowrap text-sm font-medium text-white/90 transition hover:text-white'>
+                    className='whitespace-nowrap text-[13px] font-medium text-white/90 transition hover:text-white'>
                     {tag.name}
                   </SmartLink>
                 ))}
@@ -132,17 +124,17 @@ export default function PostHeader({ post, siteInfo, lock }) {
             )}
           </div>
 
-          <h1 className='max-w-4xl text-center text-[1.85rem] font-extrabold leading-[1.35] tracking-normal text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.35)] md:text-left md:text-4xl md:leading-[1.3] lg:text-[2.75rem] lg:leading-[1.28]'>
+          <h1 className='max-w-3xl text-center text-[1.45rem] font-extrabold leading-[1.3] tracking-normal text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.3)] md:text-left md:text-[1.85rem] md:leading-[1.28] lg:text-[2.15rem] lg:leading-[1.26]'>
             {siteConfig('POST_TITLE_ICON') && (
               <NotionIcon
                 icon={post.pageIcon}
-                className='mr-2 inline-block align-middle'
+                className='mr-1.5 inline-block align-middle'
               />
             )}
             <span className='align-middle'>{post.title}</span>
           </h1>
 
-          <section className='heo-post-meta mt-2 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 md:justify-start'>
+          <section className='heo-post-meta flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 md:justify-start'>
             {!lock && (
               <span className={metaPill}>
                 <WordCount
@@ -155,31 +147,31 @@ export default function PostHeader({ post, siteInfo, lock }) {
               <SmartLink
                 href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}
                 className={`${metaPill} transition hover:bg-white/28`}>
-                <i className='fa-regular fa-calendar mr-1.5 text-[12px]' />
+                <i className='fa-regular fa-calendar mr-1.5 text-[11px]' />
                 {post?.publishDay}
               </SmartLink>
             )}
-            {post.lastEditedDay && (
+            {showEdited && (
               <span className={metaPill}>
-                <i className='fa-regular fa-calendar-check mr-1.5 text-[12px]' />
+                <i className='fa-regular fa-calendar-check mr-1.5 text-[11px]' />
                 {post.lastEditedDay}
               </span>
             )}
             {ANALYTICS_BUSUANZI_ENABLE && (
               <span className={`busuanzi_container_page_pv ${metaPill}`}>
-                <i className='fa-solid fa-fire-flame-curved mr-1.5 text-[12px]' />
+                <i className='fa-solid fa-fire-flame-curved mr-1.5 text-[11px]' />
                 <span className='busuanzi_value_page_pv' />
               </span>
             )}
           </section>
         </div>
 
-        {showAside && coverSrc && (
+        {showAside && (
           <a
             href={coverSrc}
             target='_blank'
             rel='noopener noreferrer'
-            className='heo-post-cover-aside group absolute right-5 z-[11] hidden w-[280px] overflow-hidden rounded-[18px] md:block md:w-[300px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.25rem)]'
+            className='heo-post-cover-aside group absolute right-5 top-[58%] z-[11] hidden w-[220px] -translate-y-1/2 overflow-hidden rounded-[14px] md:block md:w-[240px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.25rem)]'
             style={{
               aspectRatio: '16 / 9',
               boxShadow: '0 8px 20px -12px rgba(0,0,0,0.35)',
@@ -204,11 +196,11 @@ export default function PostHeader({ post, siteInfo, lock }) {
             />
             <span
               aria-hidden
-              className='pointer-events-none absolute inset-0 rounded-[18px]'
+              className='pointer-events-none absolute inset-0 rounded-[14px]'
               style={{
                 boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.08)',
                 background:
-                  'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.2) 100%)'
+                  'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 40%, rgba(0,0,0,0.18) 100%)'
               }}
             />
           </a>
@@ -216,48 +208,4 @@ export default function PostHeader({ post, siteInfo, lock }) {
       </div>
     </div>
   )
-}
-
-function isCoverTooLight(url) {
-  return new Promise(resolve => {
-    if (!url || typeof window === 'undefined') {
-      resolve(false)
-      return
-    }
-    const img = new Image()
-    img.crossOrigin = 'anonymous'
-    const timer = setTimeout(() => resolve(false), 4000)
-    img.onload = () => {
-      clearTimeout(timer)
-      try {
-        const size = 32
-        const canvas = document.createElement('canvas')
-        canvas.width = size
-        canvas.height = size
-        const ctx = canvas.getContext('2d', { willReadFrequently: true })
-        if (!ctx) {
-          resolve(false)
-          return
-        }
-        ctx.drawImage(img, 0, 0, size, size)
-        const { data } = ctx.getImageData(0, 0, size, size)
-        let sum = 0
-        let n = 0
-        for (let i = 0; i < data.length; i += 4) {
-          if (data[i + 3] < 128) continue
-          sum += (data[i] * 299 + data[i + 1] * 587 + data[i + 2] * 114) / 1000
-          n++
-        }
-        const avg = n ? sum / n : 0
-        resolve(avg > 230)
-      } catch {
-        resolve(false)
-      }
-    }
-    img.onerror = () => {
-      clearTimeout(timer)
-      resolve(true)
-    }
-    img.src = url
-  })
 }

@@ -35,19 +35,30 @@ export default function FooterStats({ compact = false }) {
         const raw = (el.textContent || '').replace(/[,\s]/g, '').trim()
         if (!raw || !/^\d+$/.test(raw)) continue
         const n = Number(raw)
-        if (!Number.isFinite(n) || n <= 0) continue
+        if (!Number.isFinite(n) || n < 0) continue
         if (!cancelled) setPvText(formatViews(n))
         return true
       }
       return false
     }
 
+    const onReady = e => {
+      const n = Number(e?.detail?.site_pv)
+      if (!cancelled && Number.isFinite(n) && n >= 0) {
+        setPvText(formatViews(n))
+      } else {
+        readPv()
+      }
+    }
+
     readPv()
+    window.addEventListener('heo-busuanzi-ready', onReady)
     const t = window.setInterval(readPv, 600)
-    const stop = window.setTimeout(() => window.clearInterval(t), 20000)
+    const stop = window.setTimeout(() => window.clearInterval(t), 25000)
 
     return () => {
       cancelled = true
+      window.removeEventListener('heo-busuanzi-ready', onReady)
       window.clearInterval(t)
       window.clearTimeout(stop)
     }

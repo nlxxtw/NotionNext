@@ -4,6 +4,7 @@ import LazyImage from '@/components/LazyImage'
 import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 import { useGlobal } from '@/lib/global'
+import { useEffect, useRef, useState } from 'react'
 import CONFIG from '../config'
 import FooterStats from './FooterStats'
 
@@ -39,13 +40,12 @@ const Footer = () => {
     siteConfig('HEO_FOOTER_QUICK_LINKS', DEFAULT_QUICK_LINKS, CONFIG),
     qrCatalog
   )
-  // 默认空：去掉「服务」板块；Notion 有配置才显示
   const linkGroups = normalizeLinkGroups(
     siteConfig('HEO_FOOTER_LINK_GROUPS', [], CONFIG)
   )
 
   return (
-    <footer className='heo-footer relative w-full flex-shrink-0 bg-white text-sm leading-6 text-gray-600 dark:bg-[#1a191d] dark:text-gray-100'>
+    <footer className='heo-footer relative w-full flex-shrink-0 overflow-visible bg-white text-sm leading-6 text-gray-600 dark:bg-[#1a191d] dark:text-gray-100'>
       <div className='h-16 bg-gradient-to-b from-[#f7f9fe] to-white dark:from-[#18171d] dark:to-[#1a191d]' />
 
       {showQrChips && qrCatalog.length > 0 && (
@@ -85,11 +85,10 @@ const Footer = () => {
 
       <div
         id='footer-bottom'
-        className={`w-full border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
+        className={`w-full overflow-visible border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
-        <div className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12'>
-          {/* 左栏：访问须知 + 版权/业务（限制宽度，不伸进右边） */}
+        <div className='mx-auto flex max-w-6xl flex-col gap-4 overflow-visible px-4 py-5 lg:flex-row lg:items-start lg:justify-between lg:gap-12'>
           <div className='min-w-0 w-full max-w-xl flex-1 lg:max-w-[52%]'>
             {(noticeTitle || noticeText) && (
               <div className='mb-4 text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
@@ -135,18 +134,18 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* 右栏：链接与统计同一行；风车靠右、无白阴影 */}
-          <div className='flex w-full shrink-0 flex-col gap-2.5 lg:w-auto lg:min-w-[340px] lg:max-w-lg'>
-            <div className='flex items-end justify-between gap-4'>
-              <div className='min-w-0 flex-1 space-y-2'>
-                <div className='flex flex-wrap items-center gap-x-3.5 gap-y-1'>
+          {/* 与左侧「访问须知 / 本站资源捐…」同一高度，不要沉底 */}
+          <div className='flex w-full shrink-0 flex-col gap-2.5 overflow-visible lg:w-auto lg:min-w-[340px] lg:max-w-lg lg:pt-0.5'>
+            <div className='flex items-start justify-between gap-4 overflow-visible'>
+              <div className='min-w-0 flex-1 space-y-2 overflow-visible'>
+                <div className='heo-footer-quick-links relative z-20 flex flex-wrap items-center gap-x-3.5 gap-y-1 overflow-visible'>
                   {quickLinks.map((link, index) =>
                     link.qr ? (
                       <QrHoverText key={`${link.title}-${index}`} item={link} />
                     ) : (
                       <SmartLink
                         key={`${link.title}-${index}`}
-                        href={link.href || '#'}
+                        href={link.href || '/'}
                         className='whitespace-nowrap text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
                         {link.title}
                       </SmartLink>
@@ -160,7 +159,7 @@ const Footer = () => {
                 <LazyImage
                   src={siteInfo.icon}
                   alt={AUTHOR || 'avatar'}
-                  className='heo-footer-logo mb-0.5 h-11 w-11 shrink-0 rounded-full object-cover sm:h-12 sm:w-12'
+                  className='heo-footer-logo mt-0.5 h-11 w-11 shrink-0 rounded-full object-cover sm:h-12 sm:w-12'
                 />
               ) : null}
             </div>
@@ -182,10 +181,11 @@ function QrHoverChip({ item }) {
       </button>
       <div className='heo-qr-popover pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-30 w-[148px] -translate-x-1/2 scale-95 opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100'>
         <div className='rounded-2xl border border-black/[0.06] bg-white p-2.5 shadow-[0_18px_40px_-18px_rgba(30,40,70,0.45)] dark:border-white/10 dark:bg-[#2a2a30]'>
-          <LazyImage
+          <img
             src={item.img}
             alt={item.title}
             className='h-auto w-full rounded-xl'
+            loading='lazy'
           />
           <div
             className={`mt-2 rounded-full px-2 py-1 text-center text-[11px] font-bold ${
@@ -202,26 +202,61 @@ function QrHoverChip({ item }) {
   )
 }
 
+/** 悬停 / 点击弹出二维码 */
 function QrHoverText({ item }) {
+  const [open, setOpen] = useState(false)
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return undefined
+    const onDoc = e => {
+      if (!rootRef.current?.contains(e.target)) setOpen(false)
+    }
+    const onKey = e => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onDoc)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDoc)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
   return (
-    <div className='heo-qr-hover group relative'>
+    <div
+      ref={rootRef}
+      className='heo-qr-hover relative inline-flex'
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}>
       <button
         type='button'
-        className='truncate text-left text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
+        aria-expanded={open}
+        aria-haspopup='dialog'
+        onClick={() => setOpen(v => !v)}
+        className='whitespace-nowrap text-left text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
         {item.title}
       </button>
-      <div className='heo-qr-popover pointer-events-none absolute bottom-[calc(100%+10px)] left-0 z-30 w-[148px] scale-95 opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100'>
+      <div
+        role='dialog'
+        aria-label={`${item.title}二维码`}
+        className={`heo-qr-popover absolute bottom-[calc(100%+12px)] left-1/2 z-[80] w-[152px] -translate-x-1/2 transition duration-200 ${
+          open
+            ? 'pointer-events-auto scale-100 opacity-100'
+            : 'pointer-events-none scale-95 opacity-0'
+        }`}>
         <div className='rounded-2xl border border-black/[0.06] bg-white p-2.5 shadow-[0_18px_40px_-18px_rgba(30,40,70,0.45)] dark:border-white/10 dark:bg-[#2a2a30]'>
-          <LazyImage
+          <img
             src={item.qr}
             alt={item.title}
             className='h-auto w-full rounded-xl'
+            loading='eager'
           />
           <div className='mt-2 text-center text-[11px] font-bold text-gray-600 dark:text-gray-200'>
             {item.title}
           </div>
         </div>
-        <div className='ml-4 -mt-1 h-3 w-3 rotate-45 border-b border-r border-black/[0.06] bg-white dark:border-white/10 dark:bg-[#2a2a30]' />
+        <div className='mx-auto -mt-1 h-3 w-3 rotate-45 border-b border-r border-black/[0.06] bg-white dark:border-white/10 dark:bg-[#2a2a30]' />
       </div>
     </div>
   )
@@ -255,7 +290,7 @@ const DEFAULT_QUICK_LINKS = [
     href: 'https://github.com/notionnext-org/NotionNext'
   },
   { title: '资源', href: '#', qrFrom: '资源' },
-  { title: '站点地图', href: '/archives' }
+  { title: '地图', href: '/archives' }
 ]
 
 function normalizeQrList(value) {
@@ -313,8 +348,9 @@ function normalizeQuickLinks(value, qrList) {
   let result = list
     .map(item => {
       if (!item || typeof item !== 'object') return null
-      const title = String(item.title || item.name || '').trim()
+      let title = String(item.title || item.name || '').trim()
       if (!title) return null
+      if (title === '站点地图' || title === 'sitemap') title = '地图'
       const qrFrom = String(item.qrFrom || '').trim()
       const qr =
         String(item.qr || item.img || '').trim() ||
@@ -322,11 +358,17 @@ function normalizeQuickLinks(value, qrList) {
         qrMapFallback.get(qrFrom) ||
         (qrFrom === '主题' ? qrMapFallback.get('资源') : '') ||
         ''
-      return {
-        title,
-        href: String(item.href || item.url || '#').trim() || '#',
-        qr
+      let href = String(item.href || item.url || '#').trim() || '#'
+      if (title === '地图') {
+        href =
+          !href ||
+          href === '#' ||
+          href === '/sitemap.xml' ||
+          href.endsWith('sitemap.xml')
+            ? '/archives'
+            : href
       }
+      return { title, href, qr }
     })
     .filter(Boolean)
 
@@ -334,17 +376,35 @@ function normalizeQuickLinks(value, qrList) {
     resolveQr('局长请喝咖啡', catalog) || qrMapFallback.get('局长请喝咖啡') || ''
   const resourceQr =
     resolveQr('资源', catalog) || qrMapFallback.get('资源') || ''
+  const wechatQr =
+    resolveQr('官方微信', catalog) || qrMapFallback.get('官方微信') || ''
   const themeHref = 'https://github.com/notionnext-org/NotionNext'
 
   result = result.map(link => {
     if (link.title === '打赏' && !link.qr && tipQr) {
       return { ...link, qr: tipQr }
     }
-    if (link.title === '资源' && !link.qr && resourceQr) {
-      return { ...link, qr: resourceQr }
+    if (link.title === '资源') {
+      return { ...link, qr: link.qr || resourceQr, href: '#' }
+    }
+    if (link.title === '订阅' && !link.qr && wechatQr) {
+      return { ...link, qr: wechatQr }
     }
     if (link.title === '主题' && (!link.href || link.href === '#')) {
       return { ...link, href: themeHref, qr: '' }
+    }
+    if (link.title === '地图') {
+      return {
+        ...link,
+        qr: '',
+        href:
+          !link.href ||
+          link.href === '#' ||
+          link.href === '/sitemap.xml' ||
+          String(link.href).endsWith('sitemap.xml')
+            ? '/archives'
+            : link.href
+      }
     }
     return link
   })
@@ -362,6 +422,10 @@ function normalizeQuickLinks(value, qrList) {
     const insertAt =
       themeIdx >= 0 ? themeIdx + 1 : tipIdx >= 0 ? tipIdx + 1 : result.length
     result.splice(insertAt, 0, { title: '资源', href: '#', qr: resourceQr })
+  }
+
+  if (!result.some(l => l.title === '地图')) {
+    result.push({ title: '地图', href: '/archives', qr: '' })
   }
 
   return result
