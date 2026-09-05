@@ -148,7 +148,7 @@ function cleanPlace(v) {
 
 function stripSuffix(s) {
   return s
-    .replace(/(特别行政区|自治区|壮族|回族|维吾尔|省|市|地区)$/g, '')
+    .replace(/(特别行政区|自治区|壮族|回族|维吾尔|省|市|都|府|县|地区)$/g, '')
     .trim() || s
 }
 

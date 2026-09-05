@@ -273,7 +273,7 @@ const CONFIG = {
       href: 'https://github.com/notionnext-org/NotionNext'
     },
     { title: '资源', href: '#', qrFrom: '资源' },
-    { title: '站点地图', href: '/sitemap.xml' }
+    { title: '站点地图', href: '/archives' }
   ],
   // 页脚多列链接；默认空（去掉「服务」）；Notion 可再配
   HEO_FOOTER_LINK_GROUPS: [],

@@ -2,8 +2,7 @@ import { ArrowSmallUp } from '@/components/HeroIcons'
 import { useEffect, useState } from 'react'
 
 /**
- * 回顶按钮
- * @returns
+ * 回顶按钮（显示阅读进度，点击平滑回到顶部）
  */
 export default function ReadingProgress() {
   const [scrollPercentage, setScrollPercentage] = useState(0)
@@ -12,12 +11,15 @@ export default function ReadingProgress() {
     const scrollHeight = document.documentElement.scrollHeight
     const clientHeight = document.documentElement.clientHeight
     const scrollY = window.scrollY || window.pageYOffset
-
-    const percent = Math.floor((scrollY / (scrollHeight - clientHeight - 20)) * 100)
+    const denom = scrollHeight - clientHeight - 20
+    if (denom <= 0) {
+      setScrollPercentage(0)
+      return
+    }
+    const percent = Math.min(100, Math.max(0, Math.floor((scrollY / denom) * 100)))
     setScrollPercentage(percent)
   }
 
-  // 监听滚动事件
   useEffect(() => {
     let requestId
 
@@ -34,6 +36,7 @@ export default function ReadingProgress() {
     }
 
     window.addEventListener('scroll', handleAnimationFrame, { passive: true })
+    handleScroll()
     return () => {
       window.removeEventListener('scroll', handleAnimationFrame)
       if (requestId) {
@@ -42,15 +45,26 @@ export default function ReadingProgress() {
     }
   }, [])
 
-  return (<div
-        title={'阅读进度'}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`${scrollPercentage > 0 ? 'w-10 h-10 ' : 'w-0 h-0 opacity-0'} group cursor-pointer  hover:bg-black hover:bg-opacity-10 rounded-full flex justify-center items-center duration-200 transition-all`}
-    >
-        <ArrowSmallUp className={'w-5 h-5 hidden group-hover:block'} />
-        <div className='group-hover:hidden text-xs flex justify-center items-center rounded-full w-6 h-6 bg-black text-white'>
-            {scrollPercentage < 100 ? scrollPercentage : <ArrowSmallUp className={'w-5 h-5 fill-white'} />}
-        </div>
-    </div>
+  const visible = scrollPercentage > 0
+
+  return (
+    <button
+      type='button'
+      title={`返回顶部 · 阅读进度 ${scrollPercentage}%`}
+      aria-label='返回顶部'
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className={`${
+        visible ? 'w-10 h-10' : 'w-0 h-0 opacity-0 pointer-events-none'
+      } group cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 rounded-full flex justify-center items-center duration-200 transition-all`}>
+      {/* 默认显示向上箭头；悬停时显示进度数字 */}
+      <div className='flex h-6 w-6 items-center justify-center rounded-full bg-black text-white'>
+        <ArrowSmallUp
+          className={'h-5 w-5 fill-white group-hover:hidden'}
+        />
+        <span className='hidden text-xs group-hover:flex items-center justify-center'>
+          {scrollPercentage}
+        </span>
+      </div>
+    </button>
   )
 }

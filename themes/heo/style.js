@@ -363,17 +363,28 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 封面预览卡：再往下，避开顶栏 */
+      /* 封面预览卡：落在头图区内，轻阴影，不压到正文空隙 */
       #theme-heo .heo-post-cover-aside {
-        top: calc(58% + 1.5rem) !important;
+        top: 52% !important;
         bottom: auto !important;
         transform: translateY(-50%) !important;
         box-shadow:
-          0 12px 28px -14px rgba(0, 0, 0, 0.45),
+          0 8px 20px -12px rgba(0, 0, 0, 0.32),
           0 0 0 1px rgba(255, 255, 255, 0.08) !important;
       }
       #theme-heo .heo-post-cover-aside:hover {
-        transform: translateY(-50%) scale(1.03) !important;
+        transform: translateY(-50%) scale(1.02) !important;
+      }
+
+      /* 文章头图与正文/侧栏之间留白（对齐 Heo：有空隙、阴影轻） */
+      #theme-heo:has(#post-bg) > main#wrapper-outer {
+        padding-top: 1.25rem;
+      }
+      #theme-heo #post-bg.heo-post-bg {
+        box-shadow: 0 10px 28px -22px rgba(0, 0, 0, 0.28);
+      }
+      #theme-heo .heo-author-card {
+        box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.22) !important;
       }
 
       /* 文章头图元信息：柔和透明底，无白色细线框；强制白字 */

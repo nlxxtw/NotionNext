@@ -89,7 +89,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
   return (
     <div
       id='post-bg'
-      className='heo-post-bg relative z-10 -mb-5 h-[28rem] w-full overflow-hidden md:mb-0 md:h-[30rem] md:flex-shrink-0'
+      className='heo-post-bg relative z-10 mb-0 h-[28rem] w-full overflow-hidden md:h-[30rem] md:flex-shrink-0'
       style={{
         backgroundColor: bgReady ? bgColor : '#1e1f26',
         opacity: bgReady ? 1 : 0.92,
@@ -100,7 +100,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
         className='pointer-events-none absolute inset-0'
         style={{
           background:
-            'radial-gradient(ellipse 75% 55% at 82% 38%, rgba(255,255,255,0.12), transparent 58%), linear-gradient(180deg, rgba(0,0,0,0.1) 0%, transparent 40%, rgba(0,0,0,0.2) 100%)'
+            'radial-gradient(ellipse 70% 50% at 82% 36%, rgba(255,255,255,0.1), transparent 62%), linear-gradient(180deg, rgba(0,0,0,0.08) 0%, transparent 45%, rgba(0,0,0,0.1) 100%)'
         }}
       />
 
@@ -182,19 +182,19 @@ export default function PostHeader({ post, siteInfo, lock }) {
             className='heo-post-cover-aside group absolute right-5 z-[11] hidden w-[280px] overflow-hidden rounded-[18px] md:block md:w-[300px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.25rem)]'
             style={{
               aspectRatio: '16 / 9',
-              boxShadow: '0 12px 28px -14px rgba(0,0,0,0.45)',
+              boxShadow: '0 8px 20px -12px rgba(0,0,0,0.35)',
               transition: 'transform 200ms ease, box-shadow 200ms ease'
             }}
             title={post.title}
             onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.03)'
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.02)'
               e.currentTarget.style.boxShadow =
-                '0 16px 32px -12px rgba(0,0,0,0.5)'
+                '0 10px 24px -12px rgba(0,0,0,0.4)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
               e.currentTarget.style.boxShadow =
-                '0 12px 28px -14px rgba(0,0,0,0.45)'
+                '0 8px 20px -12px rgba(0,0,0,0.35)'
             }}>
             <LazyImage
               id='post-cover'

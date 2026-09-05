@@ -255,7 +255,7 @@ const DEFAULT_QUICK_LINKS = [
     href: 'https://github.com/notionnext-org/NotionNext'
   },
   { title: '资源', href: '#', qrFrom: '资源' },
-  { title: '站点地图', href: '/sitemap.xml' }
+  { title: '站点地图', href: '/archives' }
 ]
 
 function normalizeQrList(value) {
