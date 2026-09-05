@@ -26,9 +26,11 @@ export default function PostHeader({ post, siteInfo, lock }) {
       setShowAside(false)
       return
     }
+    // 先立刻显示，避免等亮度检测拖慢首屏；过白再隐藏
+    setShowAside(true)
     let cancelled = false
     isCoverTooLight(coverSrc).then(tooLight => {
-      if (!cancelled) setShowAside(!tooLight)
+      if (!cancelled && tooLight) setShowAside(false)
     })
     return () => {
       cancelled = true

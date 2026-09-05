@@ -91,9 +91,22 @@ export default function PostCoverTheme({ post }) {
       injectTheme(hex)
     }
 
-    apply()
+    // 不阻塞首屏：空闲后再取色
+    const schedule =
+      typeof window !== 'undefined' && window.requestIdleCallback
+        ? cb => window.requestIdleCallback(cb, { timeout: 1200 })
+        : cb => setTimeout(cb, 200)
+    const cancel =
+      typeof window !== 'undefined' && window.cancelIdleCallback
+        ? id => window.cancelIdleCallback(id)
+        : id => clearTimeout(id)
+
+    const idleId = schedule(() => {
+      apply()
+    })
     return () => {
       cancelled = true
+      cancel(idleId)
       clearTheme()
     }
   }, [

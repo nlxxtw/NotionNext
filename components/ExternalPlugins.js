@@ -111,7 +111,6 @@ const ExternalPlugin = props => {
     null,
     NOTION_CONFIG
   )
-  const TIANLI_KEY = siteConfig('TianliGPT_KEY', null, NOTION_CONFIG)
   const GLOBAL_JS = siteConfig('GLOBAL_JS', '', NOTION_CONFIG)
   const CLARITY_ID = siteConfig('CLARITY_ID', null, NOTION_CONFIG)
   const IMG_SHADOW = siteConfig('IMG_SHADOW', null, NOTION_CONFIG)
@@ -280,7 +279,7 @@ const ExternalPlugin = props => {
       {!canCopy && <DisableCopy />}
       {WEB_WHIZ_ENABLED && <WebWhiz />}
       {AD_WWADS_BLOCK_DETECT && <AdBlockDetect />}
-      {TIANLI_KEY && <TianliGPT />}
+      {/* TianliGPT 改由文章页 LayoutSlug 内嵌，避免挂在页脚且路径误判 */}
       <VConsole />
       {ENABLE_NPROGRSS && <LoadingProgress />}
       {pluginsIdle && <AosAnimation />}

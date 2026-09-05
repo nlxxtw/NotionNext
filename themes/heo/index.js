@@ -50,6 +50,7 @@ import CONFIG from './config'
 import { Style } from './style'
 import AISummary from '@/components/AISummary'
 import ArticleExpirationNotice from '@/components/ArticleExpirationNotice'
+import TianliGPT from '@/components/TianliGPT'
 
 /**
  * 基础布局 采用上中下布局，移动端使用顶部侧边导航栏
@@ -318,11 +319,11 @@ const LayoutSlug = props => {
             {/* 文章主体 */}
             <article id='article-wrapper'>
               {/* Notion文章主体 */}
-              <section
-                className='wow fadeInUp p-5 justify-center mx-auto'
-                data-wow-delay='.2s'>
+              <section className='mx-auto justify-center p-5'>
                 <ArticleExpirationNotice post={post} />
                 <AISummary aiSummary={post.aiSummary} />
+                {/* 客户端天利摘要：插在正文前；不依赖 /posts|/article 路径 */}
+                <TianliGPT />
                 <WWAds orientation='horizontal' className='w-full' />
                 {post && <NotionPage post={post} />}
                 <WWAds orientation='horizontal' className='w-full' />
