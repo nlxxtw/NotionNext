@@ -39,15 +39,14 @@ const Style = () => {
         --heo-color-text-secondary-dark: #d1d5db;
         --heo-color-text: var(--heo-color-text-light);
         --heo-color-text-secondary: var(--heo-color-text-secondary-light);
-        /* 顶区柔和紫雾氛围：整页一层，避免「实心白条 + 下层透明」分层 */
+        /* 页面底色保持平铺；彩色氛围交给 .heo-atmosphere（模糊光斑），不要顶区实心色带 */
         background-color: ${bg};
-        background-image:
-          radial-gradient(ellipse 95% 60% at 8% -12%, rgba(167, 139, 250, 0.48), transparent 58%),
-          radial-gradient(ellipse 80% 55% at 92% -8%, rgba(196, 181, 253, 0.36), transparent 55%),
-          radial-gradient(ellipse 55% 40% at 48% -4%, rgba(253, 224, 171, 0.2), transparent 50%),
-          linear-gradient(180deg, #efeaff 0%, #f4f2ff 16%, ${bg} 38%, ${bg} 100%);
-        background-repeat: no-repeat;
+        background-image: none;
         color: var(--heo-color-text);
+        --heo-maskbg: rgba(255, 255, 255, 0.38);
+        --heo-maskbg-border: rgba(255, 255, 255, 0.58);
+        --heo-glass-blur: blur(22px) saturate(185%);
+        --heo-shadow-glass: 0 8px 28px -14px rgba(40, 50, 90, 0.22);
       }
 
       .dark #theme-heo {
@@ -56,10 +55,52 @@ const Style = () => {
         --heo-color-accent: #a794ff;
         --heo-color-border-dark: rgba(255, 255, 255, 0.12);
         background-color: var(--heo-color-bg-dark);
-        background-image:
-          radial-gradient(ellipse 90% 50% at 10% -10%, rgba(122, 93, 250, 0.22), transparent 55%),
-          radial-gradient(ellipse 70% 45% at 90% -5%, rgba(167, 148, 255, 0.14), transparent 50%),
-          linear-gradient(180deg, #1c1b24 0%, ${bgDark} 40%, ${bgDark} 100%);
+        background-image: none;
+        --heo-maskbg: rgba(40, 42, 52, 0.42);
+        --heo-maskbg-border: rgba(255, 255, 255, 0.1);
+        --heo-shadow-glass: none;
+      }
+
+      /* 顶区柔焦色雾：fixed 光斑 + blur，导航/分类胶囊共用同一层「空气」 */
+      #theme-heo .heo-atmosphere {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: min(46vh, 460px);
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      #theme-heo .heo-atmosphere::before {
+        content: '';
+        position: absolute;
+        inset: -35% -15% -20%;
+        background:
+          radial-gradient(ellipse 42% 48% at 12% 28%, rgba(186, 156, 255, 0.72), transparent 70%),
+          radial-gradient(ellipse 38% 44% at 88% 18%, rgba(167, 139, 250, 0.55), transparent 68%),
+          radial-gradient(ellipse 36% 40% at 48% 8%, rgba(253, 224, 171, 0.42), transparent 65%),
+          radial-gradient(ellipse 50% 36% at 62% 55%, rgba(196, 181, 253, 0.28), transparent 70%);
+        filter: blur(52px);
+        transform: translateZ(0);
+      }
+      .dark #theme-heo .heo-atmosphere::before {
+        background:
+          radial-gradient(ellipse 42% 48% at 12% 28%, rgba(122, 93, 250, 0.38), transparent 70%),
+          radial-gradient(ellipse 38% 44% at 88% 18%, rgba(167, 148, 255, 0.22), transparent 68%),
+          radial-gradient(ellipse 40% 36% at 50% 40%, rgba(90, 70, 160, 0.18), transparent 70%);
+        filter: blur(56px);
+      }
+      /* 内容压在色雾之上；不要给全体子节点设 z-index，以免压住 fixed 导航 */
+      #theme-heo > header,
+      #theme-heo > main,
+      #theme-heo > footer,
+      #theme-heo .heo-footer {
+        position: relative;
+        z-index: 1;
+      }
+      #theme-heo #nav.heo-nav--fixed {
+        z-index: 60;
       }
 
       /* 资料卡：永远跟主色/封面色，禁止夜间变成黄色 */
@@ -179,19 +220,11 @@ const Style = () => {
 
       body {
         background-color: ${bg};
-        background-image:
-          radial-gradient(ellipse 95% 60% at 8% -12%, rgba(167, 139, 250, 0.48), transparent 58%),
-          radial-gradient(ellipse 80% 55% at 92% -8%, rgba(196, 181, 253, 0.36), transparent 55%),
-          radial-gradient(ellipse 55% 40% at 48% -4%, rgba(253, 224, 171, 0.2), transparent 50%),
-          linear-gradient(180deg, #efeaff 0%, #f4f2ff 16%, ${bg} 38%, ${bg} 100%);
-        background-repeat: no-repeat;
+        background-image: none;
       }
       .dark body {
         background-color: ${bgDark};
-        background-image:
-          radial-gradient(ellipse 90% 50% at 10% -10%, rgba(122, 93, 250, 0.22), transparent 55%),
-          radial-gradient(ellipse 70% 45% at 90% -5%, rgba(167, 148, 255, 0.14), transparent 50%),
-          linear-gradient(180deg, #1c1b24 0%, ${bgDark} 40%, ${bgDark} 100%);
+        background-image: none;
       }
 
       #theme-heo {
@@ -204,47 +237,39 @@ const Style = () => {
         --heo-card-border: rgba(255, 255, 255, 0.1);
       }
 
-      /* 分类条：半透明毛玻璃，透出顶区紫雾 */
+      /* 顶栏胶囊 + 分类胶囊：同一套半透明毛玻璃（对齐参考站「全透明浮动」） */
+      #theme-heo .heo-nav-chip,
       #theme-heo .heo-cat-chip {
-        background: rgba(255, 255, 255, 0.48);
-        border: 1px solid rgba(255, 255, 255, 0.55);
-        box-shadow: 0 4px 14px -8px rgba(44, 45, 48, 0.12);
-        backdrop-filter: blur(18px) saturate(180%);
-        -webkit-backdrop-filter: blur(18px) saturate(180%);
+        background: var(--heo-maskbg) !important;
+        border: 1px solid var(--heo-maskbg-border);
+        box-shadow: var(--heo-shadow-glass);
+        backdrop-filter: var(--heo-glass-blur);
+        -webkit-backdrop-filter: var(--heo-glass-blur);
       }
 
+      .dark #theme-heo .heo-nav-chip,
       .dark #theme-heo .heo-cat-chip {
-        background: rgba(40, 42, 50, 0.55);
-        border-color: rgba(255, 255, 255, 0.08);
+        background: var(--heo-maskbg) !important;
+        border-color: var(--heo-maskbg-border);
         box-shadow: none;
       }
 
-      /* 顶栏悬浮胶囊：更透，透出同一层氛围（非实心白块） */
-      #theme-heo .heo-nav-chip {
-        background: rgba(255, 255, 255, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 6px 20px -10px rgba(40, 50, 80, 0.28);
-        backdrop-filter: blur(22px) saturate(200%);
-        -webkit-backdrop-filter: blur(22px) saturate(200%);
-      }
-
-      .dark #theme-heo .heo-nav-chip {
-        background: rgba(40, 42, 50, 0.4);
-        border-color: rgba(255, 255, 255, 0.1);
-        box-shadow: none;
-      }
-
-      /* 顶栏区域本身绝不铺实心白 */
+      /* 顶栏区域本身绝不铺实心白 / 不整条毛玻璃（只让胶囊透） */
       #theme-heo header,
       #theme-heo .heo-nav-spacer,
       #theme-heo #nav,
       #theme-heo .heo-nav--plain,
       #theme-heo .heo-nav--top,
-      #theme-heo .heo-nav--scrolled {
+      #theme-heo .heo-nav--scrolled,
+      #theme-heo .heo-nav-inner,
+      #theme-heo #category-bar,
+      #theme-heo .home-category-bar {
         background: transparent !important;
         background-color: transparent !important;
         box-shadow: none !important;
         border: 0 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
       }
 
       /* 左上角回主页胶囊：文章头图上用白底深色图标（见下方更具体规则） */

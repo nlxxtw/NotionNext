@@ -117,6 +117,8 @@ const LayoutBase = props => {
       id='theme-heo'
       className={`${siteConfig('FONT_STYLE')} relative h-full min-h-screen flex flex-col scroll-smooth dark:text-white`}>
       <Style />
+      {/* 顶区柔焦色雾：导航/分类胶囊共用同一层透明空气，避免实心分层 */}
+      <div className='heo-atmosphere' aria-hidden />
       <PostCoverTheme post={props?.post} />
 
       {/* 顶部嵌入 导航栏，首页放hero，文章页放文章详情 */}
