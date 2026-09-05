@@ -43,33 +43,15 @@ const Footer = () => {
     <footer className='heo-footer relative w-full flex-shrink-0 bg-white text-sm leading-6 text-gray-600 dark:bg-[#1a191d] dark:text-gray-100'>
       <div className='h-20 bg-gradient-to-b from-[#f7f9fe] to-white dark:from-[#18171d] dark:to-[#1a191d]' />
 
-      <div className='border-t border-black/[0.04] bg-white px-4 py-10 dark:border-white/10 dark:bg-[#1a191d]'>
-        <div className='mx-auto flex max-w-6xl flex-col gap-10 lg:flex-row lg:items-start lg:justify-between'>
-          <div className='max-w-2xl lg:w-[52%]'>
-            <div className='mb-3 flex items-center gap-2'>
-              <span className='inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--heo-color-primary)]/10 text-[var(--heo-color-primary)]'>
-                <i className='fas fa-info text-xs' />
-              </span>
-              <h3 className='text-base font-extrabold text-gray-800 dark:text-white'>
-                {noticeTitle}
-              </h3>
-            </div>
-            <p className='text-[13px] leading-7 text-gray-500 dark:text-gray-300'>
-              {noticeText}
-            </p>
+      {qrList.length > 0 && (
+        <div className='border-t border-black/[0.04] bg-white px-4 py-8 dark:border-white/10 dark:bg-[#1a191d]'>
+          <div className='mx-auto flex max-w-6xl flex-wrap justify-center gap-3 lg:justify-end'>
+            {qrList.map((item, index) => (
+              <QrHoverChip key={`${item.title}-${index}`} item={item} />
+            ))}
           </div>
-
-          {qrList.length > 0 && (
-            <div className='flex flex-1 flex-col items-start gap-4 lg:items-end'>
-              <div className='flex flex-wrap gap-3 lg:justify-end'>
-                {qrList.map((item, index) => (
-                  <QrHoverChip key={`${item.title}-${index}`} item={item} />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
       <div
         id='footer-bottom'
@@ -77,7 +59,7 @@ const Footer = () => {
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
         <div className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between'>
-          <div id='footer-bottom-left' className='text-center lg:text-left'>
+          <div id='footer-bottom-left' className='min-w-0 text-center lg:text-left'>
             <div className='text-[12px] text-gray-500 dark:text-gray-400'>
               <PoweredBy />
             </div>
@@ -95,17 +77,26 @@ const Footer = () => {
                 </span>
               ) : null}
             </div>
-            <div className='mt-1 flex flex-wrap items-center justify-center gap-x-3 text-[12px] text-gray-500 lg:justify-start'>
+            <div className='mt-1 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto whitespace-nowrap text-[12px] text-gray-500 scrollbar-none lg:justify-start'>
+              <span className='inline-flex shrink-0 items-center gap-1.5 font-bold text-gray-700 dark:text-gray-200'>
+                <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
+                {noticeTitle}
+              </span>
+              {noticeText ? (
+                <span className='shrink-0 text-gray-500 dark:text-gray-400'>
+                  {noticeText}
+                </span>
+              ) : null}
               {BEI_AN && (
                 <a
                   href={BEI_AN_LINK || 'https://beian.miit.gov.cn/'}
-                  className='hover:text-[var(--heo-color-primary)]'>
+                  className='shrink-0 hover:text-[var(--heo-color-primary)]'>
                   <i className='fas fa-shield-alt mr-1' />
                   {BEI_AN}
                 </a>
               )}
               <BeiAnGongAn />
-              <span className='inline-flex items-center gap-1.5'>
+              <span className='inline-flex shrink-0 items-center gap-1.5'>
                 <span className='h-1.5 w-1.5 rounded-full bg-emerald-500' />
                 所有业务正常
               </span>
