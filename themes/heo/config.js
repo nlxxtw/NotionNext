@@ -237,12 +237,19 @@ const CONFIG = {
       icon: 'fab fa-weixin'
     }
   ],
-  // 底栏快捷入口；带 qrFrom 的会悬停弹出对应二维码
+  // 底栏快捷入口；带 qrFrom 的会悬停弹出对应二维码（勿再加「资源」）
   HEO_FOOTER_QUICK_LINKS: [
     { title: '留言', href: '/about' },
     { title: '订阅', href: '/rss', qrFrom: '官方微信' },
     { title: '打赏', href: '#', qrFrom: '局长请喝咖啡' },
-    { title: '资源', href: '#', qrFrom: '主题' }
+    { title: '站点地图', href: '/sitemap.xml' }
+  ],
+  // 页脚多列链接（可按需在 Notion 扩展）
+  HEO_FOOTER_LINK_GROUPS: [
+    {
+      title: '服务',
+      links: [{ title: '站点地图', href: '/sitemap.xml' }]
+    }
   ],
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）

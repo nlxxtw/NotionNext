@@ -1,4 +1,3 @@
-import Announcement from './Announcement'
 import AuthorCard from './AuthorCard'
 
 export function normalizeInfoCardGreetings(value) {
@@ -37,19 +36,14 @@ export function shouldUseInfoCardBlurAvatar(isSlugPage, avatarBlurEnabled) {
 }
 
 /**
- * 侧栏社交信息卡（与首页 Hero 资料卡同一套悬停介绍）
+ * 侧栏资料卡（不再挂 Notion Notice，避免 &emsp;/番外 垃圾内容）
  */
 export function InfoCard(props) {
-  const { siteInfo, notice, className = '' } = props
+  const { siteInfo, className = '' } = props
 
   return (
     <div className={`w-full ${className}`}>
       <AuthorCard siteInfo={siteInfo} minHeightClass='min-h-[240px]' />
-      {notice && (
-        <div className='mt-3'>
-          <Announcement post={notice} />
-        </div>
-      )}
     </div>
   )
 }

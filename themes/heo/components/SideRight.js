@@ -42,8 +42,8 @@ export default function SideRight(props) {
   const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', false, CONFIG)
   const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
   const sortedTags = tagOptions?.slice(0, tagLimit) || []
-  // 首页英雄区已有资料卡，侧栏不再重复；仅非首页显示
-  const showInfoCard = !isHome || showInfoOnHome
+  // 首页有英雄资料卡；文章页去掉右侧资料/公告（&emsp; 番外）；其它内页可显示
+  const showInfoCard = !post && (!isHome || showInfoOnHome)
 
   return (
     <aside

@@ -8,10 +8,9 @@ import { useGlobal } from '@/lib/global'
 import CONFIG from '../config'
 
 /**
- * 页脚美化：访问须知 + 悬停弹出二维码 + 底栏快捷入口
+ * 页脚：二维码区 + 可选链接栏 + 底栏（对齐 Heo 清爽布局）
  */
 const Footer = () => {
-  const { siteInfo } = useGlobal()
   const BEI_AN = siteConfig('BEI_AN')
   const BEI_AN_LINK = siteConfig('BEI_AN_LINK')
   const BIO = siteConfig('BIO')
@@ -38,16 +37,44 @@ const Footer = () => {
     siteConfig('HEO_FOOTER_QUICK_LINKS', DEFAULT_QUICK_LINKS, CONFIG),
     qrList
   )
+  const linkGroups = normalizeLinkGroups(
+    siteConfig('HEO_FOOTER_LINK_GROUPS', DEFAULT_LINK_GROUPS, CONFIG)
+  )
 
   return (
     <footer className='heo-footer relative w-full flex-shrink-0 bg-white text-sm leading-6 text-gray-600 dark:bg-[#1a191d] dark:text-gray-100'>
-      <div className='h-20 bg-gradient-to-b from-[#f7f9fe] to-white dark:from-[#18171d] dark:to-[#1a191d]' />
+      <div className='h-16 bg-gradient-to-b from-[#f7f9fe] to-white dark:from-[#18171d] dark:to-[#1a191d]' />
 
       {qrList.length > 0 && (
-        <div className='border-t border-black/[0.04] bg-white px-4 py-8 dark:border-white/10 dark:bg-[#1a191d]'>
-          <div className='mx-auto flex max-w-6xl flex-wrap justify-center gap-3 lg:justify-end'>
+        <div className='border-t border-black/[0.04] bg-white px-4 py-7 dark:border-white/10 dark:bg-[#1a191d]'>
+          <div className='mx-auto flex max-w-6xl flex-wrap justify-center gap-3'>
             {qrList.map((item, index) => (
               <QrHoverChip key={`${item.title}-${index}`} item={item} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {linkGroups.length > 0 && (
+        <div className='border-t border-black/[0.04] bg-white px-4 py-8 dark:border-white/10 dark:bg-[#1a191d]'>
+          <div className='mx-auto grid max-w-6xl grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
+            {linkGroups.map(group => (
+              <div key={group.title}>
+                <div className='mb-2.5 text-[14px] font-extrabold text-gray-800 dark:text-gray-100'>
+                  {group.title}
+                </div>
+                <ul className='space-y-1.5'>
+                  {(group.links || []).map(link => (
+                    <li key={`${group.title}-${link.title}`}>
+                      <SmartLink
+                        href={link.href || '#'}
+                        className='text-[13px] text-gray-500 transition hover:text-[var(--heo-color-primary)] dark:text-gray-400 dark:hover:text-[var(--heo-color-accent)]'>
+                        {link.title}
+                      </SmartLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>
@@ -58,12 +85,14 @@ const Footer = () => {
         className={`w-full border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
-        <div className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between'>
-          <div id='footer-bottom-left' className='min-w-0 text-center lg:text-left'>
-            <div className='text-[12px] text-gray-500 dark:text-gray-400'>
+        <div className='mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 lg:flex-row lg:items-start lg:justify-between'>
+          <div id='footer-bottom-left' className='min-w-0 flex-1 text-center lg:text-left'>
+            <div className='text-[12px] text-gray-400'>
               <PoweredBy />
             </div>
-            <div className='mt-1 flex flex-wrap items-center justify-center gap-x-1 text-[13px] lg:justify-start'>
+
+            {/* 版权 + BIO + 所有业务正常：同一行不拆开状态 */}
+            <div className='mt-1 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[13px] text-gray-600 dark:text-gray-300 lg:justify-start'>
               <CopyRightDate />
               <SmartLink
                 href='/about'
@@ -72,35 +101,39 @@ const Footer = () => {
               </SmartLink>
               {BIO ? (
                 <span className='text-gray-500 dark:text-gray-400'>
-                  {' '}
                   | {BIO}
                 </span>
               ) : null}
-            </div>
-            <div className='mt-1 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto whitespace-nowrap text-[12px] text-gray-500 scrollbar-none lg:justify-start'>
-              <span className='inline-flex shrink-0 items-center gap-1.5 font-bold text-gray-700 dark:text-gray-200'>
-                <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
-                {noticeTitle}
+              <span className='inline-flex items-center gap-1.5 whitespace-nowrap text-gray-500 dark:text-gray-400'>
+                <span className='h-1.5 w-1.5 rounded-full bg-emerald-500' />
+                所有业务正常
               </span>
-              {noticeText ? (
-                <span className='shrink-0 text-gray-500 dark:text-gray-400'>
-                  {noticeText}
-                </span>
-              ) : null}
+            </div>
+
+            <div className='mt-1 flex flex-wrap items-center justify-center gap-x-3 text-[12px] text-gray-500 lg:justify-start'>
               {BEI_AN && (
                 <a
                   href={BEI_AN_LINK || 'https://beian.miit.gov.cn/'}
-                  className='shrink-0 hover:text-[var(--heo-color-primary)]'>
+                  className='hover:text-[var(--heo-color-primary)]'>
                   <i className='fas fa-shield-alt mr-1' />
                   {BEI_AN}
                 </a>
               )}
               <BeiAnGongAn />
-              <span className='inline-flex shrink-0 items-center gap-1.5'>
-                <span className='h-1.5 w-1.5 rounded-full bg-emerald-500' />
-                所有业务正常
-              </span>
             </div>
+
+            {/* 访问须知：允许换行 */}
+            {(noticeTitle || noticeText) && (
+              <div className='mt-2.5 max-w-3xl text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
+                <div className='mb-1 inline-flex items-center gap-1.5 font-bold text-gray-700 dark:text-gray-200'>
+                  <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
+                  {noticeTitle}
+                </div>
+                {noticeText ? (
+                  <p className='whitespace-normal break-words'>{noticeText}</p>
+                ) : null}
+              </div>
+            )}
           </div>
 
           <div
@@ -118,13 +151,6 @@ const Footer = () => {
                 </SmartLink>
               )
             )}
-            {siteInfo?.icon ? (
-              <LazyImage
-                src={siteInfo.icon}
-                alt={AUTHOR || 'avatar'}
-                className='ml-2 h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-gray-700'
-              />
-            ) : null}
           </div>
         </div>
       </div>
@@ -137,7 +163,7 @@ function QrHoverChip({ item }) {
     <div className='heo-qr-hover group relative'>
       <button
         type='button'
-        className='inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-[#f7f8fc] px-3.5 py-2 text-[13px] font-bold text-gray-700 shadow-[0_6px_16px_-10px_rgba(40,50,80,0.35)] transition group-hover:-translate-y-0.5 group-hover:border-[var(--heo-color-primary)]/30 group-hover:text-[var(--heo-color-primary)] dark:border-white/10 dark:bg-[#26262c] dark:text-gray-100'>
+        className='inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-[#f7f8fc] px-3.5 py-2 text-[13px] font-bold text-gray-700 shadow-[0_6px_16px_-10px_rgba(40,50,80,0.35)] transition group-hover:-translate-y-0.5 group-hover:text-[var(--heo-color-primary)] dark:border-white/10 dark:bg-[#26262c] dark:text-gray-100'>
         <i className={`${item.icon || 'fas fa-qrcode'} text-[12px] opacity-80`} />
         {item.title}
       </button>
@@ -211,7 +237,15 @@ const DEFAULT_QUICK_LINKS = [
   { title: '留言', href: '/about' },
   { title: '订阅', href: '/rss', qrFrom: '官方微信' },
   { title: '打赏', href: '#', qrFrom: '局长请喝咖啡' },
-  { title: '资源', href: '#', qrFrom: '主题' }
+  { title: '站点地图', href: '/sitemap.xml' }
+]
+
+/** 参考 Heo 的多列链接；可在 Notion 用 HEO_FOOTER_LINK_GROUPS 覆盖 */
+const DEFAULT_LINK_GROUPS = [
+  {
+    title: '服务',
+    links: [{ title: '站点地图', href: '/sitemap.xml' }]
+  }
 ]
 
 function normalizeQrList(value) {
@@ -258,6 +292,8 @@ function normalizeQuickLinks(value, qrList) {
       if (!item || typeof item !== 'object') return null
       const title = String(item.title || item.name || '').trim()
       if (!title) return null
+      // 去掉「资源」+头像那套
+      if (title === '资源') return null
       const qrFrom = String(item.qrFrom || '').trim()
       const qr =
         String(item.qr || item.img || '').trim() ||
@@ -268,6 +304,38 @@ function normalizeQuickLinks(value, qrList) {
         href: String(item.href || item.url || '#').trim() || '#',
         qr
       }
+    })
+    .filter(Boolean)
+}
+
+function normalizeLinkGroups(value) {
+  let list = value
+  if (typeof list === 'string') {
+    try {
+      list = JSON.parse(list)
+    } catch {
+      list = DEFAULT_LINK_GROUPS
+    }
+  }
+  if (!Array.isArray(list)) return DEFAULT_LINK_GROUPS
+  return list
+    .map(group => {
+      if (!group || typeof group !== 'object') return null
+      const title = String(group.title || '').trim()
+      if (!title) return null
+      const links = Array.isArray(group.links)
+        ? group.links
+            .map(l => {
+              if (!l || typeof l !== 'object') return null
+              const t = String(l.title || l.name || '').trim()
+              const href = String(l.href || l.url || '').trim()
+              if (!t || !href) return null
+              return { title: t, href }
+            })
+            .filter(Boolean)
+        : []
+      if (!links.length) return null
+      return { title, links }
     })
     .filter(Boolean)
 }
