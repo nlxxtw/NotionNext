@@ -326,12 +326,15 @@ const Style = () => {
         overflow: visible;
       }
 
-      /* 文章页头上：胶囊略加深可读，仍非实心白条 */
+      /* 文章封面顶栏：对齐 Heo —— 无毛玻璃胶囊，纯白字浮在封面色上 */
       #theme-heo #nav.text-white .heo-nav-chip {
-        background: rgba(255, 255, 255, 0.22) !important;
-        border-color: rgba(255, 255, 255, 0.28) !important;
-        box-shadow: none;
-        color: #fff !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
       }
 
       #theme-heo #nav.text-white .heo-nav-chip a,
@@ -345,10 +348,29 @@ const Style = () => {
         color: #fff !important;
       }
 
+      #theme-heo #nav.text-white .heo-nav-home-pill,
+      #theme-heo #nav.text-white .heo-logo-trigger {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
       #theme-heo #nav.text-white .heo-nav-badge-pill {
         background: rgba(0, 0, 0, 0.28) !important;
         border-color: rgba(255, 255, 255, 0.2) !important;
         color: #fff !important;
+      }
+
+      /* 封面预览卡：落在导航下方，禁止顶到顶栏造成「叠层」 */
+      #theme-heo .heo-post-cover-aside {
+        top: auto !important;
+        bottom: 4.75rem;
+        transform: none !important;
+      }
+      #theme-heo .heo-post-cover-aside:hover {
+        transform: scale(1.03) !important;
       }
 
       /* 顶栏：始终 fixed + Safari 安全区 */

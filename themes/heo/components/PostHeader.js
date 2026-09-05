@@ -179,7 +179,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
             href={coverSrc}
             target='_blank'
             rel='noopener noreferrer'
-            className='heo-post-cover-aside group absolute right-6 top-1/2 z-[11] hidden w-[280px] -translate-y-1/2 overflow-hidden rounded-[18px] md:block md:w-[300px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.5rem)]'
+            className='heo-post-cover-aside group absolute right-5 z-[11] hidden w-[280px] overflow-hidden rounded-[18px] md:block md:w-[300px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.25rem)]'
             style={{
               aspectRatio: '16 / 9',
               boxShadow:
@@ -188,12 +188,12 @@ export default function PostHeader({ post, siteInfo, lock }) {
             }}
             title={post.title}
             onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.03)'
+              e.currentTarget.style.transform = 'scale(1.03)'
               e.currentTarget.style.boxShadow =
                 '0 8px 12px rgba(0,0,0,0.16), 0 28px 56px -14px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.2)'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
+              e.currentTarget.style.transform = 'scale(1)'
               e.currentTarget.style.boxShadow =
                 '0 4px 6px rgba(0,0,0,0.12), 0 22px 48px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.14)'
             }}>

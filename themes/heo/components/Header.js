@@ -14,7 +14,7 @@ import CONFIG from '../config'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 顶栏：整条透明 + 悬浮毛玻璃胶囊；封面顶满视口不分层
+ * 顶栏：首页毛玻璃胶囊；文章封面区白字透明导航（与封面色一体）
  */
 const Header = props => {
   const [textWhite, setTextWhite] = useState(false)
@@ -37,7 +37,13 @@ const Header = props => {
     () =>
       throttle(() => {
         const scrollS = window.scrollY || document.documentElement.scrollTop || 0
-        const onPostHero = Boolean(postBgRef.current) && scrollS <= 1
+        const postBg = postBgRef.current
+        // 封面区内保持白字透明导航（对齐 Heo）；滚出封面后再恢复毛玻璃
+        let onPostHero = false
+        if (postBg) {
+          const coverH = postBg.offsetHeight || 0
+          onPostHero = scrollS < Math.max(coverH - 96, 48)
+        }
         setTextWhite(onPostHero)
       }, 80),
     []
@@ -88,7 +94,7 @@ const Header = props => {
         id='nav'
         className={`heo-nav heo-nav--fixed heo-nav--plain fixed left-0 right-0 top-0 z-[60] w-full
             ${textWhite ? 'text-white heo-nav--on-post' : 'text-black dark:text-white'}`}>
-        <div className='heo-nav-inner mx-auto grid h-[4.25rem] max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6'>
+        <div className='heo-nav-inner mx-auto grid h-[4.25rem] max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5'>
           <div className='flex min-w-0 items-center justify-start gap-2'>
             <Logo {...props} />
             {showUpdateBadge && (
@@ -117,7 +123,12 @@ const Header = props => {
                   ? 'opacity-100'
                   : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='heo-nav-chip rounded-full px-2.5 py-1.5'>
+              <div
+                className={`${
+                  textWhite
+                    ? 'px-1 py-1'
+                    : 'heo-nav-chip rounded-full px-2.5 py-1.5'
+                }`}>
                 <MenuListTop {...props} />
               </div>
             </div>
@@ -127,8 +138,18 @@ const Header = props => {
                   ? 'opacity-100'
                   : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='heo-nav-chip rounded-full px-4 py-1.5'>
-                <h1 className='text-center text-sm font-bold text-gray-700 dark:text-gray-200'>
+              <div
+                className={`${
+                  textWhite
+                    ? 'px-1 py-1'
+                    : 'heo-nav-chip rounded-full px-4 py-1.5'
+                }`}>
+                <h1
+                  className={`text-center text-sm font-bold ${
+                    textWhite
+                      ? 'text-white'
+                      : 'text-gray-700 dark:text-gray-200'
+                  }`}>
                   {siteConfig('AUTHOR') || siteConfig('TITLE')}
                   {siteConfig('BIO') && <> · </>}
                   {siteConfig('BIO')}
@@ -138,7 +159,12 @@ const Header = props => {
           </div>
 
           <div className='flex items-center justify-end gap-1'>
-            <div className='heo-nav-chip flex items-center gap-0.5 rounded-full px-1.5 py-1'>
+            <div
+              className={`flex items-center gap-0.5 ${
+                textWhite
+                  ? 'px-0.5 py-1'
+                  : 'heo-nav-chip rounded-full px-1.5 py-1'
+              }`}>
               <RandomPostButton {...props} />
               <SearchButton {...props} />
               <ReadingProgress />
@@ -146,11 +172,15 @@ const Header = props => {
                 type='button'
                 aria-label='打开菜单'
                 onClick={toggleMenuOpen}
-                className='flex h-8 w-8 items-center justify-center rounded-full text-gray-700 transition hover:bg-black/5 dark:text-white dark:hover:bg-white/10 lg:hidden'>
+                className={`flex h-8 w-8 items-center justify-center rounded-full transition lg:hidden ${
+                  textWhite
+                    ? 'text-white hover:bg-white/15'
+                    : 'text-gray-700 hover:bg-black/5 dark:text-white dark:hover:bg-white/10'
+                }`}>
                 <i className='fas fa-th' />
               </button>
             </div>
-            {!JSON.parse(siteConfig('THEME_SWITCH')) && (
+            {!textWhite && !JSON.parse(siteConfig('THEME_SWITCH')) && (
               <div className='hidden md:block'>
                 <DarkModeButton {...props} />
               </div>
