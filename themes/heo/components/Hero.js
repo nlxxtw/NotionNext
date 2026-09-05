@@ -13,7 +13,7 @@ const Hero = props => {
   const reverse = siteConfig('HEO_HERO_REVERSE', false, CONFIG)
 
   return (
-    <div id='hero-wrapper' className='relative mb-4 w-full select-none px-5'>
+    <div id='hero-wrapper' className='relative mb-4 w-full select-none'>
       {/* 柔和氛围光斑 */}
       <div
         aria-hidden
@@ -25,7 +25,7 @@ const Hero = props => {
 
       <div
         id='home_center'
-        className={`relative z-[1] mx-auto flex max-w-[86rem] flex-col gap-3 lg:h-[320px] lg:flex-row ${
+        className={`relative z-[1] flex w-full flex-col gap-3 lg:h-[320px] lg:flex-row ${
           reverse ? 'lg:flex-row-reverse' : ''
         }`}>
         <HomeCenterCarousel {...props} />
@@ -221,21 +221,28 @@ function HeroAside(props) {
 
   return (
     <div className='flex w-full shrink-0 flex-col gap-3 lg:w-[272px] xl:w-[292px]'>
-      {/* 个人资料卡：问候置顶、头像居中、底栏左文右图标 */}
-      <div className='relative flex min-h-[220px] flex-1 flex-col overflow-hidden rounded-[22px] bg-[var(--heo-color-primary)] px-5 pb-4 pt-4 text-[var(--heo-color-primary-text)] shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] dark:bg-[var(--heo-color-accent)] lg:min-h-0'>
-        <button
-          type='button'
-          onClick={nextGreeting}
-          className='w-fit max-w-full truncate text-left text-[13px] opacity-95 transition hover:opacity-100'>
-          {greeting}
-        </button>
+      {/* 个人资料卡：问候胶囊置顶居中 */}
+      <div className='relative flex min-h-[220px] flex-1 flex-col overflow-hidden rounded-[22px] bg-[var(--heo-color-primary)] px-4 pb-4 pt-3 text-[var(--heo-color-primary-text)] shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] dark:bg-[var(--heo-color-accent)] lg:min-h-0'>
+        <div className='flex justify-center'>
+          <button
+            type='button'
+            onClick={nextGreeting}
+            className='max-w-[92%] truncate rounded-full bg-black/20 px-3.5 py-1 text-[13px] font-medium text-white backdrop-blur-[2px] transition hover:bg-black/30'>
+            {greeting}
+          </button>
+        </div>
 
-        <div className='flex flex-1 items-center justify-center py-3'>
+        <div className='relative mx-auto flex flex-1 items-center justify-center py-3'>
           <LazyImage
             src={avatar}
             alt={author}
-            className='h-[88px] w-[88px] rounded-full border-[3px] border-white/35 object-cover shadow-lg'
+            className='h-[88px] w-[88px] rounded-full border-[3px] border-white object-cover shadow-lg'
           />
+          <span
+            aria-hidden
+            className='absolute bottom-3 right-[calc(50%-52px)] flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-white text-sm shadow'>
+            {siteConfig('HEO_INFO_CARD_EMOJI', '😆', CONFIG)}
+          </span>
         </div>
 
         <div className='flex items-end justify-between gap-2'>

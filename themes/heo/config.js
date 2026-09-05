@@ -43,7 +43,7 @@ const CONFIG = {
       items: [
         { title: '主页', href: '/', icon: 'fas fa-house' },
         { title: '博客', href: '/', icon: 'fas fa-book' },
-        { title: '归档', href: '/archive', icon: 'fas fa-box-archive' }
+        { title: '归档', href: '/archives', icon: 'fas fa-box-archive' }
       ]
     },
     {
@@ -219,10 +219,10 @@ const CONFIG = {
   ],
 
   HEO_SOCIAL_CARD: true, // 是否显示右侧，点击加入社群按钮
-  HEO_SOCIAL_CARD_TITLE_1: '交流频道',
+  HEO_SOCIAL_CARD_TITLE_1: '公众号订阅',
   HEO_SOCIAL_CARD_TITLE_2: '加入我们的社群讨论分享',
   HEO_SOCIAL_CARD_TITLE_3: '点击加入社群',
-  HEO_SOCIAL_CARD_URL: 'https://docs.tangly1024.com/article/how-to-question',
+  HEO_SOCIAL_CARD_URL: '/rss',
 
   // 侧栏「今日热门」：优先取带此标签的 Notion 文章，否则回退最新文章
   HEO_WIDGET_HOT_POSTS: true,
@@ -256,9 +256,13 @@ const CONFIG = {
   HEO_POST_LIST_IMG_CROSSOVER: true, // 博客列表图片左右交错
 
   HEO_ARTICLE_ADJACENT: true, // 显示上一篇下一篇文章推荐
-  HEO_ARTICLE_COPYRIGHT: true, // 文章版权声明：true 全部显示；false 全部关闭；custom 仅填写 copyright 时显示
+  HEO_ARTICLE_COPYRIGHT: true, // 文章版权声明
+  // 留空则用语言包默认：「本文采用 CC BY-NC-SA 4.0 许可协议，转载请注明出处。」
+  HEO_ARTICLE_COPYRIGHT_NOTICE: '',
   HEO_ARTICLE_NOT_BY_AI: false, // 显示非AI写作
   HEO_ARTICLE_RECOMMEND: true, // 文章关联推荐
+
+  HEO_INFO_CARD_EMOJI: '😆', // 资料卡头像角标
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）
   HEO_HOME_SHOW_INFO_CARD: false, // 首页是否强制显示资料卡；有 Notion 公告页时仍会显示

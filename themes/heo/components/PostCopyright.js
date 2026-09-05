@@ -5,33 +5,30 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import CONFIG from '../config'
 import NotByAI from '@/components/NotByAI'
-import { resolveArticleCopyrightText } from '@/lib/utils/articleCopyright'
 
 /**
- * 版权声明
- * @returns
+ * 版权声明（恢复 NotionNext 原版：作者 / 链接 / 声明文案）
  */
-export default function PostCopyright({ post }) {
+export default function PostCopyright() {
   const router = useRouter()
   const [path, setPath] = useState(siteConfig('LINK') + router.asPath)
   useEffect(() => {
     setPath(window.location.href)
-  })
+  }, [router.asPath])
 
   const { locale } = useGlobal()
-  const copyrightText = resolveArticleCopyrightText({
-    post,
-    locale,
-    mode: siteConfig('HEO_ARTICLE_COPYRIGHT', null, CONFIG)
-  })
 
-  if (!copyrightText) {
+  if (!siteConfig('HEO_ARTICLE_COPYRIGHT', true, CONFIG)) {
     return <></>
   }
 
+  const notice =
+    siteConfig('HEO_ARTICLE_COPYRIGHT_NOTICE', '', CONFIG) ||
+    locale.COMMON.COPYRIGHT_NOTICE
+
   return (
-    <section className='dark:text-gray-300 mt-6 mx-1 '>
-      <ul className='overflow-x-auto whitespace-nowrap text-sm dark:bg-gray-900 bg-gray-100 p-5 leading-8 border-l-2 border-[var(--heo-color-border)]'>
+    <section className='mx-1 mt-6 dark:text-gray-300'>
+      <ul className='overflow-x-auto whitespace-nowrap border-l-2 border-black/10 bg-gray-100 p-5 text-sm leading-8 dark:border-white/15 dark:bg-gray-900'>
         <li>
           <strong className='mr-2'>{locale.COMMON.AUTHOR}:</strong>
           <SmartLink href={'/about'} className='hover:underline'>
@@ -42,14 +39,13 @@ export default function PostCopyright({ post }) {
           <strong className='mr-2'>{locale.COMMON.URL}:</strong>
           <a
             className='whitespace-normal break-words hover:underline'
-            href={path}
-          >
+            href={path}>
             {path}
           </a>
         </li>
         <li>
           <strong className='mr-2'>{locale.COMMON.COPYRIGHT}:</strong>
-          {copyrightText}
+          {notice}
         </li>
         {siteConfig('HEO_ARTICLE_NOT_BY_AI', false, CONFIG) && (
           <li>

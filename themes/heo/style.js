@@ -126,7 +126,7 @@ const Style = () => {
         --heo-card-border: rgba(255, 255, 255, 0.1);
       }
 
-      /* 柔和卡片：用轻阴影，去掉显眼蓝色描边 */
+      /* 柔和卡片：浅灰边，去掉蓝色描边 */
       #theme-heo .heo-soft-chip,
       #theme-heo .heo-chip,
       #theme-heo .heo-card {
@@ -138,6 +138,7 @@ const Style = () => {
       .dark #theme-heo .heo-chip,
       .dark #theme-heo .heo-card {
         border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: none;
       }
 
       #theme-heo .heo-aside-card {
@@ -147,17 +148,33 @@ const Style = () => {
 
       .dark #theme-heo .heo-aside-card {
         border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: none;
       }
 
       /* 覆盖主题里过重的蓝色边框工具类 */
       #theme-heo .border-\[var\(--heo-card-border\,\#e3e8f7\)\],
-      #theme-heo .border-\[var\(--heo-card-border\)\] {
+      #theme-heo .border-\[var\(--heo-card-border\)\],
+      #theme-heo .border-indigo-500,
+      #theme-heo .border-\[var\(--heo-color-border\)\],
+      #theme-heo .ring-\[var\(--heo-color-primary\)\] {
         border-color: rgba(0, 0, 0, 0.06) !important;
+        --tw-ring-color: transparent !important;
       }
 
       .dark #theme-heo .border-\[var\(--heo-card-border\,\#e3e8f7\)\],
-      .dark #theme-heo .border-\[var\(--heo-card-border\)\] {
+      .dark #theme-heo .border-\[var\(--heo-card-border\)\],
+      .dark #theme-heo .border-indigo-500,
+      .dark #theme-heo .border-\[var\(--heo-color-border\)\],
+      .dark #theme-heo .dark\:border-gray-600,
+      .dark #theme-heo .dark\:border-gray-700 {
         border-color: rgba(255, 255, 255, 0.1) !important;
+      }
+
+      #theme-heo #darkModeButton,
+      #theme-heo #darkModeButton:focus,
+      #theme-heo #darkModeButton:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
       }
 
       /* Heo 玻璃胶囊音乐条 */

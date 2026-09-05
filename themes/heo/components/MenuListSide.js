@@ -12,7 +12,7 @@ export const MenuListSide = props => {
     {
       icon: 'fas fa-archive',
       name: locale.NAV.ARCHIVE,
-      href: '/archive',
+      href: '/archives',
       show: siteConfig('HEO_MENU_ARCHIVE', null, CONFIG)
     },
     {

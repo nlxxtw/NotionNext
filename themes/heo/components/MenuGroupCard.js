@@ -15,7 +15,7 @@ const MenuGroupCard = props => {
   const links = [
     {
       name: locale.COMMON.ARTICLE,
-      href: '/archive',
+      href: '/archives',
       slot: archiveSlot,
       show: siteConfig('HEO_MENU_ARCHIVE', null, CONFIG)
     },

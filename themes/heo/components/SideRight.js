@@ -32,7 +32,6 @@ export default function SideRight(props) {
   const isHome = router.route === '/'
   const showHot = siteConfig('HEO_WIDGET_HOT_POSTS', true, CONFIG)
   const showLatest = siteConfig('HEO_WIDGET_LATEST_POSTS', false, CONFIG)
-  // 首页也显示社群卡/公告小工具（Notion notice + HEO_SOCIAL_CARD）
   const showSocial = siteConfig('HEO_SOCIAL_CARD', true, CONFIG)
   const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', false, CONFIG)
   const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
@@ -40,13 +39,15 @@ export default function SideRight(props) {
   const hasNotice = Boolean(notice)
 
   return (
-    <div id='sideRight' className='hidden h-full w-72 xl:block'>
-      <div className='flex flex-col gap-3'>
+    <aside
+      id='sideRight'
+      className='hidden w-[272px] shrink-0 xl:block xl:w-[292px]'>
+      <div className='flex w-full flex-col gap-3'>
         {(!isHome || showInfoOnHome || hasNotice) && (
-          <InfoCard {...props} className='w-72 wow fadeInUp' />
+          <InfoCard {...props} className='w-full wow fadeInUp' />
         )}
 
-        <div className='sticky top-20 flex flex-col gap-3'>
+        <div className='sticky top-20 flex w-full flex-col gap-3'>
           {!lock && post?.toc?.length > 0 && (
             <div className='heo-aside-card wow fadeInUp rounded-xl bg-[var(--heo-color-card)] p-3 dark:bg-[var(--heo-color-card-dark)]'>
               <Catalog toc={post.toc} />
@@ -54,7 +55,7 @@ export default function SideRight(props) {
           )}
 
           {showSocial && (
-            <div className='wow fadeInUp'>
+            <div className='wow fadeInUp w-full'>
               <TouchMeCard />
             </div>
           )}
@@ -79,11 +80,10 @@ export default function SideRight(props) {
             <AnalyticsCard {...props} />
           </div>
 
-          {/* 挂件放最后，避免撑开热门与标签之间的大空白 */}
           <FaceBookPage />
           <Live2D />
         </div>
       </div>
-    </div>
+    </aside>
   )
 }

@@ -5,7 +5,7 @@ import CONFIG from '../config'
 
 /**
  * Heo 左下角玻璃胶囊音乐条
- * 默认由 HEO_MUSIC_PLAYER_ENABLE 控制（不依赖全局 MUSIC_PLAYER=false）
+ * 未播放时折叠为封面圆点；悬停或播放时展开
  */
 export default function HeoMusicPlayer() {
   const heoEnable = parseBool(
@@ -35,7 +35,9 @@ export default function HeoMusicPlayer() {
   const playingRef = useRef(false)
   const [index, setIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
+  const [hover, setHover] = useState(false)
   const track = playlist[index]
+  const expanded = playing || hover
 
   useEffect(() => {
     if (!enabled || !playlist.length || typeof Audio === 'undefined') {
@@ -101,7 +103,9 @@ export default function HeoMusicPlayer() {
   }
 
   const prev = () => {
-    setIndex(i => (playlist.length ? (i - 1 + playlist.length) % playlist.length : 0))
+    setIndex(i =>
+      playlist.length ? (i - 1 + playlist.length) % playlist.length : 0
+    )
   }
 
   const next = () => {
@@ -115,37 +119,76 @@ export default function HeoMusicPlayer() {
   return (
     <div
       id='heo-nav-music'
-      className='heo-nav-music fixed bottom-5 left-5 z-[90] flex max-w-[min(420px,calc(100vw-2.5rem))]'>
-      <div className='heo-nav-music-inner flex h-12 items-center gap-3 rounded-full px-3 pr-4 text-white shadow-lg'>
-        <div className='relative h-9 w-9 shrink-0'>
+      className={`heo-nav-music fixed bottom-5 left-5 z-[90] transition-all duration-300 ${
+        expanded
+          ? 'max-w-[min(420px,calc(100vw-2.5rem))]'
+          : 'max-w-[3.25rem]'
+      }`}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}>
+      <div
+        className={`heo-nav-music-inner flex h-12 items-center overflow-hidden text-white shadow-lg transition-all duration-300 ${
+          expanded
+            ? 'gap-3 rounded-full px-3 pr-4'
+            : 'w-12 justify-center rounded-full px-0'
+        }`}>
+        <button
+          type='button'
+          aria-label={playing ? '暂停' : '展开并播放'}
+          onClick={playPause}
+          className='relative h-9 w-9 shrink-0'>
           <div className='absolute -inset-1 rounded-full bg-white/25 blur-[2px]' />
           <LazyImage
             src={track.cover || siteConfig('HOME_BANNER_IMAGE')}
             alt={track.name || 'cover'}
-            className='relative h-9 w-9 rounded-full object-cover ring-1 ring-white/40'
+            className={`relative h-9 w-9 rounded-full object-cover ring-1 ring-white/40 ${
+              playing ? 'animate-[spin_12s_linear_infinite]' : ''
+            }`}
           />
-        </div>
-        <div className='min-w-0 flex-1'>
-          <div className='truncate text-[13px] font-medium leading-tight'>
-            {track.name || '未知曲目'}
-            {track.artist ? (
-              <span className='font-normal opacity-90'>
-                {' '}
-                演唱：{track.artist}
-              </span>
-            ) : null}
+        </button>
+
+        <div
+          className={`flex min-w-0 flex-1 items-center gap-3 transition-all duration-300 ${
+            expanded
+              ? 'max-w-[360px] opacity-100'
+              : 'max-w-0 overflow-hidden opacity-0'
+          }`}>
+          <div className='min-w-0 flex-1'>
+            <div className='truncate text-[13px] font-medium leading-tight whitespace-nowrap'>
+              {track.name || '未知曲目'}
+              {track.artist ? (
+                <span className='font-normal opacity-90'>
+                  {' '}
+                  演唱：{track.artist}
+                </span>
+              ) : null}
+            </div>
           </div>
-        </div>
-        <div className='flex shrink-0 items-center gap-3 text-white/95'>
-          <button type='button' aria-label='上一首' onClick={prev} className='flex h-7 w-7 items-center justify-center transition hover:scale-110'>
-            <i className='fas fa-step-backward text-xs' />
-          </button>
-          <button type='button' aria-label={playing ? '暂停' : '播放'} onClick={playPause} className='flex h-7 w-7 items-center justify-center transition hover:scale-110'>
-            <i className={`fas ${playing ? 'fa-pause' : 'fa-play'} text-sm`} />
-          </button>
-          <button type='button' aria-label='下一首' onClick={next} className='flex h-7 w-7 items-center justify-center transition hover:scale-110'>
-            <i className='fas fa-step-forward text-xs' />
-          </button>
+          <div className='flex shrink-0 items-center gap-3 text-white/95'>
+            <button
+              type='button'
+              aria-label='上一首'
+              onClick={prev}
+              className='flex h-7 w-7 items-center justify-center transition hover:scale-110'>
+              <i className='fas fa-step-backward text-xs' />
+            </button>
+            <button
+              type='button'
+              aria-label={playing ? '暂停' : '播放'}
+              onClick={playPause}
+              className='flex h-7 w-7 items-center justify-center transition hover:scale-110'>
+              <i
+                className={`fas ${playing ? 'fa-pause' : 'fa-play'} text-sm`}
+              />
+            </button>
+            <button
+              type='button'
+              aria-label='下一首'
+              onClick={next}
+              className='flex h-7 w-7 items-center justify-center transition hover:scale-110'>
+              <i className='fas fa-step-forward text-xs' />
+            </button>
+          </div>
         </div>
       </div>
     </div>

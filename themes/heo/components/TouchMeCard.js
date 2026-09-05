@@ -1,44 +1,36 @@
-import FlipCard from '@/components/FlipCard'
 import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 import CONFIG from '../config'
 
 /**
- * 交流频道
- * @returns
+ * 侧栏公众号订阅条（对齐 zhheo 绿色 wechat 卡）
  */
 export default function TouchMeCard() {
   if (!JSON.parse(siteConfig('HEO_SOCIAL_CARD', null, CONFIG))) {
     return <></>
   }
+
+  const title =
+    siteConfig('HEO_SOCIAL_CARD_TITLE_1', null, CONFIG) || '公众号订阅'
+  const href =
+    siteConfig('HEO_HERO_SUBSCRIBE_URL', null, CONFIG) ||
+    siteConfig('HEO_SOCIAL_CARD_URL', null, CONFIG) ||
+    '/rss'
+  const color = siteConfig('HEO_HERO_SUBSCRIBE_COLOR', '#57bd6a', CONFIG)
+  const icon = siteConfig('HEO_HERO_SUBSCRIBE_ICON', 'fab fa-weixin', CONFIG)
+
   return (
-    <div className={'relative h-28 text-white flex flex-col'}>
-      <FlipCard
-        className='cursor-pointer rounded-xl bg-[var(--heo-color-primary)] p-4 shadow-[var(--heo-shadow-border)] lg:p-6 dark:bg-[var(--heo-color-accent)]'
-        frontContent={
-          <div className='h-full'>
-            <h2 className='font-[1000] text-3xl'>
-              {siteConfig('HEO_SOCIAL_CARD_TITLE_1', null, CONFIG)}
-            </h2>
-            <h3 className='pt-2'>
-              {siteConfig('HEO_SOCIAL_CARD_TITLE_2', null, CONFIG)}
-            </h3>
-            <div
-              className='absolute left-0 top-0 w-full h-full'
-              style={{
-                background:
-                  'url(https://bu.dusays.com/2023/05/16/64633c4cd36a9.png) center center no-repeat'
-              }}></div>
-          </div>
-        }
-        backContent={
-          <SmartLink href={siteConfig('HEO_SOCIAL_CARD_URL', null, CONFIG)}>
-            <div className='font-[1000] text-xl h-full'>
-              {siteConfig('HEO_SOCIAL_CARD_TITLE_3', null, CONFIG)}
-            </div>
-          </SmartLink>
-        }
-      />
-    </div>
+    <SmartLink
+      href={href}
+      className='group flex h-[54px] w-full items-center justify-between rounded-[18px] px-4 text-white shadow-[var(--heo-shadow-border)] transition hover:brightness-105'
+      style={{ backgroundColor: color }}>
+      <span className='flex items-center gap-2.5 text-[15px] font-bold'>
+        <i className={`${icon} text-lg`} />
+        {title === '交流频道' ? '公众号订阅' : title}
+      </span>
+      <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-800 transition group-hover:translate-x-0.5'>
+        <i className='fas fa-arrow-right text-sm' />
+      </span>
+    </SmartLink>
   )
 }

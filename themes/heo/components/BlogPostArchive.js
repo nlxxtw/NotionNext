@@ -11,15 +11,22 @@ import TagItemMini from './TagItemMini'
  * @returns {JSX.Element}
  * @constructor
  */
-const BlogPostArchive = ({ posts = [], archiveTitle, siteInfo }) => {
+const BlogPostArchive = ({
+  posts = [],
+  archiveTitle,
+  siteInfo,
+  hideTitle = false
+}) => {
   if (!posts || posts.length === 0) {
     return <></>
   } else {
     return (
       <div className=''>
-        <div className='pb-4 dark:text-gray-300' id={archiveTitle}>
-          {archiveTitle}
-        </div>
+        {!hideTitle && (
+          <div className='pb-4 dark:text-gray-300' id={archiveTitle}>
+            {archiveTitle}
+          </div>
+        )}
         <ul>
           {posts?.map(post => {
             const showPreview =

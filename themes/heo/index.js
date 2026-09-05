@@ -23,7 +23,6 @@ import { Transition } from '@headlessui/react'
 import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import BlogPostArchive from './components/BlogPostArchive'
 import BlogPostListPage from './components/BlogPostListPage'
 import BlogPostListScroll from './components/BlogPostListScroll'
 import CategoryBar from './components/CategoryBar'
@@ -41,6 +40,7 @@ import { PostLock } from './components/PostLock'
 import PostRecommend from './components/PostRecommend'
 import SearchNav from './components/SearchNav'
 import SideRight from './components/SideRight'
+import ArchivesPage from './components/ArchivesPage'
 import StatsPage from './components/StatsPage'
 import RssPage from './components/RssPage'
 import CONFIG from './config'
@@ -70,11 +70,13 @@ const LayoutBase = props => {
       {router.route === '/' ? (
         <>
           <NoticeBar />
-          {/* 分类胶囊条：放在英雄区上方，对齐截图 */}
+          {/* 与主内容同宽同边距，避免轮播与文章列表错位 */}
           <div className='mx-auto mb-3 w-full max-w-[86rem] px-5'>
             <CategoryBar {...props} />
+            <div className='mt-3'>
+              <Hero {...props} />
+            </div>
           </div>
-          <Hero {...props} />
         </>
       ) : null}
       {fullWidth ? null : <PostHeader {...props} isDarkMode={isDarkMode} />}
@@ -115,22 +117,17 @@ const LayoutBase = props => {
       {/* 主区块 */}
       <main
         id='wrapper-outer'
-        className={`flex-grow w-full ${maxWidth} mx-auto relative md:px-5`}>
+        className={`relative mx-auto w-full flex-grow px-5 ${maxWidth}`}>
         <div
           id='container-inner'
-          className={`${HEO_HERO_BODY_REVERSE ? 'flex-row-reverse' : ''} w-full mx-auto lg:flex justify-center relative z-10`}>
-          <div className={`w-full h-auto ${className || ''}`}>
+          className={`${HEO_HERO_BODY_REVERSE ? 'flex-row-reverse' : ''} relative z-10 mx-auto flex w-full justify-center lg:flex lg:gap-3`}>
+          <div className={`h-auto w-full min-w-0 ${className || ''}`}>
             {/* 主区上部嵌入 */}
             {slotTop}
             {children}
           </div>
 
-          <div className='lg:px-2'></div>
-
-          <div className='hidden xl:block'>
-            {/* 主区快右侧 */}
-            {slotRight}
-          </div>
+          {slotRight}
         </div>
       </main>
 
@@ -153,7 +150,7 @@ const LayoutBase = props => {
  */
 const LayoutIndex = props => {
   return (
-    <div id='post-outer-wrapper' className='px-5 md:px-0'>
+    <div id='post-outer-wrapper' className='w-full'>
       {/* 首页分类条已上移至英雄区上方，此处不再重复 */}
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
         <BlogPostListPage {...props} />
@@ -171,7 +168,7 @@ const LayoutIndex = props => {
  */
 const LayoutPostList = props => {
   return (
-    <div id='post-outer-wrapper' className='px-5  md:px-0'>
+    <div id='post-outer-wrapper' className='w-full'>
       {/* 文章分类条 */}
       <CategoryBar {...props} />
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
@@ -229,31 +226,10 @@ const LayoutSearch = props => {
 }
 
 /**
- * 归档
- * @param {*} props
- * @returns
+ * 归档（对齐 blog.zhheo.com/archives）
  */
 const LayoutArchive = props => {
-  const { archivePosts } = props
-
-  // 归档页顶部显示条，如果是默认归档则不显示。分类详情页显示分类列表，标签详情页显示当前标签
-
-  return (
-    <div className='p-5 rounded-xl border dark:border-gray-600 max-w-6xl w-full bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)]'>
-      {/* 文章分类条 */}
-      <CategoryBar {...props} border={false} />
-
-      <div className='px-3'>
-        {Object.keys(archivePosts).map(archiveTitle => (
-          <BlogPostArchive
-            key={archiveTitle}
-            posts={archivePosts[archiveTitle]}
-            archiveTitle={archiveTitle}
-          />
-        ))}
-      </div>
-    </div>
-  )
+  return <ArchivesPage {...props} />
 }
 
 /**
