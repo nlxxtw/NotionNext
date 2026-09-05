@@ -128,7 +128,8 @@ const CONFIG = {
   HEO_HERO_RECOMMEND_POST_SORT_BY_UPDATE_TIME: false,
   HEO_HERO_RECOMMEND_COVER_ENABLE: true,
 
-  // 右侧个人资料卡牌欢迎语，点击可自动切换
+  // 右侧个人资料卡牌欢迎语（Notion 配置中心可覆盖，JSON 数组）
+  // 配置名：HEO_INFOCARD_GREETINGS
   HEO_INFOCARD_GREETINGS: [
     '出门走走，休息一下吧',
     '你好！我是',
@@ -137,7 +138,7 @@ const CONFIG = {
     '脚踏实地行动派',
     '数码科技爱好者'
   ],
-  // 资料卡悬停介绍（支持 **加粗** 与换行）
+  // 资料卡悬停介绍（Notion 配置中心：HEO_INFO_CARD_INTRO；支持 **加粗** 与换行）
   HEO_INFO_CARD_INTRO:
     '这有关于**产品**、**设计**、**开发**相关的问题和看法，还有**文章翻译**和**分享**。\n相信你可以在这里找到对你有用的**知识**和**教程**。',
 

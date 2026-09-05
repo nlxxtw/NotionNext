@@ -4,7 +4,9 @@ import CONFIG from '../config'
 
 /**
  * 侧栏「网站统计」卡片
- * 文章总数 / 建站天数 / 全站字数 / 评论总数（可配置覆盖）
+ * 文案标题可用 Notion 配置中心覆盖：
+ * HEO_POST_COUNT_TITLE / HEO_SITE_TIME_TITLE / HEO_SITE_WORD_TITLE / HEO_SITE_COMMENT_TITLE
+ * HEO_SITE_CREATE_TIME / HEO_SITE_WORD_COUNT / HEO_SITE_COMMENT_COUNT
  */
 export function AnalyticsCard(props) {
   const { postCount, allNavPages, latestPosts } = props
@@ -49,30 +51,29 @@ export function AnalyticsCard(props) {
       : '—'
 
   return (
-    <div>
+    <div className='heo-analytics-card'>
       {showHeader && (
-        <div className='mb-2 flex items-center gap-1.5 px-1'>
-          <i className='fas fa-gauge-high text-[15px] text-gray-800 dark:text-gray-100' />
-          <span className='text-[15px] font-bold text-gray-900 dark:text-white'>
+        <div className='mb-2.5 flex items-center justify-between px-0.5'>
+          <div className='flex items-center gap-2 text-[15px] font-extrabold text-gray-800 dark:text-gray-100'>
+            <i className='fas fa-chart-simple text-[14px]' />
             网站统计
-          </span>
+          </div>
           <SmartLink
             href={moreHref}
-            className='ml-auto inline-flex items-center gap-0.5 rounded-full px-2 py-1 text-[13px] text-gray-400 transition hover:bg-[var(--heo-color-card-muted)] hover:text-[var(--heo-color-primary)] dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
+            className='text-xs font-bold text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-200'>
             更多
-            <i className='fas fa-arrow-up-right-from-square text-[10px]' />
           </SmartLink>
         </div>
       )}
 
-      <div className='flex flex-col space-y-2.5 px-1 text-[13px] text-gray-700 dark:text-gray-200'>
+      <div className='flex flex-col gap-2 px-0.5'>
         <Row
-          label={`${postCountTitle}：`}
+          label={postCountTitle}
           value={postCount ?? pages.length ?? 0}
         />
-        <Row label={`${siteTimeTitle}：`} value={formatSiteDays(diffDays)} />
-        <Row label={`${wordTitle}：`} value={wordDisplay} />
-        <Row label={`${commentTitle}：`} value={commentDisplay} />
+        <Row label={siteTimeTitle} value={formatSiteDays(diffDays)} />
+        <Row label={wordTitle} value={wordDisplay} />
+        <Row label={commentTitle} value={commentDisplay} />
       </div>
     </div>
   )
@@ -80,16 +81,20 @@ export function AnalyticsCard(props) {
 
 function Row({ label, value }) {
   return (
-    <div className='flex justify-between gap-3'>
-      <span className='text-gray-500 dark:text-gray-400'>{label}</span>
-      <span className='font-semibold tabular-nums'>{value}</span>
+    <div className='flex items-baseline justify-between gap-3 text-[13px] leading-none'>
+      <span className='shrink-0 font-medium text-gray-500 dark:text-gray-400'>
+        {label}
+      </span>
+      <span className='min-w-0 truncate text-right text-[13px] font-semibold tabular-nums text-gray-800 dark:text-gray-100'>
+        {value}
+      </span>
     </div>
   )
 }
 
 function formatSiteDays(days) {
-  if (!Number.isFinite(days) || days < 0) return '0 天'
-  if (days < 365) return `${days} 天`
+  if (!Number.isFinite(days) || days < 0) return '0天'
+  if (days < 365) return `${days}天`
   const years = Math.floor(days / 365)
   const rest = days % 365
   return rest ? `${years}年${rest}天` : `${years}年`
