@@ -68,7 +68,7 @@ export default function FooterStats({ compact = false }) {
     return (
       <div
         id='heo-footer-stats'
-        className='grid w-full max-w-[280px] grid-cols-2 gap-x-5 gap-y-0.5 text-left'>
+        className='grid w-full grid-cols-2 gap-x-6 gap-y-0.5 text-left'>
         <div className='min-w-0'>
           <div className='inline-flex items-center gap-1 text-[11px] text-gray-400 dark:text-gray-500'>
             <i
