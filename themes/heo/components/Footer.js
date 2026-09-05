@@ -101,8 +101,8 @@ const Footer = () => {
             </div>
           )}
 
-          {/* 业务状态 + 快捷链接同一行 */}
-          <div className='flex flex-col gap-3 border-t border-black/[0.05] pt-3 dark:border-white/10 lg:flex-row lg:items-center lg:justify-between'>
+          {/* 左：版权/业务正常；右：快捷链接两栏对齐 + 下方统计两栏 */}
+          <div className='flex flex-col gap-4 border-t border-black/[0.05] pt-3 dark:border-white/10 lg:flex-row lg:items-end lg:justify-between lg:gap-8'>
             <div className='min-w-0 flex-1'>
               <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] leading-5 text-gray-500 dark:text-gray-400'>
                 <CopyRightDate />
@@ -138,32 +138,33 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className='flex flex-wrap items-center justify-start gap-0.5 lg:justify-end'>
-              {quickLinks.map((link, index) =>
-                link.qr ? (
-                  <QrHoverText key={`${link.title}-${index}`} item={link} />
-                ) : (
-                  <SmartLink
-                    key={`${link.title}-${index}`}
-                    href={link.href || '#'}
-                    className='rounded-full px-2.5 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
-                    {link.title}
-                  </SmartLink>
-                )
-              )}
+            <div className='flex w-full max-w-[280px] flex-col gap-3 lg:items-stretch'>
+              {/* 两栏网格：每行左右各一个，对齐整齐 */}
+              <div className='grid grid-cols-2 gap-x-6 gap-y-1'>
+                {quickLinks.map((link, index) =>
+                  link.qr ? (
+                    <QrHoverText key={`${link.title}-${index}`} item={link} />
+                  ) : (
+                    <SmartLink
+                      key={`${link.title}-${index}`}
+                      href={link.href || '#'}
+                      className='truncate text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
+                      {link.title}
+                    </SmartLink>
+                  )
+                )}
+              </div>
               {siteInfo?.icon ? (
-                <LazyImage
-                  src={siteInfo.icon}
-                  alt={AUTHOR || 'avatar'}
-                  className='ml-1.5 h-7 w-7 rounded-full object-cover ring-2 ring-white dark:ring-gray-700'
-                />
+                <div className='flex justify-end'>
+                  <LazyImage
+                    src={siteInfo.icon}
+                    alt={AUTHOR || 'avatar'}
+                    className='h-7 w-7 rounded-full object-cover ring-2 ring-white dark:ring-gray-700'
+                  />
+                </div>
               ) : null}
+              <FooterStats compact />
             </div>
-          </div>
-
-          {/* 右下角紧凑统计 */}
-          <div className='flex justify-end'>
-            <FooterStats compact />
           </div>
         </div>
       </div>
