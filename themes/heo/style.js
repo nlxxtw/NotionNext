@@ -808,7 +808,7 @@ const Style = () => {
         color: #fff !important;
       }
 
-      {/* 右侧栏与首页 Hero 资料卡同宽，左缘对齐 */}
+      /* 右侧栏与首页 Hero 资料卡同宽，左缘对齐 */
       #theme-heo #sideRight.heo-side-right {
         align-self: stretch;
         width: 300px;
