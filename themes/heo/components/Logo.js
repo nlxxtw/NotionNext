@@ -129,7 +129,7 @@ const Logo = props => {
             <SmartLink
               href={footerUrl || '/'}
               onClick={() => setOpen(false)}
-              className='heo-soft-chip mt-3 flex items-center justify-center gap-2 rounded-full border border-black/5 bg-transparent px-3 py-2 text-[13px] font-bold text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:border-white/10 dark:text-gray-100 dark:hover:bg-[var(--heo-color-primary)]'>
+              className='mt-3 flex items-center justify-center gap-2 rounded-full border-0 bg-[#f2f3f8] px-3 py-2 text-[13px] font-bold text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/[0.08] dark:text-gray-100 dark:hover:bg-[var(--heo-color-primary)]'>
               {footerIcon && (
                 <LazyImage
                   src={footerIcon}

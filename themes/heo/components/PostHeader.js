@@ -1,4 +1,3 @@
-import { HashTag } from '@/components/HeroIcons'
 import LazyImage from '@/components/LazyImage'
 import NotionIcon from '@/components/NotionIcon'
 import WordCount from '@/components/WordCount'
@@ -88,9 +87,11 @@ export default function PostHeader({ post, siteInfo, lock }) {
                     className={
                       'cursor-pointer inline-block text-gray-50 hover:text-white duration-200 py-0.5 px-1 whitespace-nowrap '
                     }>
-                    <div className='font-light flex items-center'>
-                      <HashTag className='text-gray-200 stroke-2 mr-0.5 w-3 h-3' />{' '}
-                      {tag.name + (tag.count ? `(${tag.count})` : '')}{' '}
+                    <div className='flex items-center gap-1 font-medium text-gray-100/90'>
+                      {tag.name}
+                      {tag.count ? (
+                        <sup className='text-[10px] opacity-70'>{tag.count}</sup>
+                      ) : null}
                     </div>
                   </SmartLink>
                 ))}

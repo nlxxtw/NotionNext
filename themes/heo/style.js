@@ -48,7 +48,7 @@ const Style = () => {
         --heo-color-text-secondary: var(--heo-color-text-secondary-dark);
         /* 夜间模式不用刺眼黄，改柔和紫（与主色同系） */
         --heo-color-accent: #a794ff;
-        --heo-color-border-dark: #a794ff;
+        --heo-color-border-dark: rgba(255, 255, 255, 0.12);
         background-color: var(--heo-color-bg-dark);
       }
 
@@ -421,16 +421,16 @@ const Style = () => {
         transform: scale(1.1);
       }
 
-      /* 标签页 / 标签云 */
+      /* 标签云：无描边、无 #，浅底胶囊 */
       #theme-heo .heo-tag-chip {
-        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
       }
 
       #theme-heo .heo-tag-chip:hover {
         background: var(--heo-color-primary) !important;
         color: #fff !important;
-        border-color: transparent !important;
-        box-shadow: var(--heo-shadow-main, 0 8px 16px -6px rgba(122, 93, 250, 0.35));
         transform: translateY(-1px);
       }
 
@@ -439,20 +439,12 @@ const Style = () => {
         color: #111 !important;
       }
 
-      #theme-heo .heo-tag-chip--hot {
-        background: rgba(122, 93, 250, 0.1);
-        color: var(--heo-color-primary);
-        border: 1px solid rgba(122, 93, 250, 0.18);
-      }
-
-      .dark #theme-heo .heo-tag-chip--hot {
-        background: rgba(167, 148, 255, 0.14);
-        color: var(--heo-color-accent);
-        border-color: rgba(167, 148, 255, 0.28);
+      #theme-heo .heo-tag-chip--active:hover {
+        filter: brightness(1.05);
       }
 
       #theme-heo .heo-tag-chip:hover sup {
-        opacity: 0.85 !important;
+        opacity: 0.9 !important;
         color: inherit;
       }
 

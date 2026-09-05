@@ -1,19 +1,17 @@
-import { HashTag } from '@/components/HeroIcons'
 import SmartLink from '@/components/SmartLink'
+import { TagCloverIcon } from './TagGroups'
 
 const TagItemMini = ({ tag, selected = false }) => {
   return (
     <SmartLink
       key={tag}
       href={selected ? '/' : `/tag/${encodeURIComponent(tag.name)}`}
-      passHref
-      className={
-        'inline-block cursor-pointer whitespace-nowrap rounded-full px-2 py-0.5 text-xs duration-200 hover:bg-[var(--heo-color-primary)] hover:text-[var(--heo-color-primary-text)] dark:text-white dark:hover:bg-[var(--heo-color-accent)]'
-      }>
-      <div className='flex items-center font-light'>
-        <HashTag className='mr-0.5 h-2.5 w-2.5 stroke-2' />
-        {tag.name + (tag.count ? `(${tag.count})` : '')}
-      </div>
+      className='heo-tag-chip inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[#f2f3f8] px-2.5 py-1 text-xs font-bold text-gray-700 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/[0.07] dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)] dark:hover:text-black'>
+      <TagCloverIcon className='h-3 w-3 opacity-70' />
+      <span>{tag.name}</span>
+      {tag.count ? (
+        <sup className='text-[10px] font-semibold opacity-55'>{tag.count}</sup>
+      ) : null}
     </SmartLink>
   )
 }

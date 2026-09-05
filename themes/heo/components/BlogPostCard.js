@@ -4,6 +4,7 @@ import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 import CONFIG from '../config'
 import CommentAvatarStack from './CommentAvatarStack'
+import { TagCloverIcon } from './TagGroups'
 
 /**
  * 文章卡（对齐 blog.zhheo.com）
@@ -71,11 +72,16 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
           className={`flex flex-1 flex-col px-4 py-3.5 ${
             POST_TWO_COLS ? 'min-h-[132px]' : 'md:w-7/12'
           }`}>
-          {/* 标签行 */}
+          {/* 分类/标签行：四瓣图标 + 文案，无 #、无线框 */}
           {tipLabels.length > 0 && (
-            <div className='recent-post-info-top-tips mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[12px] leading-none text-gray-400 dark:text-gray-500'>
+            <div className='recent-post-info-top-tips mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] leading-none text-gray-500 dark:text-gray-400'>
               {tipLabels.map((label, i) => (
-                <span key={`${label}-${i}`} className='whitespace-nowrap'>
+                <span
+                  key={`${label}-${i}`}
+                  className='inline-flex items-center gap-1.5 whitespace-nowrap font-medium'>
+                  {i === 0 && (
+                    <TagCloverIcon className='h-3 w-3 text-gray-500 dark:text-gray-400' />
+                  )}
                   {label}
                 </span>
               ))}

@@ -133,9 +133,9 @@ export default function StatsPage(props) {
               <SmartLink
                 key={tag.name}
                 href={`/tag/${encodeURIComponent(tag.name)}`}
-                className='heo-chip inline-flex items-center rounded-full bg-[var(--heo-color-card-muted)] px-3 py-1.5 text-sm text-gray-700 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/5 dark:text-gray-200 dark:hover:bg-[var(--heo-color-accent)]'>
-                # {tag.name}
-                <span className='ml-1.5 opacity-55'>{tag.count}</span>
+                className='heo-tag-chip inline-flex items-center rounded-full bg-[#f2f3f8] px-3 py-1.5 text-sm font-bold text-gray-700 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/5 dark:text-gray-200 dark:hover:bg-[var(--heo-color-accent)]'>
+                {tag.name}
+                <sup className='ml-1.5 text-[10px] opacity-55'>{tag.count}</sup>
               </SmartLink>
             ))}
             {!tags.length && (
