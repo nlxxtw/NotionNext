@@ -186,6 +186,31 @@ const Style = () => {
         box-shadow: none;
       }
 
+      /* 文章页头上：禁止白字打在浅色胶囊上发白 */
+      #theme-heo #nav.text-white .heo-nav-chip {
+        background: rgba(0, 0, 0, 0.22) !important;
+        border-color: rgba(255, 255, 255, 0.22) !important;
+        box-shadow: none;
+        color: #fff !important;
+      }
+
+      #theme-heo #nav.text-white .heo-nav-chip a,
+      #theme-heo #nav.text-white .heo-nav-chip button,
+      #theme-heo #nav.text-white .heo-nav-chip h1,
+      #theme-heo #nav.text-white .heo-nav-chip span,
+      #theme-heo #nav.text-white .heo-nav-chip i,
+      #theme-heo #nav.text-white .heo-nav-chip .text-gray-900,
+      #theme-heo #nav.text-white .heo-nav-chip .text-gray-700,
+      #theme-heo #nav.text-white .heo-nav-chip .text-gray-600 {
+        color: #fff !important;
+      }
+
+      #theme-heo #nav.text-white .heo-nav-badge-pill {
+        background: rgba(0, 0, 0, 0.28) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        color: #fff !important;
+      }
+
       /* 下滑时整条顶栏毛玻璃遮罩 */
       #theme-heo .heo-nav--scrolled {
         background: rgba(247, 249, 254, 0.62) !important;

@@ -99,7 +99,7 @@ const Header = props => {
         id='nav'
         className={`heo-nav z-30 top-0 h-16 w-full transition-[background,box-shadow,backdrop-filter] duration-300
             ${fixedNav ? 'fixed left-0 right-0' : 'relative'}
-            ${textWhite ? 'text-white' : 'text-black dark:text-white'}
+            ${textWhite ? 'text-white heo-nav--on-post' : 'text-black dark:text-white'}
             ${scrolled ? 'heo-nav--scrolled' : 'heo-nav--top'}`}>
         <div className='mx-auto grid h-full max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 md:px-6'>
           {/* 左：Logo + 单色徽章 */}
