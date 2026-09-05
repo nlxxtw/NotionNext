@@ -542,6 +542,74 @@ const Style = () => {
         }
       }
 
+      /* 文章代码块：炭灰底 + 高对比语法色（对齐 Mac 风格） */
+      #theme-heo #article-wrapper .code-toolbar,
+      #theme-heo #notion-article .code-toolbar {
+        background: #2c2e34 !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 14px !important;
+        box-shadow: 0 8px 28px rgba(15, 23, 42, 0.12) !important;
+      }
+
+      #theme-heo #article-wrapper pre.notion-code,
+      #theme-heo #notion-article pre.notion-code {
+        background: #2c2e34 !important;
+        color: rgba(235, 235, 245, 0.92) !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        text-shadow: none !important;
+      }
+
+      #theme-heo #article-wrapper .code-toolbar > pre.notion-code,
+      #theme-heo #notion-article .code-toolbar > pre.notion-code {
+        background: transparent !important;
+        border: none !important;
+      }
+
+      #theme-heo #article-wrapper .code-toolbar code,
+      #theme-heo #notion-article .code-toolbar code,
+      #theme-heo #article-wrapper pre.notion-code code,
+      #theme-heo #notion-article pre.notion-code code {
+        color: rgba(235, 235, 245, 0.92) !important;
+        text-shadow: none !important;
+      }
+
+      #theme-heo #article-wrapper .token.keyword,
+      #theme-heo #notion-article .token.keyword,
+      #theme-heo #article-wrapper .token.atrule,
+      #theme-heo #notion-article .token.atrule {
+        color: #ff7ab2 !important;
+      }
+
+      #theme-heo #article-wrapper .token.string,
+      #theme-heo #notion-article .token.string,
+      #theme-heo #article-wrapper .token.attr-name,
+      #theme-heo #notion-article .token.attr-name {
+        color: #a5d6ff !important;
+      }
+
+      #theme-heo #article-wrapper .token.function,
+      #theme-heo #notion-article .token.function,
+      #theme-heo #article-wrapper .token.class-name,
+      #theme-heo #notion-article .token.class-name,
+      #theme-heo #article-wrapper .token.operator,
+      #theme-heo #notion-article .token.operator {
+        color: #ffd479 !important;
+      }
+
+      #theme-heo #article-wrapper .token.tag,
+      #theme-heo #notion-article .token.tag,
+      #theme-heo #article-wrapper .token.number,
+      #theme-heo #notion-article .token.number,
+      #theme-heo #article-wrapper .token.boolean,
+      #theme-heo #notion-article .token.boolean {
+        color: #7ee787 !important;
+      }
+
+      #theme-heo #article-wrapper .token.comment,
+      #theme-heo #notion-article .token.comment {
+        color: rgba(235, 235, 245, 0.48) !important;
+      }
+
       ${themeConsoleStyle('heo', CONFIG)}
   `}</style>
   )

@@ -585,8 +585,5 @@ const DocsChat = dynamic(() => import('@/components/DocsChat'), {
 const LA51 = dynamic(() => import('@/components/LA51'), {
   ssr: false
 })
-const TianliGPT = dynamic(() => import('@/components/TianliGPT'), {
-  ssr: false
-})
 
 export default ExternalPlugin
