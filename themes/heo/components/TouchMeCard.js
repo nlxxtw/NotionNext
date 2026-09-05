@@ -14,7 +14,7 @@ export default function TouchMeCard() {
   return (
     <div className={'relative h-28 text-white flex flex-col'}>
       <FlipCard
-        className='cursor-pointer lg:p-6 p-4 border rounded-xl bg-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)] dark:border-gray-600'
+        className='cursor-pointer rounded-xl bg-[var(--heo-color-primary)] p-4 shadow-[var(--heo-shadow-border)] lg:p-6 dark:bg-[var(--heo-color-accent)]'
         frontContent={
           <div className='h-full'>
             <h2 className='font-[1000] text-3xl'>

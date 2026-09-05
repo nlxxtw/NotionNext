@@ -103,8 +103,8 @@ const SocialButton = () => {
           <a
             target='_blank'
             rel='noreferrer'
-            title={'RSS'}
-            href={'/rss/feed.xml'}>
+            title={'订阅本站'}
+            href={'/rss'}>
             <i className={`${iconClass} fas fa-rss`} />
           </a>
         )}

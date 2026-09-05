@@ -3,7 +3,7 @@ import { siteConfig } from '@/lib/config'
 import CONFIG from '../config'
 
 /**
- * 侧栏「今日热门」：编号列表，第 1 名紫色圆标
+ * 侧栏「今日热门」
  */
 export default function HotPostsCard(props) {
   const { latestPosts, allNavPages } = props
@@ -18,25 +18,29 @@ export default function HotPostsCard(props) {
   if (!source.length) {
     source = Array.isArray(latestPosts) ? latestPosts : []
   }
-  const posts = source.slice(0, max)
+
+  const posts = source
+    .filter(post => post && String(post.title || '').trim())
+    .slice(0, max)
+
   if (!posts.length) return null
 
   return (
-    <div className='heo-aside-card wow fadeInUp rounded-xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-3 dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
-      <div className='mb-2 flex items-center gap-1.5 px-1'>
+    <div className='heo-aside-card wow fadeInUp rounded-xl bg-[var(--heo-color-card)] p-3 dark:bg-[var(--heo-color-card-dark)]'>
+      <div className='mb-1.5 flex items-center gap-1.5 px-1'>
         <i className='fas fa-fire text-[15px] text-gray-800 dark:text-gray-100' />
         <span className='text-[15px] font-bold text-gray-900 dark:text-white'>
           今日热门
         </span>
         <SmartLink
           href={moreHref}
-          className='ml-auto inline-flex items-center gap-0.5 rounded-full px-2 py-1 text-[13px] text-gray-400 transition hover:bg-[var(--heo-color-card-muted)] hover:text-[var(--heo-color-primary)] dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
+          className='ml-auto inline-flex items-center gap-0.5 rounded-full px-2 py-1 text-[13px] text-gray-400 transition hover:bg-black/5 hover:text-[var(--heo-color-primary)] dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
           更多
           <i className='fas fa-arrow-up-right-from-square text-[10px]' />
         </SmartLink>
       </div>
 
-      <ol className='space-y-1'>
+      <ol className='space-y-0.5'>
         {posts.map((post, i) => (
           <li key={post.id || post.slug || i}>
             <SmartLink

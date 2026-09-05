@@ -2,6 +2,7 @@ import { BeiAnGongAn } from '@/components/BeiAnGongAn'
 import CopyRightDate from '@/components/CopyRightDate'
 import PoweredBy from '@/components/PoweredBy'
 import { siteConfig } from '@/lib/config'
+import CONFIG from '../config'
 import SocialButton from './SocialButton'
 /**
  * 页脚
@@ -12,7 +13,8 @@ const Footer = () => {
   const BEI_AN_LINK = siteConfig('BEI_AN_LINK')
   const BIO = siteConfig('BIO')
   const reserveMusicPlayerSpace =
-    siteConfig('MUSIC_PLAYER') && siteConfig('MUSIC_PLAYER_VISIBLE')
+    siteConfig('HEO_MUSIC_PLAYER_ENABLE', true, CONFIG) ||
+    (siteConfig('MUSIC_PLAYER') && siteConfig('MUSIC_PLAYER_VISIBLE'))
   return (
     <footer className='relative flex-shrink-0 bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-bg-dark)] justify-center text-center m-auto w-full leading-6  text-gray-600 dark:text-gray-100 text-sm'>
       {/* 颜色过度区 */}

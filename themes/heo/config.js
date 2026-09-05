@@ -59,13 +59,50 @@ const CONFIG = {
   // 首页顶部通知条；高相似度首页建议先留空 []，需要再自行加内容
   HEO_NOTICE_BAR: [],
 
-  // 分类条置顶快捷入口（精选之后、Notion 分类之前）
-  // href 可指向 /tag/xxx 或 /category/xxx 或任意站内路径
-  HEO_CATEGORY_BAR_PINNED: [
-    { name: '热门', href: '/tag/热门', icon: 'fas fa-fire' },
-    { name: '必看', href: '/tag/必看', icon: 'fas fa-bolt' },
-    { name: '全部文章', href: '/archive', icon: 'fas fa-book' }
+  // 分类条：仅显示 Notion 分类，勿写死标签
+  // 想要「热门 / 必看」：先在 Notion 文章上打同名标签，再填到 HEO_CATEGORY_BAR_TAGS
+  HEO_CATEGORY_BAR_SHOW_HOME: true, // 是否显示「精选」回首页
+  HEO_CATEGORY_BAR_HOME_LABEL: '精选',
+  HEO_CATEGORY_BAR_PINNED: [], // 默认空；勿写死
+  HEO_CATEGORY_BAR_TAGS: [], // 例：['热门','必看'] —— 仅当 Notion 存在该标签时显示
+
+  // 左下角音乐条（不依赖全局 MUSIC_PLAYER，heo 主题默认开启）
+  HEO_MUSIC_PLAYER_ENABLE: true,
+  HEO_MUSIC_PLAYER_AUTOPLAY: false,
+  // 可改成你的歌单；也可用全局 MUSIC_PLAYER_AUDIO_LIST 覆盖空列表
+  HEO_MUSIC_PLAYER_AUDIO_LIST: [
+    {
+      name: '风を共に舞う気持ち',
+      artist: 'Falcom Sound Team jdk',
+      url: 'https://music.163.com/song/media/outer/url?id=731419.mp3',
+      cover:
+        'https://p2.music.126.net/kn6ugISTonvqJh3LHLaPtQ==/599233837187278.jpg'
+    },
+    {
+      name: '王都グランセル',
+      artist: 'Falcom Sound Team jdk',
+      url: 'https://music.163.com/song/media/outer/url?id=731355.mp3',
+      cover:
+        'https://p1.music.126.net/kn6ugISTonvqJh3LHLaPtQ==/599233837187278.jpg'
+    }
   ],
+
+  // 订阅页 /rss
+  HEO_RSS_WECHAT_TITLE: '公众号订阅',
+  HEO_RSS_WECHAT_DESC: '推送精选文章 · 推送全文',
+  HEO_RSS_WECHAT_URL: '', // 留空回退 HEO_HERO_SUBSCRIBE_URL / HEO_SOCIAL_CARD_URL
+  HEO_RSS_WECHAT_QR: '', // 公众号二维码图片 URL（可选）
+  HEO_RSS_WECHAT_NAME: '', // 留空用 AUTHOR
+  HEO_RSS_FEED_TITLE: 'RSS',
+  HEO_RSS_FEED_DESC: '推送全部文章 · 推送简介',
+  HEO_RSS_FEED_URL: '/rss/feed.xml',
+  HEO_RSS_EXTRA_TITLE: '关于本站',
+  HEO_RSS_EXTRA_DESC: '了解站点 · 联系作者',
+  HEO_RSS_EXTRA_URL: '/about',
+  HEO_RSS_INTRO_TITLE: '本站主要分享',
+  HEO_RSS_INTRO_DESC:
+    '首先感谢你对本站的文章产生一些兴趣。如果你对以上内容感兴趣，欢迎通过下方的订阅方式关注本站。',
+  HEO_RSS_INTRO_KEYWORDS: ['设计分享', '资源分享', '实用技巧'],
 
   // 英雄区左右侧组件颠倒位置
   HEO_HERO_REVERSE: false,
@@ -81,7 +118,7 @@ const CONFIG = {
   // 英雄区右侧订阅/社群按钮（截图中的绿色条）
   HEO_HERO_SUBSCRIBE_ENABLE: true,
   HEO_HERO_SUBSCRIBE_TITLE: '公众号订阅',
-  HEO_HERO_SUBSCRIBE_URL: '', // 留空则回退到 HEO_SOCIAL_CARD_URL
+  HEO_HERO_SUBSCRIBE_URL: '/rss', // 订阅落地页；也可填公众号外链
   HEO_HERO_SUBSCRIBE_ICON: 'fab fa-weixin',
   HEO_HERO_SUBSCRIBE_COLOR: '#57bd6a',
 
@@ -224,6 +261,7 @@ const CONFIG = {
   HEO_ARTICLE_RECOMMEND: true, // 文章关联推荐
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）
+  HEO_HOME_SHOW_INFO_CARD: false, // 首页是否强制显示资料卡；有 Notion 公告页时仍会显示
   HEO_WIDGET_ANALYTICS: true, // 显示统计卡
   HEO_WIDGET_TO_TOP: true,
   HEO_WIDGET_TO_COMMENT: true, // 跳到评论区

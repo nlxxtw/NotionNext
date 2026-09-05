@@ -117,13 +117,47 @@ const Style = () => {
       }
 
       #theme-heo {
-        --heo-card-border: #e3e8f7;
-        --heo-shadow-border: 0 8px 16px -4px #2c2d300c;
+        --heo-card-border: rgba(0, 0, 0, 0.06);
+        --heo-shadow-border: 0 8px 16px -4px rgba(44, 45, 48, 0.08);
         --heo-shadow-main: 0 8px 12px -3px rgba(66, 90, 239, 0.2);
       }
 
       .dark #theme-heo {
-        --heo-card-border: #42444a;
+        --heo-card-border: rgba(255, 255, 255, 0.1);
+      }
+
+      /* 柔和卡片：用轻阴影，去掉显眼蓝色描边 */
+      #theme-heo .heo-soft-chip,
+      #theme-heo .heo-chip,
+      #theme-heo .heo-card {
+        box-shadow: var(--heo-shadow-border);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .dark #theme-heo .heo-soft-chip,
+      .dark #theme-heo .heo-chip,
+      .dark #theme-heo .heo-card {
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      #theme-heo .heo-aside-card {
+        box-shadow: var(--heo-shadow-border);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+      }
+
+      .dark #theme-heo .heo-aside-card {
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      /* 覆盖主题里过重的蓝色边框工具类 */
+      #theme-heo .border-\[var\(--heo-card-border\,\#e3e8f7\)\],
+      #theme-heo .border-\[var\(--heo-card-border\)\] {
+        border-color: rgba(0, 0, 0, 0.06) !important;
+      }
+
+      .dark #theme-heo .border-\[var\(--heo-card-border\,\#e3e8f7\)\],
+      .dark #theme-heo .border-\[var\(--heo-card-border\)\] {
+        border-color: rgba(255, 255, 255, 0.1) !important;
       }
 
       /* Heo 玻璃胶囊音乐条 */
@@ -156,8 +190,14 @@ const Style = () => {
         display: none !important;
       }
 
-      #theme-heo .heo-aside-card {
-        box-shadow: var(--heo-shadow-border, 0 8px 16px -4px #2c2d300c);
+      #theme-heo .hover\:border-\[var\(--heo-color-border\)\]:hover,
+      #theme-heo .hover\:border-indigo-600:hover {
+        border-color: rgba(0, 0, 0, 0.12) !important;
+      }
+
+      .dark #theme-heo .dark\:hover\:border-\[var\(--heo-color-border-dark\)\]:hover,
+      .dark #theme-heo .dark\:hover\:border-yellow-600:hover {
+        border-color: rgba(255, 255, 255, 0.18) !important;
       }
 
       // 公告栏中的字体固定白色

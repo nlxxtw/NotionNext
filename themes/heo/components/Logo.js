@@ -55,7 +55,7 @@ const Logo = props => {
       aria-expanded={open}
       aria-haspopup='true'
       onClick={() => (enable ? setOpen(v => !v) : null)}
-      className='group flex cursor-pointer items-center gap-2 rounded-full border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] py-1 pl-1 pr-3 font-extrabold shadow-sm transition hover:border-[var(--heo-color-primary)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+      className='heo-soft-chip group flex cursor-pointer items-center gap-2 rounded-full bg-[var(--heo-color-card)] py-1 pl-1 pr-3 font-extrabold transition dark:bg-[var(--heo-color-card-dark)]'>
       <span className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[var(--heo-color-primary)] text-white dark:bg-[var(--heo-color-accent)]'>
         {logoIcon ? (
           <LazyImage
@@ -98,7 +98,7 @@ const Logo = props => {
             ? 'pointer-events-auto translate-y-0 opacity-100'
             : 'pointer-events-none -translate-y-1 opacity-0'
         }`}>
-        <div className='rounded-2xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-4 shadow-[0_20px_50px_-20px_rgba(40,50,90,0.35)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+        <div className='rounded-2xl bg-[var(--heo-color-card)] p-4 shadow-[0_20px_50px_-20px_rgba(40,50,90,0.35)] ring-1 ring-black/5 dark:bg-[var(--heo-color-card-dark)] dark:ring-white/10'>
           <div className='max-h-[70vh] space-y-4 overflow-y-auto pr-1'>
             {groups.map(group => (
               <section key={group.id || group.title}>
@@ -129,7 +129,7 @@ const Logo = props => {
             <SmartLink
               href={footerUrl || '/'}
               onClick={() => setOpen(false)}
-              className='mt-4 flex items-center justify-center gap-2 rounded-full border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card-muted)] px-4 py-2.5 text-sm font-bold text-gray-800 transition hover:border-[var(--heo-color-primary)] hover:bg-[var(--heo-color-primary)] hover:text-white dark:border-gray-600 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)]'>
+              className='heo-soft-chip mt-4 flex items-center justify-center gap-2 rounded-full bg-[var(--heo-color-card-muted)] px-4 py-2.5 text-sm font-bold text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/5 dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)]'>
               {footerIcon && (
                 <LazyImage
                   src={footerIcon}

@@ -14,7 +14,7 @@ import CONFIG from '../config'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 页头：胶囊导航（对齐 blog.zhheo.com 截图）
+ * 页头：三栏网格，菜单真正居中（避免 flex+absolute 中间塌陷）
  */
 const Header = props => {
   const [fixedNav, setFixedNav] = useState(false)
@@ -43,7 +43,6 @@ const Header = props => {
           setFixedNav(false)
           setBgWhite(false)
           setTextWhite(false)
-
           if (postBgRef.current) {
             setFixedNav(true)
             setTextWhite(true)
@@ -74,109 +73,72 @@ const Header = props => {
   useEffect(() => {
     let prevScrollY = 0
     let ticking = false
-
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY
-          if (currentScrollY > prevScrollY) {
-            setActiveIndex(1)
-          } else {
-            setActiveIndex(0)
-          }
+          setActiveIndex(currentScrollY > prevScrollY ? 1 : 0)
           prevScrollY = currentScrollY
           ticking = false
         })
         ticking = true
       }
     }
-
     if (isBrowser) {
       window.addEventListener('scroll', handleScroll, { passive: true })
     }
-
     return () => {
-      if (isBrowser) {
-        window.removeEventListener('scroll', handleScroll)
-      }
+      if (isBrowser) window.removeEventListener('scroll', handleScroll)
     }
   }, [])
 
   return (
     <>
-      <style jsx>{`
-        @keyframes fade-in-down {
-          0% {
-            opacity: 0.5;
-            transform: translateY(-30%);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fade-in-up {
-          0% {
-            opacity: 0.5;
-            transform: translateY(30%);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .fade-in-down {
-          animation: fade-in-down 0.3s ease-in-out;
-        }
-
-        .fade-in-up {
-          animation: fade-in-up 0.3s ease-in-out;
-        }
-      `}</style>
-
-      {fixedNav && !hasPostBg && <div className='h-16'></div>}
+      {fixedNav && !hasPostBg && <div className='h-16' />}
 
       <nav
         id='nav'
-        className={`z-20 h-16 top-0 w-full duration-300 transition-all
-            ${fixedNav ? 'fixed' : 'relative bg-transparent'} 
-            ${textWhite ? 'text-white ' : 'text-black dark:text-white'}  
-            ${navBgWhite ? 'bg-[var(--heo-color-card)]/90 dark:bg-[var(--heo-color-bg-dark)]/90 shadow-sm backdrop-blur-md' : 'bg-transparent'}`}>
-        <div className='mx-auto flex h-full max-w-[86rem] items-center justify-between gap-3 px-5 md:px-6'>
-          {/* 左侧 Logo + 更新徽章 */}
-          <div className='flex min-w-0 shrink-0 items-center gap-2'>
+        className={`z-20 top-0 h-16 w-full transition-all duration-300
+            ${fixedNav ? 'fixed' : 'relative bg-transparent'}
+            ${textWhite ? 'text-white' : 'text-black dark:text-white'}
+            ${
+              navBgWhite
+                ? 'bg-[var(--heo-color-card)]/90 shadow-sm backdrop-blur-md dark:bg-[var(--heo-color-bg-dark)]/90'
+                : 'bg-transparent'
+            }`}>
+        <div className='mx-auto grid h-full max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 md:px-6'>
+          {/* 左：Logo + 徽章 */}
+          <div className='flex min-w-0 items-center justify-start gap-2'>
             <Logo {...props} />
             {updateBadge && (
               <SmartLink
                 href={updateBadgeUrl}
-                className='hidden items-center gap-1 rounded-full bg-[var(--heo-color-primary)] px-2.5 py-1 text-xs font-bold text-[var(--heo-color-primary-text)] shadow-sm transition hover:brightness-110 sm:inline-flex dark:bg-[var(--heo-color-accent)]'>
+                className='hidden items-center gap-1 rounded-full bg-[var(--heo-color-primary)] px-2.5 py-1 text-xs font-bold text-[var(--heo-color-primary-text)] sm:inline-flex dark:bg-[var(--heo-color-accent)]'>
                 <i className='fas fa-arrow-up text-[10px]' />
                 {updateBadge}
               </SmartLink>
             )}
           </div>
 
-          {/* 中间胶囊菜单 */}
+          {/* 中：菜单真正居中 */}
           <div
             id='nav-bar-swipe'
-            className='relative hidden h-full min-w-0 flex-grow items-center justify-center lg:flex'>
+            className='relative hidden h-full items-center justify-center lg:flex'>
             <div
-              className={`absolute transition-all duration-700 ${
+              className={`transition-all duration-500 ${
                 activeIndex === 0
-                  ? 'mt-0 opacity-100'
-                  : 'invisible -mt-20 opacity-0'
+                  ? 'opacity-100'
+                  : 'pointer-events-none absolute opacity-0'
               }`}>
-              <div className='rounded-full border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] px-2 py-1 shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+              <div className='heo-soft-chip rounded-full bg-[var(--heo-color-card)] px-2 py-1 dark:bg-[var(--heo-color-card-dark)]'>
                 <MenuListTop {...props} />
               </div>
             </div>
             <div
-              className={`absolute transition-all duration-700 ${
+              className={`transition-all duration-500 ${
                 activeIndex === 1
-                  ? 'mb-0 opacity-100'
-                  : 'invisible -mb-20 opacity-0'
+                  ? 'opacity-100'
+                  : 'pointer-events-none absolute opacity-0'
               }`}>
               <h1 className='text-center text-sm font-bold text-gray-500 dark:text-gray-400'>
                 {siteConfig('AUTHOR') || siteConfig('TITLE')}
@@ -186,9 +148,9 @@ const Header = props => {
             </div>
           </div>
 
-          {/* 右侧工具胶囊 */}
-          <div className='flex w-auto shrink-0 items-center justify-end gap-2'>
-            <div className='flex items-center gap-0.5 rounded-2xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card-muted)]/80 px-1.5 py-1 dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+          {/* 右：工具 */}
+          <div className='flex items-center justify-end gap-2'>
+            <div className='heo-soft-chip flex items-center gap-0.5 rounded-2xl bg-[var(--heo-color-card-muted)]/90 px-1.5 py-1 dark:bg-[var(--heo-color-card-dark)]'>
               <RandomPostButton {...props} />
               <SearchButton {...props} />
               <ReadingProgress />

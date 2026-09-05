@@ -71,7 +71,7 @@ export default function StatsPage(props) {
       </div>
 
       {/* 近12月发文 */}
-      <section className='mb-6 rounded-2xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-5 shadow-[var(--heo-shadow-border)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+      <section className='heo-card mb-6 rounded-2xl bg-[var(--heo-color-card)] p-5 dark:bg-[var(--heo-color-card-dark)]'>
         <h2 className='mb-4 text-lg font-bold text-gray-900 dark:text-white'>
           近 12 个月发文
         </h2>
@@ -96,7 +96,7 @@ export default function StatsPage(props) {
 
       <div className='grid gap-4 lg:grid-cols-2'>
         {/* 分类 */}
-        <section className='rounded-2xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-5 shadow-[var(--heo-shadow-border)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+        <section className='heo-card rounded-2xl bg-[var(--heo-color-card)] p-5 dark:bg-[var(--heo-color-card-dark)]'>
           <h2 className='mb-4 text-lg font-bold text-gray-900 dark:text-white'>
             分类分布
           </h2>
@@ -117,7 +117,7 @@ export default function StatsPage(props) {
         </section>
 
         {/* 标签 */}
-        <section className='rounded-2xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-5 shadow-[var(--heo-shadow-border)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+        <section className='heo-card rounded-2xl bg-[var(--heo-color-card)] p-5 dark:bg-[var(--heo-color-card-dark)]'>
           <div className='mb-4 flex items-center justify-between'>
             <h2 className='text-lg font-bold text-gray-900 dark:text-white'>
               热门标签
@@ -133,7 +133,7 @@ export default function StatsPage(props) {
               <SmartLink
                 key={tag.name}
                 href={`/tag/${encodeURIComponent(tag.name)}`}
-                className='inline-flex items-center rounded-full border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card-muted)] px-3 py-1.5 text-sm text-gray-700 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:border-gray-600 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-[var(--heo-color-accent)]'>
+                className='heo-chip inline-flex items-center rounded-full bg-[var(--heo-color-card-muted)] px-3 py-1.5 text-sm text-gray-700 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-white/5 dark:text-gray-200 dark:hover:bg-[var(--heo-color-accent)]'>
                 # {tag.name}
                 <span className='ml-1.5 opacity-55'>{tag.count}</span>
               </SmartLink>
@@ -150,7 +150,7 @@ export default function StatsPage(props) {
 
 function StatOverview({ icon, label, value, valueClass, busuanzi }) {
   return (
-    <div className='rounded-2xl border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] p-4 shadow-[var(--heo-shadow-border)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)]'>
+    <div className='heo-card rounded-2xl bg-[var(--heo-color-card)] p-4 dark:bg-[var(--heo-color-card-dark)]'>
       <div className='flex items-center gap-1.5 text-[13px] text-gray-500 dark:text-gray-400'>
         <i
           className={`${icon} text-[var(--heo-color-primary)] dark:text-[var(--heo-color-accent)]`}

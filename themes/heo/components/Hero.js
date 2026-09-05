@@ -71,7 +71,7 @@ function HomeCenterCarousel(props) {
 
   if (!slides.length) {
     return (
-      <div className='home-center-left flex h-[220px] flex-1 items-center justify-center overflow-hidden rounded-[22px] border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
+      <div className='home-center-left flex h-[220px] flex-1 items-center justify-center overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
         <span className='text-sm text-gray-400'>暂无推荐内容</span>
       </div>
     )
@@ -81,7 +81,7 @@ function HomeCenterCarousel(props) {
   const hasCover = Boolean(current?.cover)
 
   return (
-    <div className='home-center-left group relative h-[240px] flex-1 overflow-hidden rounded-[22px] border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] dark:border-gray-700 dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
+    <div className='home-center-left group relative h-[240px] flex-1 overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
       {/* 无封面时用技能图标底纹 */}
       {!hasCover && <TagsGroupBar />}
 

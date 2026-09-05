@@ -42,6 +42,7 @@ import PostRecommend from './components/PostRecommend'
 import SearchNav from './components/SearchNav'
 import SideRight from './components/SideRight'
 import StatsPage from './components/StatsPage'
+import RssPage from './components/RssPage'
 import CONFIG from './config'
 import { Style } from './style'
 import AISummary from '@/components/AISummary'
@@ -81,8 +82,12 @@ const LayoutBase = props => {
   )
 
   // 右侧栏 用户信息+标签列表
-  const slotRight =
-    router.route === '/404' || fullWidth ? null : <SideRight {...props} />
+  const hideAside =
+    router.route === '/404' ||
+    router.route === '/rss' ||
+    router.route === '/stats' ||
+    fullWidth
+  const slotRight = hideAside ? null : <SideRight {...props} />
 
   const maxWidth = fullWidth ? 'max-w-[96rem] mx-auto' : 'max-w-[86rem]' // 普通最大宽度是86rem和顶部菜单栏对齐，留空则与窗口对齐
 
@@ -303,7 +308,7 @@ const LayoutSlug = props => {
   return (
     <>
       <div
-        className={`article h-full w-full ${fullWidth ? '' : 'xl:max-w-5xl'} ${hasCode ? 'xl:w-[73.15vw]' : ''}  bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-bg-dark)] dark:border-gray-600 lg:hover:shadow lg:border rounded-2xl lg:px-2 lg:py-4 `}>
+        className={`article h-full w-full rounded-2xl bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-bg-dark)] ${fullWidth ? '' : 'xl:max-w-5xl'} ${hasCode ? 'xl:w-[73.15vw]' : ''} lg:px-2 lg:py-4 lg:shadow-[var(--heo-shadow-border)] lg:ring-1 lg:ring-black/5 dark:lg:ring-white/10`}>
         {/* 文章锁 */}
         {lock && <PostLock validPassword={validPassword} />}
 
@@ -487,7 +492,7 @@ const LayoutTagIndex = props => {
           <SmartLink
             key={tag.name}
             href={`/tag/${encodeURIComponent(tag.name)}`}
-            className='inline-flex items-center gap-1.5 rounded-full border border-[var(--heo-card-border,#e3e8f7)] bg-[var(--heo-color-card)] px-4 py-2 text-sm font-medium text-gray-800 transition hover:border-[var(--heo-color-primary)] hover:bg-[var(--heo-color-primary)] hover:text-white dark:border-gray-600 dark:bg-[var(--heo-color-card-dark)] dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)]'>
+            className='heo-chip inline-flex items-center gap-1.5 rounded-full bg-[var(--heo-color-card)] px-4 py-2 text-sm font-medium text-gray-800 transition hover:bg-[var(--heo-color-primary)] hover:text-white dark:bg-[var(--heo-color-card-dark)] dark:text-gray-100 dark:hover:bg-[var(--heo-color-accent)]'>
             <HashTag className='h-4 w-4 stroke-current stroke-2 opacity-70' />
             {tag.name}
             <span className='rounded-full bg-black/5 px-2 py-0.5 text-xs opacity-70 dark:bg-white/10'>
@@ -507,6 +512,13 @@ const LayoutStats = props => {
   return <StatsPage {...props} />
 }
 
+/**
+ * 订阅页
+ */
+const LayoutRss = props => {
+  return <RssPage {...props} />
+}
+
 export {
   Layout404,
   LayoutArchive,
@@ -517,6 +529,7 @@ export {
   LayoutSearch,
   LayoutSlug,
   LayoutStats,
+  LayoutRss,
   LayoutTagIndex,
   CONFIG as THEME_CONFIG
 }
