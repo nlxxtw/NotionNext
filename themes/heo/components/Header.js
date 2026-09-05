@@ -14,7 +14,7 @@ import CONFIG from '../config'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 顶栏：首页毛玻璃胶囊；文章封面区白字透明导航（与封面色一体）
+ * 顶栏：首页毛玻璃胶囊；文章页中间显示文章标题（对齐 Heo）
  */
 const Header = props => {
   const [textWhite, setTextWhite] = useState(false)
@@ -23,6 +23,9 @@ const Header = props => {
   const router = useRouter()
   const slideOverRef = useRef()
   const postBgRef = useRef(null)
+  const post = props?.post
+  const postTitle = String(post?.title || '').trim()
+  const isPostPage = Boolean(postTitle)
 
   const updateBadge = siteConfig('HEO_NAV_UPDATE_BADGE', '', CONFIG)
   const updateBadgeUrl =
@@ -71,8 +74,9 @@ const Header = props => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY || 0
-          // 首页英雄区附近始终显示菜单，避免「站名·简介」胶囊插进轮播卡
-          if (currentScrollY < 220) {
+          // 文章页：稍滚就切到标题；首页：过英雄区再切简介
+          const keepMenuUntil = isPostPage ? 80 : 220
+          if (currentScrollY < keepMenuUntil) {
             setActiveIndex(0)
           } else if (currentScrollY > prevScrollY + 6) {
             setActiveIndex(1)
@@ -92,7 +96,13 @@ const Header = props => {
     return () => {
       if (isBrowser) window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [isPostPage])
+
+  const centerSecondaryText = isPostPage
+    ? postTitle
+    : [siteConfig('AUTHOR') || siteConfig('TITLE'), siteConfig('BIO')]
+        .filter(Boolean)
+        .join(' · ')
 
   return (
     <>
@@ -147,20 +157,19 @@ const Header = props => {
                   : 'pointer-events-none absolute inset-y-0 flex items-center opacity-0'
               }`}>
               <div
-                className={`max-w-[min(28rem,46vw)] truncate ${
+                className={`max-w-[min(36rem,52vw)] truncate ${
                   textWhite
-                    ? 'px-1 py-1'
+                    ? 'rounded-full bg-white/95 px-4 py-1.5 shadow-[0_8px_24px_-12px_rgba(20,30,60,0.35)]'
                     : 'heo-nav-chip rounded-full px-4 py-1.5'
-                }`}>
+                }`}
+                title={centerSecondaryText}>
                 <h1
                   className={`truncate text-center text-sm font-bold ${
                     textWhite
-                      ? 'text-white'
+                      ? 'text-gray-800'
                       : 'text-gray-700 dark:text-gray-200'
                   }`}>
-                  {siteConfig('AUTHOR') || siteConfig('TITLE')}
-                  {siteConfig('BIO') && <> · </>}
-                  {siteConfig('BIO')}
+                  {centerSecondaryText}
                 </h1>
               </div>
             </div>

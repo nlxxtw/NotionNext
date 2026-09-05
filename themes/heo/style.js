@@ -351,17 +351,20 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 封面预览卡：头图右侧，略偏下对齐标题区 */
+      /* 封面预览卡：跟标题同一行靠右，不再用百分比乱飘 */
       #theme-heo .heo-post-cover-aside {
-        top: 58% !important;
+        position: relative !important;
+        top: auto !important;
         bottom: auto !important;
-        transform: translateY(-50%) !important;
+        right: auto !important;
+        left: auto !important;
+        transform: none !important;
         box-shadow:
           0 8px 20px -12px rgba(0, 0, 0, 0.32),
           0 0 0 1px rgba(255, 255, 255, 0.08) !important;
       }
       #theme-heo .heo-post-cover-aside:hover {
-        transform: translateY(-50%) scale(1.02) !important;
+        transform: scale(1.02) !important;
       }
 
       /* 文章头图与正文/侧栏之间留白 */
@@ -425,16 +428,17 @@ const Style = () => {
         box-shadow: none !important;
       }
 
-      /* 文章封面上移盖住导航占位；整体高度收紧 */
+      /* 文章封面上移盖住导航占位；固定高度，预览图跟标题底对齐 */
       #theme-heo #post-bg.heo-post-bg {
         margin-top: calc(-1 * (3.5rem + env(safe-area-inset-top, 0px)));
-        padding-top: calc(3.5rem + env(safe-area-inset-top, 0px));
-        min-height: calc(18rem + 3.5rem + env(safe-area-inset-top, 0px));
-        height: auto;
+        padding-top: 0;
+        height: calc(19.5rem + 3.5rem + env(safe-area-inset-top, 0px));
+        min-height: calc(19.5rem + 3.5rem + env(safe-area-inset-top, 0px));
       }
       @media (min-width: 768px) {
         #theme-heo #post-bg.heo-post-bg {
-          min-height: calc(20rem + 3.5rem + env(safe-area-inset-top, 0px));
+          height: calc(21rem + 3.5rem + env(safe-area-inset-top, 0px));
+          min-height: calc(21rem + 3.5rem + env(safe-area-inset-top, 0px));
         }
       }
 
@@ -583,6 +587,20 @@ const Style = () => {
       #theme-heo #footer-bottom,
       #theme-heo .heo-footer-quick-links {
         overflow: visible !important;
+      }
+
+      @keyframes heo-tip-pop {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .heo-tip-qr-card {
+        animation: heo-tip-pop 220ms ease-out;
       }
 
       /* 公众号订阅条：对齐 blog.zhheo.com #card-wechat */

@@ -66,26 +66,28 @@ export default function AuthorCard({
         </button>
       </div>
 
-      {/* 默认：头像 */}
+      {/* 默认：头像 + 右下角狗头徽章（相对头像定位） */}
       <div className='heo-author-avatar relative z-[1] mx-auto flex flex-1 items-center justify-center py-2 transition duration-300 group-hover:pointer-events-none group-hover:scale-0 group-hover:opacity-0'>
-        <LazyImage
-          src={avatar}
-          alt={author}
-          className='h-[76px] w-[76px] rounded-full border-[3px] border-white object-cover shadow-lg'
-        />
-        <span
-          aria-hidden
-          className='absolute bottom-2 right-[calc(50%-46px)] flex h-6 w-6 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white text-sm leading-none shadow transition duration-300 group-hover:scale-0 group-hover:opacity-0'>
-          {emojiIsImage ? (
-            <LazyImage
-              src={emoji}
-              alt=''
-              className='h-full w-full object-cover'
-            />
-          ) : (
-            emoji
-          )}
-        </span>
+        <div className='relative h-[76px] w-[76px] shrink-0'>
+          <LazyImage
+            src={avatar}
+            alt={author}
+            className='h-full w-full rounded-full border-[3px] border-white object-cover shadow-lg'
+          />
+          <span
+            aria-hidden
+            className='absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white text-sm leading-none shadow transition duration-300 group-hover:scale-0 group-hover:opacity-0'>
+            {emojiIsImage ? (
+              <LazyImage
+                src={emoji}
+                alt=''
+                className='h-full w-full object-cover'
+              />
+            ) : (
+              emoji
+            )}
+          </span>
+        </div>
       </div>
 
       {/* 悬停：介绍 */}

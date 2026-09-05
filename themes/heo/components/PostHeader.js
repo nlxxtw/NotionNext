@@ -81,7 +81,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
   return (
     <div
       id='post-bg'
-      className='heo-post-bg relative z-10 mb-0 h-[18rem] w-full overflow-hidden md:h-[20rem] md:flex-shrink-0'
+      className='heo-post-bg relative z-10 mb-0 w-full overflow-hidden md:flex-shrink-0'
       style={{
         backgroundColor: bgReady ? bgColor : '#1e1f26',
         opacity: bgReady ? 1 : 0.92,
@@ -96,11 +96,11 @@ export default function PostHeader({ post, siteInfo, lock }) {
         }}
       />
 
-      <div className='relative z-[1] flex h-full w-full items-start justify-center'>
+      <div className='relative z-[1] mx-auto flex h-full w-full max-w-[86rem] items-end justify-between gap-6 px-5 pb-7 pt-[4.75rem] md:pb-8 md:pt-20'>
         <div
           id='post-info'
-          className={`absolute top-[4.75rem] z-10 flex w-full max-w-[86rem] flex-col gap-2.5 px-5 md:top-[5.25rem] md:gap-3 ${
-            showAside ? 'lg:pr-[300px]' : ''
+          className={`relative z-10 flex min-w-0 flex-1 flex-col gap-2.5 ${
+            showAside ? 'lg:pr-4' : ''
           }`}>
           <div className='flex items-center justify-center gap-2.5 md:justify-start'>
             {post.category && (
@@ -171,7 +171,7 @@ export default function PostHeader({ post, siteInfo, lock }) {
             href={coverSrc}
             target='_blank'
             rel='noopener noreferrer'
-            className='heo-post-cover-aside group absolute right-5 top-[58%] z-[11] hidden w-[220px] -translate-y-1/2 overflow-hidden rounded-[14px] md:block md:w-[240px] xl:right-[max(calc((100vw-86rem)/2+1.25rem),1.25rem)]'
+            className='heo-post-cover-aside group relative z-[11] mb-0.5 hidden w-[220px] shrink-0 overflow-hidden rounded-[14px] md:block md:w-[240px] lg:w-[260px]'
             style={{
               aspectRatio: '16 / 9',
               boxShadow: '0 8px 20px -12px rgba(0,0,0,0.35)',
@@ -179,12 +179,12 @@ export default function PostHeader({ post, siteInfo, lock }) {
             }}
             title={post.title}
             onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.02)'
+              e.currentTarget.style.transform = 'scale(1.02)'
               e.currentTarget.style.boxShadow =
                 '0 10px 24px -12px rgba(0,0,0,0.4)'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
+              e.currentTarget.style.transform = 'scale(1)'
               e.currentTarget.style.boxShadow =
                 '0 8px 20px -12px rgba(0,0,0,0.35)'
             }}>

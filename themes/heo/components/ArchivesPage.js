@@ -34,7 +34,7 @@ export default function ArchivesPage(props) {
   return (
     <div id='archives-page' className='archives-page w-full pb-10'>
       <h1 className='mb-4 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white md:text-4xl'>
-        站内全部文章。
+        全部文章
       </h1>
 
       <div className='mb-5'>

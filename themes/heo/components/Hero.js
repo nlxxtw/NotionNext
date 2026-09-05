@@ -110,32 +110,41 @@ function HomeCenterCarousel(props) {
               <div className='absolute inset-0 bg-gradient-to-br from-[#5b6ef5] via-[#6d5ce7] to-[#425aef] dark:from-[#3a3428] dark:via-[#2a261f] dark:to-[#1e1b16]' />
             )}
             {/* 底部渐变遮罩，保证白字可读 */}
-            <div className='absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[rgba(45,55,150,0.88)] via-[rgba(66,90,239,0.35)] to-transparent' />
+            <div className='pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[rgba(45,55,150,0.88)] via-[rgba(66,90,239,0.35)] to-transparent' />
           </div>
         )
       })}
 
-      {/* 底部文案与控件 */}
-      <div className='absolute inset-x-0 bottom-0 z-[2] flex items-end justify-between gap-3 p-5 sm:p-7'>
+      {/* 整卡可点进文章；底部控件单独拦截，不触发跳转 */}
+      <SmartLink
+        href={current.href}
+        aria-label={current.title}
+        className='absolute inset-0 z-[2] block cursor-pointer'>
+        <span className='sr-only'>{current.title}</span>
+      </SmartLink>
+
+      <div className='pointer-events-none absolute inset-x-0 bottom-0 z-[3] flex items-end justify-between gap-3 p-5 sm:p-7'>
         <div className='min-w-0 flex-1'>
-          <SmartLink
-            href={current.href}
-            className='line-clamp-2 text-lg font-bold leading-snug text-white drop-shadow-sm sm:text-[26px] sm:leading-[1.35]'>
+          <div className='line-clamp-2 text-lg font-bold leading-snug text-white drop-shadow-sm sm:text-[26px] sm:leading-[1.35]'>
             {current.title}
-          </SmartLink>
+          </div>
           <div className='mt-2.5 flex flex-wrap items-center gap-3'>
             <span className='inline-flex items-center gap-1 text-xs text-white/90'>
               <i className='fas fa-star text-[10px]' />
               {tagText}
             </span>
             {slides.length > 1 && (
-              <div className='flex items-center gap-1.5'>
+              <div className='pointer-events-auto flex items-center gap-1.5'>
                 {slides.map((_, i) => (
                   <button
                     key={i}
                     type='button'
                     aria-label={`切换到第 ${i + 1} 张`}
-                    onClick={() => setIndex(i)}
+                    onClick={e => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      setIndex(i)
+                    }}
                     className={`h-2 rounded-full transition-all ${
                       i === index
                         ? 'w-6 bg-white'
@@ -149,9 +158,23 @@ function HomeCenterCarousel(props) {
         </div>
 
         {slides.length > 1 && (
-          <div className='flex shrink-0 items-center gap-2 pb-0.5'>
-            <CarouselArrow direction='prev' onClick={() => go(-1)} />
-            <CarouselArrow direction='next' onClick={() => go(1)} />
+          <div className='pointer-events-auto flex shrink-0 items-center gap-2 pb-0.5'>
+            <CarouselArrow
+              direction='prev'
+              onClick={e => {
+                e.preventDefault()
+                e.stopPropagation()
+                go(-1)
+              }}
+            />
+            <CarouselArrow
+              direction='next'
+              onClick={e => {
+                e.preventDefault()
+                e.stopPropagation()
+                go(1)
+              }}
+            />
           </div>
         )}
       </div>
@@ -287,7 +310,7 @@ function getHeroSlides({ latestPosts, allNavPages, siteInfo }) {
     id: post?.id,
     slug: post?.slug,
     title: post?.title || '未命名',
-    href: post?.href || `${siteConfig('SUB_PATH', '')}/${post?.slug}`,
+    href: post?.href || `/${post?.slug || ''}`,
     cover: post?.pageCoverThumbnail || post?.pageCover || siteInfo?.pageCover
   }))
 }

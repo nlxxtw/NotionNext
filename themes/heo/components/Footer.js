@@ -5,6 +5,7 @@ import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 import { useGlobal } from '@/lib/global'
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import CONFIG from '../config'
 import FooterStats from './FooterStats'
 
@@ -88,7 +89,7 @@ const Footer = () => {
         className={`w-full overflow-visible border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
-        <div className='mx-auto flex max-w-6xl flex-col gap-4 overflow-visible px-4 py-5 lg:flex-row lg:items-start lg:justify-between lg:gap-12'>
+        <div className='mx-auto flex max-w-6xl flex-col gap-4 overflow-visible px-4 py-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12'>
           <div className='min-w-0 w-full max-w-xl flex-1 lg:max-w-[52%]'>
             {(noticeTitle || noticeText) && (
               <div className='mb-4 text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
@@ -134,9 +135,9 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* 与左侧「访问须知 / 本站资源捐…」同一高度，不要沉底 */}
-          <div className='flex w-full shrink-0 flex-col gap-2.5 overflow-visible lg:w-auto lg:min-w-[340px] lg:max-w-lg lg:pt-0.5'>
-            <div className='flex items-start justify-between gap-4 overflow-visible'>
+          {/* 恢复沉底：与左侧版权行对齐；链接与总浏览左缘对齐 */}
+          <div className='flex w-full shrink-0 flex-col overflow-visible lg:w-auto lg:min-w-[340px] lg:max-w-lg'>
+            <div className='flex items-center justify-between gap-4 overflow-visible'>
               <div className='min-w-0 flex-1 space-y-2 overflow-visible'>
                 <div className='heo-footer-quick-links relative z-20 flex flex-wrap items-center gap-x-3.5 gap-y-1 overflow-visible'>
                   {quickLinks.map((link, index) =>
@@ -159,7 +160,7 @@ const Footer = () => {
                 <LazyImage
                   src={siteInfo.icon}
                   alt={AUTHOR || 'avatar'}
-                  className='heo-footer-logo mt-0.5 h-11 w-11 shrink-0 rounded-full object-cover sm:h-12 sm:w-12'
+                  className='heo-footer-logo h-11 w-11 shrink-0 rounded-full object-cover sm:h-12 sm:w-12'
                 />
               ) : null}
             </div>
@@ -202,10 +203,11 @@ function QrHoverChip({ item }) {
   )
 }
 
-/** 悬停 / 点击弹出二维码 */
+/** 悬停小浮层（订阅 / 资源） */
 function QrHoverText({ item }) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef(null)
+  const isTip = item.title === '打赏' || item.modal
 
   useEffect(() => {
     if (!open) return undefined
@@ -222,6 +224,30 @@ function QrHoverText({ item }) {
       document.removeEventListener('keydown', onKey)
     }
   }, [open])
+
+  // 打赏：居中大弹窗，更好看
+  if (isTip) {
+    return (
+      <>
+        <button
+          type='button'
+          aria-expanded={open}
+          aria-haspopup='dialog'
+          onClick={() => setOpen(true)}
+          className='whitespace-nowrap text-left text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
+          {item.title}
+        </button>
+        {open ? (
+          <TipQrModal
+            title={item.modalTitle || '局长请喝咖啡'}
+            subtitle={item.subtitle || '感谢支持，扫码随意打赏'}
+            qr={item.qr}
+            onClose={() => setOpen(false)}
+          />
+        ) : null}
+      </>
+    )
+  }
 
   return (
     <div
@@ -262,6 +288,80 @@ function QrHoverText({ item }) {
   )
 }
 
+/** 打赏居中弹窗 */
+function TipQrModal({ title, subtitle, qr, onClose }) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = e => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
+  if (!mounted || typeof document === 'undefined') return null
+
+  return createPortal(
+    <div
+      className='heo-tip-qr-modal fixed inset-0 z-[200] flex items-center justify-center p-5'
+      role='dialog'
+      aria-modal='true'
+      aria-label={title}>
+      <button
+        type='button'
+        aria-label='关闭'
+        className='absolute inset-0 bg-black/45 backdrop-blur-[2px] transition'
+        onClick={onClose}
+      />
+      <div className='heo-tip-qr-card relative z-[1] w-[min(320px,calc(100vw-2.5rem))] origin-center overflow-hidden rounded-[22px] border border-white/20 bg-white shadow-[0_28px_64px_-20px_rgba(20,24,50,0.55)] dark:border-white/10 dark:bg-[#22242c]'>
+        <div className='relative bg-gradient-to-br from-[#7a5dfa] via-[#6d5ce7] to-[#425aef] px-5 pb-8 pt-5 text-white'>
+          <button
+            type='button'
+            aria-label='关闭'
+            onClick={onClose}
+            className='absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25'>
+            <i className='fas fa-times text-sm' />
+          </button>
+          <div className='flex items-center gap-2 text-[13px] font-semibold text-white/90'>
+            <span className='flex h-7 w-7 items-center justify-center rounded-full bg-amber-300/95 text-amber-950'>
+              <i className='fas fa-mug-hot text-[12px]' />
+            </span>
+            请喝杯咖啡
+          </div>
+          <h3 className='mt-3 text-[20px] font-extrabold leading-snug tracking-tight'>
+            {title}
+          </h3>
+          <p className='mt-1.5 text-[13px] leading-relaxed text-white/85'>
+            {subtitle}
+          </p>
+        </div>
+
+        <div className='relative -mt-5 px-5 pb-5'>
+          <div className='rounded-[18px] border border-black/[0.05] bg-white p-3 shadow-[0_14px_30px_-16px_rgba(40,50,90,0.45)] dark:border-white/10 dark:bg-[#2a2c34]'>
+            <img
+              src={qr}
+              alt={title}
+              className='mx-auto h-auto w-full max-w-[220px] rounded-xl'
+              loading='eager'
+            />
+          </div>
+          <p className='mt-3 text-center text-[12px] text-gray-500 dark:text-gray-400'>
+            微信 / 支付宝扫码均可
+          </p>
+        </div>
+      </div>
+    </div>,
+    document.body
+  )
+}
+
 const DEFAULT_QR_LIST = [
   {
     title: '局长请喝咖啡',
@@ -290,7 +390,7 @@ const DEFAULT_QUICK_LINKS = [
     href: 'https://github.com/notionnext-org/NotionNext'
   },
   { title: '资源', href: '#', qrFrom: '资源' },
-  { title: '地图', href: '/archives' }
+  { title: '地图', href: '/sitemap.xml' }
 ]
 
 function normalizeQrList(value) {
@@ -360,13 +460,7 @@ function normalizeQuickLinks(value, qrList) {
         ''
       let href = String(item.href || item.url || '#').trim() || '#'
       if (title === '地图') {
-        href =
-          !href ||
-          href === '#' ||
-          href === '/sitemap.xml' ||
-          href.endsWith('sitemap.xml')
-            ? '/archives'
-            : href
+        href = '/sitemap.xml'
       }
       return { title, href, qr }
     })
@@ -381,8 +475,14 @@ function normalizeQuickLinks(value, qrList) {
   const themeHref = 'https://github.com/notionnext-org/NotionNext'
 
   result = result.map(link => {
-    if (link.title === '打赏' && !link.qr && tipQr) {
-      return { ...link, qr: tipQr }
+    if (link.title === '打赏') {
+      return {
+        ...link,
+        qr: link.qr || tipQr,
+        modal: true,
+        modalTitle: '局长请喝咖啡',
+        subtitle: '感谢支持，扫码随意打赏'
+      }
     }
     if (link.title === '资源') {
       return { ...link, qr: link.qr || resourceQr, href: '#' }
@@ -397,13 +497,7 @@ function normalizeQuickLinks(value, qrList) {
       return {
         ...link,
         qr: '',
-        href:
-          !link.href ||
-          link.href === '#' ||
-          link.href === '/sitemap.xml' ||
-          String(link.href).endsWith('sitemap.xml')
-            ? '/archives'
-            : link.href
+        href: '/sitemap.xml'
       }
     }
     return link
@@ -425,7 +519,7 @@ function normalizeQuickLinks(value, qrList) {
   }
 
   if (!result.some(l => l.title === '地图')) {
-    result.push({ title: '地图', href: '/archives', qr: '' })
+    result.push({ title: '地图', href: '/sitemap.xml', qr: '' })
   }
 
   return result

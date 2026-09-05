@@ -39,10 +39,9 @@ const ExternalPlugin = props => {
     NOTION_CONFIG
   )
   const ANALYTICS_VERCEL = siteConfig('ANALYTICS_VERCEL', null, NOTION_CONFIG)
-  const ANALYTICS_BUSUANZI_ENABLE = siteConfig(
-    'ANALYTICS_BUSUANZI_ENABLE',
-    null,
-    NOTION_CONFIG
+  const ANALYTICS_BUSUANZI_ENABLE = parsePluginBool(
+    siteConfig('ANALYTICS_BUSUANZI_ENABLE', true, NOTION_CONFIG),
+    true
   )
   const ADSENSE_GOOGLE_ID = siteConfig('ADSENSE_GOOGLE_ID', null, NOTION_CONFIG)
   const FACEBOOK_APP_ID = siteConfig('FACEBOOK_APP_ID', null, NOTION_CONFIG)
@@ -585,5 +584,21 @@ const DocsChat = dynamic(() => import('@/components/DocsChat'), {
 const LA51 = dynamic(() => import('@/components/LA51'), {
   ssr: false
 })
+
+function parsePluginBool(value, fallback = false) {
+  if (typeof value === 'boolean') return value
+  if (value == null || value === '') return fallback
+  if (typeof value === 'string') {
+    const v = value.trim().toLowerCase()
+    if (v === 'true' || v === '1' || v === 'yes') return true
+    if (v === 'false' || v === '0' || v === 'no') return false
+    try {
+      return Boolean(JSON.parse(value))
+    } catch {
+      return fallback
+    }
+  }
+  return Boolean(value)
+}
 
 export default ExternalPlugin
