@@ -272,13 +272,8 @@ const CONFIG = {
     { title: '资源', href: '#', qrFrom: '资源' },
     { title: '站点地图', href: '/sitemap.xml' }
   ],
-  // 页脚多列链接（可按需在 Notion 扩展）
-  HEO_FOOTER_LINK_GROUPS: [
-    {
-      title: '服务',
-      links: [{ title: '站点地图', href: '/sitemap.xml' }]
-    }
-  ],
+  // 页脚多列链接；默认空（去掉「服务」）；Notion 可再配
+  HEO_FOOTER_LINK_GROUPS: [],
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）
   HEO_HOME_SHOW_INFO_CARD: false, // 首页是否强制显示资料卡；有 Notion 公告页时仍会显示

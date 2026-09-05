@@ -8,7 +8,7 @@ import CONFIG from '../config'
 import FooterStats from './FooterStats'
 
 /**
- * 页脚：可选二维码胶囊 + 链接栏 + 底栏快捷入口（打赏/资源悬停出码）
+ * 页脚：访问须知 + 底栏（业务状态与快捷链接同行，右下角小统计）
  */
 const Footer = () => {
   const { siteInfo } = useGlobal()
@@ -31,7 +31,6 @@ const Footer = () => {
     CONFIG
   )
 
-  // 二维码图库（供快捷入口 qrFrom 解析）；默认不展示中间三颗胶囊
   const qrCatalog = normalizeQrList(
     siteConfig('HEO_FOOTER_QR_LIST', DEFAULT_QR_LIST, CONFIG)
   )
@@ -40,8 +39,9 @@ const Footer = () => {
     siteConfig('HEO_FOOTER_QUICK_LINKS', DEFAULT_QUICK_LINKS, CONFIG),
     qrCatalog
   )
+  // 默认空：去掉「服务」板块；Notion 有配置才显示
   const linkGroups = normalizeLinkGroups(
-    siteConfig('HEO_FOOTER_LINK_GROUPS', DEFAULT_LINK_GROUPS, CONFIG)
+    siteConfig('HEO_FOOTER_LINK_GROUPS', [], CONFIG)
   )
 
   return (
@@ -83,29 +83,27 @@ const Footer = () => {
         </div>
       )}
 
-      <FooterStats />
-
       <div
         id='footer-bottom'
         className={`w-full border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
-        <div className='mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 lg:flex-row lg:items-start lg:justify-between'>
-          <div id='footer-bottom-left' className='min-w-0 flex-1 text-center lg:text-left'>
-            {(noticeTitle || noticeText) && (
-              <div className='max-w-3xl text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
-                <div className='mb-1 inline-flex items-center gap-1.5 text-[13px] font-bold text-gray-700 dark:text-gray-200'>
-                  <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
-                  {noticeTitle}
-                </div>
-                {noticeText ? (
-                  <p className='whitespace-normal break-words'>{noticeText}</p>
-                ) : null}
+        <div className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5'>
+          {(noticeTitle || noticeText) && (
+            <div className='max-w-3xl text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
+              <div className='mb-1 inline-flex items-center gap-1.5 text-[13px] font-bold text-gray-700 dark:text-gray-200'>
+                <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
+                {noticeTitle}
               </div>
-            )}
+              {noticeText ? (
+                <p className='whitespace-normal break-words'>{noticeText}</p>
+              ) : null}
+            </div>
+          )}
 
-            {/* 访问须知下方：版权 / 状态一行 */}
-            <div className='mt-3 max-w-3xl border-t border-black/[0.05] pt-3 text-left dark:border-white/10'>
+          {/* 业务状态 + 快捷链接同一行 */}
+          <div className='flex flex-col gap-3 border-t border-black/[0.05] pt-3 dark:border-white/10 lg:flex-row lg:items-center lg:justify-between'>
+            <div className='min-w-0 flex-1'>
               <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] leading-5 text-gray-500 dark:text-gray-400'>
                 <CopyRightDate />
                 <SmartLink
@@ -139,30 +137,33 @@ const Footer = () => {
                 <BeiAnGongAn />
               </div>
             </div>
+
+            <div className='flex flex-wrap items-center justify-start gap-0.5 lg:justify-end'>
+              {quickLinks.map((link, index) =>
+                link.qr ? (
+                  <QrHoverText key={`${link.title}-${index}`} item={link} />
+                ) : (
+                  <SmartLink
+                    key={`${link.title}-${index}`}
+                    href={link.href || '#'}
+                    className='rounded-full px-2.5 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
+                    {link.title}
+                  </SmartLink>
+                )
+              )}
+              {siteInfo?.icon ? (
+                <LazyImage
+                  src={siteInfo.icon}
+                  alt={AUTHOR || 'avatar'}
+                  className='ml-1.5 h-7 w-7 rounded-full object-cover ring-2 ring-white dark:ring-gray-700'
+                />
+              ) : null}
+            </div>
           </div>
 
-          <div
-            id='footer-bottom-right'
-            className='flex flex-wrap items-center justify-center gap-1 lg:justify-end'>
-            {quickLinks.map((link, index) =>
-              link.qr ? (
-                <QrHoverText key={`${link.title}-${index}`} item={link} />
-              ) : (
-                <SmartLink
-                  key={`${link.title}-${index}`}
-                  href={link.href || '#'}
-                  className='rounded-full px-3 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
-                  {link.title}
-                </SmartLink>
-              )
-            )}
-            {siteInfo?.icon ? (
-              <LazyImage
-                src={siteInfo.icon}
-                alt={AUTHOR || 'avatar'}
-                className='ml-2 h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-gray-700'
-              />
-            ) : null}
+          {/* 右下角紧凑统计 */}
+          <div className='flex justify-end'>
+            <FooterStats compact />
           </div>
         </div>
       </div>
@@ -206,7 +207,7 @@ function QrHoverText({ item }) {
     <div className='heo-qr-hover group relative'>
       <button
         type='button'
-        className='rounded-full px-3 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
+        className='rounded-full px-2.5 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
         {item.title}
       </button>
       <div className='heo-qr-popover pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-30 w-[148px] -translate-x-1/2 scale-95 opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100'>
@@ -226,7 +227,6 @@ function QrHoverText({ item }) {
   )
 }
 
-/** 二维码图库：标题供快捷入口 qrFrom 引用 */
 const DEFAULT_QR_LIST = [
   {
     title: '局长请喝咖啡',
@@ -256,13 +256,6 @@ const DEFAULT_QUICK_LINKS = [
   },
   { title: '资源', href: '#', qrFrom: '资源' },
   { title: '站点地图', href: '/sitemap.xml' }
-]
-
-const DEFAULT_LINK_GROUPS = [
-  {
-    title: '服务',
-    links: [{ title: '站点地图', href: '/sitemap.xml' }]
-  }
 ]
 
 function normalizeQrList(value) {
@@ -296,7 +289,6 @@ function resolveQr(qrFrom, qrList) {
   if (!qrFrom) return ''
   const hit = qrList.find(q => q.title === qrFrom)
   if (hit?.img) return hit.img
-  // 兼容旧配置：主题 → 资源二维码
   if (qrFrom === '主题') {
     const legacy = qrList.find(q => q.title === '资源' || q.title === '主题')
     return legacy?.img || ''
@@ -338,7 +330,6 @@ function normalizeQuickLinks(value, qrList) {
     })
     .filter(Boolean)
 
-  // Notion 覆盖缺项时补回：打赏出码；主题、资源紧跟打赏后
   const tipQr =
     resolveQr('局长请喝咖啡', catalog) || qrMapFallback.get('局长请喝咖啡') || ''
   const resourceQr =
@@ -377,15 +368,16 @@ function normalizeQuickLinks(value, qrList) {
 }
 
 function normalizeLinkGroups(value) {
+  if (value == null || value === '') return []
   let list = value
   if (typeof list === 'string') {
     try {
       list = JSON.parse(list)
     } catch {
-      list = DEFAULT_LINK_GROUPS
+      return []
     }
   }
-  if (!Array.isArray(list)) return DEFAULT_LINK_GROUPS
+  if (!Array.isArray(list)) return []
   return list
     .map(group => {
       if (!group || typeof group !== 'object') return null
