@@ -55,26 +55,26 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
             <div
               className={`w-full overflow-hidden ${
                 POST_TWO_COLS
-                  ? 'aspect-[2/1] max-h-[160px]'
+                  ? 'aspect-[16/9] h-auto min-h-[180px] sm:h-[210px] sm:min-h-0 sm:aspect-auto'
                   : 'h-36 md:h-full md:w-5/12'
               }`}>
               <LazyImage
                 priority={index === 0}
                 src={post?.pageCoverThumbnail}
                 alt={post?.title}
-                className='h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90'
+                className='h-full w-full object-cover transition duration-500 group-hover:scale-[1.03] group-hover:brightness-90'
               />
             </div>
           </SmartLink>
         )}
 
         <div
-          className={`flex flex-1 flex-col px-4 py-3.5 ${
-            POST_TWO_COLS ? 'min-h-[132px]' : 'md:w-7/12'
+          className={`flex flex-1 flex-col px-4 pb-4 pt-3.5 ${
+            POST_TWO_COLS ? 'min-h-[148px]' : 'md:w-7/12'
           }`}>
           {/* 分类/标签行：四瓣图标 + 文案，无 #、无线框 */}
           {tipLabels.length > 0 && (
-            <div className='recent-post-info-top-tips mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] leading-none text-gray-500 dark:text-gray-400'>
+            <div className='recent-post-info-top-tips mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] leading-none text-gray-500 dark:text-gray-400'>
               {tipLabels.map((label, i) => (
                 <span
                   key={`${label}-${i}`}
@@ -88,27 +88,27 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
             </div>
           )}
 
-          {/* 标题 */}
+          {/* 标题：对齐 Heo article-title 20px / 700 */}
           <SmartLink
             href={href}
-            className='line-clamp-2 flex-1 text-[17px] font-extrabold leading-snug text-gray-900 transition group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)]'>
+            className='line-clamp-2 flex-1 text-[20px] font-bold leading-[1.5] text-gray-900 transition group-hover:text-[var(--heo-color-primary)] dark:text-gray-100 dark:group-hover:text-[var(--heo-color-accent)]'>
             {siteConfig('POST_TITLE_ICON') && (
               <NotionIcon
                 icon={post.pageIcon}
-                className='heo-icon mr-1 inline h-4 w-4 align-middle'
+                className='heo-icon mr-1 inline h-[1.1em] w-[1.1em] align-middle'
               />
             )}
             <span>{post.title}</span>
           </SmartLink>
 
           {showSummary && post.summary ? (
-            <p className='mt-1 line-clamp-1 text-[12px] text-gray-400'>
+            <p className='mt-1.5 line-clamp-1 text-[13px] text-gray-400'>
               {post.summary}
             </p>
           ) : null}
 
           {/* 底部：评论头像 | 日期 */}
-          <div className='mt-3 flex items-center justify-between gap-3'>
+          <div className='mt-4 flex items-center justify-between gap-3'>
             <CommentAvatarStack
               postUrl={href}
               fallbackAvatar={siteInfo?.icon}
