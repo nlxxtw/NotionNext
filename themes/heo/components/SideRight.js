@@ -49,7 +49,9 @@ export default function SideRight(props) {
   const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', false, CONFIG)
   const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
   const sortedTags = tagOptions?.slice(0, tagLimit) || []
-  const showInfoCard = !post && (!isHome || showInfoOnHome)
+  // 文章页始终显示资料卡（对齐 Heo）；首页按配置
+  const showInfoCard = Boolean(post) || !isHome || showInfoOnHome
+  const showToc = !lock && Array.isArray(post?.toc) && post.toc.length > 0
 
   return (
     <aside
@@ -62,12 +64,15 @@ export default function SideRight(props) {
           <InfoCard {...props} className='w-full wow fadeInUp' />
         )}
 
-        {!lock && post?.toc?.length > 0 && (
-          <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] p-4 dark:bg-[var(--heo-color-card-dark)]'>
+        {showToc && (
+          <div
+            id='card-toc-wrap'
+            className='heo-aside-card heo-aside-toc wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] p-3.5 dark:bg-[var(--heo-color-card-dark)]'>
             <Catalog toc={post.toc} />
           </div>
         )}
 
+        {/* 文章页：资料卡 + 目录优先；其余挂件仍保留在下方 */}
         {showSocial && (
           <div className='wow fadeInUp w-full'>
             <TouchMeCard />

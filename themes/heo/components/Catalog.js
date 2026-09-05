@@ -4,34 +4,19 @@ import { uuidToId } from 'notion-utils'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 /**
- * 目录导航组件
- * @param toc
- * @returns {JSX.Element}
- * @constructor
+ * 文章目录（对齐 Heo：默认白雾模糊，悬停整卡立刻清晰）
  */
 const Catalog = ({ toc }) => {
   const { locale } = useGlobal()
-  // 监听滚动事件
-  useEffect(() => {
-    window.addEventListener('scroll', actionSectionScrollSpy, { passive: true })
-    actionSectionScrollSpy()
-    return () => {
-      window.removeEventListener('scroll', actionSectionScrollSpy)
-    }
-  }, [])
-
-  // 目录自动滚动
   const tRef = useRef(null)
-  const tocIds = []
-
-  // 同步选中目录事件
+  const tocIdsRef = useRef([])
   const [activeSection, setActiveSection] = useState(null)
 
   const actionSectionScrollSpy = useCallback(
     throttle(() => {
       const sections = document.getElementsByClassName('notion-h')
       let prevBBox = null
-      let currentSectionId = activeSection
+      let currentSectionId = null
       for (let i = 0; i < sections.length; ++i) {
         const section = sections[i]
         if (!section || !(section instanceof Element)) continue
@@ -41,51 +26,67 @@ const Catalog = ({ toc }) => {
         const bbox = section.getBoundingClientRect()
         const prevHeight = prevBBox ? bbox.top - prevBBox.bottom : 0
         const offset = Math.max(150, prevHeight / 4)
-        // GetBoundingClientRect returns values relative to viewport
         if (bbox.top - offset < 0) {
           currentSectionId = section.getAttribute('data-id')
           prevBBox = bbox
           continue
         }
-        // No need to continue loop, if last element has been detected
         break
       }
       setActiveSection(currentSectionId)
-      const index = tocIds.indexOf(currentSectionId) || 0
-      tRef?.current?.scrollTo({ top: 28 * index, behavior: 'smooth' })
-    }, 200)
+      const index = tocIdsRef.current.indexOf(currentSectionId)
+      if (index >= 0) {
+        tRef?.current?.scrollTo({ top: 28 * index, behavior: 'smooth' })
+      }
+    }, 200),
+    []
   )
 
-  // 无目录就直接返回空
+  useEffect(() => {
+    window.addEventListener('scroll', actionSectionScrollSpy, { passive: true })
+    actionSectionScrollSpy()
+    return () => {
+      window.removeEventListener('scroll', actionSectionScrollSpy)
+      actionSectionScrollSpy.cancel?.()
+    }
+  }, [actionSectionScrollSpy])
+
   if (!toc || toc.length < 1) {
-    return <></>
+    return null
   }
 
+  tocIdsRef.current = []
+
   return (
-    <div className='px-3 py-1 dark:text-white text-black'>
-      <div className='w-full'>
-        <i className='mr-1 fas fa-stream' />
-        {locale.COMMON.TABLE_OF_CONTENTS}
+    <div id='card-toc' className='heo-card-toc'>
+      <div className='heo-toc-header mb-2 flex items-center gap-2 px-1 text-[14px] font-extrabold text-gray-800 dark:text-gray-100'>
+        <i className='fas fa-stream text-[13px] opacity-70' aria-hidden />
+        <span>{locale.COMMON.TABLE_OF_CONTENTS}</span>
       </div>
       <div
-        className='overflow-y-auto max-h-36 lg:max-h-96 overscroll-none scroll-hidden'
+        className='heo-toc-content overflow-y-auto overscroll-none scroll-hidden max-h-48 lg:max-h-[min(24rem,calc(100dvh-20rem))]'
         ref={tRef}>
-        <nav className='h-full'>
-          {toc?.map(tocItem => {
+        <nav className='heo-toc-nav flex flex-col gap-0.5'>
+          {toc.map(tocItem => {
             const id = uuidToId(tocItem.id)
-            tocIds.push(id)
+            tocIdsRef.current.push(id)
+            const active = activeSection === id
             return (
               <a
                 key={id}
                 href={`#${id}`}
-                className={`notion-table-of-contents-item duration-300 transform dark:text-gray-200
-            notion-table-of-contents-item-indent-level-${tocItem.indentLevel} catalog-item `}>
+                className={`heo-toc-link catalog-item flex min-h-[40px] items-center rounded-xl px-2 py-2 text-[13px] leading-6 transition duration-200 ${
+                  active
+                    ? 'heo-toc-link--active bg-[var(--heo-color-primary)]/10 font-bold text-[var(--heo-color-primary)] dark:bg-[var(--heo-color-accent)]/15 dark:text-[var(--heo-color-accent)]'
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}>
                 <span
                   style={{
                     display: 'inline-block',
-                    marginLeft: tocItem.indentLevel * 16
+                    marginLeft: (tocItem.indentLevel || 0) * 12,
+                    width: '100%'
                   }}
-                  className={`truncate ${activeSection === id ? 'font-bold text-[var(--heo-color-primary)]' : ''}`}>
+                  className='heo-toc-link-text truncate'>
                   {tocItem.text}
                 </span>
               </a>

@@ -67,6 +67,31 @@ const Style = () => {
         color: var(--heo-color-primary) !important;
       }
 
+      /* 文章目录：默认白雾（模糊+半透明），悬停整卡立刻清晰 —— 对齐 blog.zhheo.com */
+      #theme-heo .heo-card-toc .heo-toc-link:not(.heo-toc-link--active) .heo-toc-link-text {
+        opacity: 0.6;
+        filter: blur(1px);
+        transition: opacity 0.25s ease, filter 0.25s ease, color 0.25s ease;
+        width: 100%;
+      }
+      #theme-heo .heo-aside-toc:hover .heo-toc-link:not(.heo-toc-link--active) .heo-toc-link-text,
+      #theme-heo #card-toc:hover .heo-toc-link:not(.heo-toc-link--active) .heo-toc-link-text {
+        opacity: 1;
+        filter: blur(0);
+      }
+      #theme-heo .heo-card-toc .heo-toc-link:not(.heo-toc-link--active):hover {
+        background: color-mix(in srgb, var(--heo-color-primary) 8%, transparent);
+      }
+      #theme-heo .heo-card-toc .heo-toc-link:not(.heo-toc-link--active):hover .heo-toc-link-text {
+        color: var(--heo-color-primary);
+      }
+      .dark #theme-heo .heo-card-toc .heo-toc-link:not(.heo-toc-link--active):hover {
+        background: color-mix(in srgb, var(--heo-color-accent) 12%, transparent);
+      }
+      .dark #theme-heo .heo-card-toc .heo-toc-link:not(.heo-toc-link--active):hover .heo-toc-link-text {
+        color: var(--heo-color-accent);
+      }
+
       html:not(.dark) #theme-heo .bg-white {
         background-color: var(--heo-color-card);
       }
