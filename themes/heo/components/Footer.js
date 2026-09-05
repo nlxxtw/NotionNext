@@ -208,10 +208,10 @@ function QrHoverText({ item }) {
     <div className='heo-qr-hover group relative'>
       <button
         type='button'
-        className='rounded-full px-2.5 py-1.5 text-[13px] font-medium text-gray-600 transition hover:bg-white hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-[var(--heo-color-accent)]'>
+        className='truncate text-left text-[13px] font-medium text-gray-600 transition hover:text-[var(--heo-color-primary)] dark:text-gray-300 dark:hover:text-[var(--heo-color-accent)]'>
         {item.title}
       </button>
-      <div className='heo-qr-popover pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-30 w-[148px] -translate-x-1/2 scale-95 opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100'>
+      <div className='heo-qr-popover pointer-events-none absolute bottom-[calc(100%+10px)] left-0 z-30 w-[148px] scale-95 opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100'>
         <div className='rounded-2xl border border-black/[0.06] bg-white p-2.5 shadow-[0_18px_40px_-18px_rgba(30,40,70,0.45)] dark:border-white/10 dark:bg-[#2a2a30]'>
           <LazyImage
             src={item.qr}
@@ -222,7 +222,7 @@ function QrHoverText({ item }) {
             {item.title}
           </div>
         </div>
-        <div className='mx-auto -mt-1 h-3 w-3 rotate-45 border-b border-r border-black/[0.06] bg-white dark:border-white/10 dark:bg-[#2a2a30]' />
+        <div className='ml-4 -mt-1 h-3 w-3 rotate-45 border-b border-r border-black/[0.06] bg-white dark:border-white/10 dark:bg-[#2a2a30]' />
       </div>
     </div>
   )
