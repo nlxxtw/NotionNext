@@ -856,6 +856,11 @@ const Style = () => {
         background: transparent;
       }
 
+      /* Waline：隐藏底部 RSS（WiFi 图标）与 Powered by 版本号 */
+      #theme-heo .wl-footer {
+        display: none !important;
+      }
+
       ${themeConsoleStyle('heo', CONFIG)}
   `}</style>
   )

@@ -30,6 +30,7 @@ const WalineComponent = (props) => {
         lang: siteConfig('LANG'),
         reaction: true,
         dark: 'html.dark',
+        copyright: false,
         emoji: [
           '//npm.elemecdn.com/@waline/emojis@1.1.0/tieba',
           '//npm.elemecdn.com/@waline/emojis@1.1.0/weibo',
