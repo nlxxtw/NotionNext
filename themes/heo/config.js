@@ -185,7 +185,7 @@ const CONFIG = {
   // 右下角欢迎挂件（省市欢迎语 + 滑到底隐藏）
   HEO_MASCOT_ENABLE: true,
   HEO_MASCOT_IMG: '/images/heo-mascot.png',
-  HEO_MASCOT_SIZE: 64,
+  HEO_MASCOT_SIZE: 88,
   HEO_MASCOT_TIP_MS: 5200,
   HEO_MASCOT_BOTTOM: '5.5rem',
   HEO_MASCOT_RIGHT: '1.25rem',

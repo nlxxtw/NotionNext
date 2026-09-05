@@ -69,7 +69,14 @@ export default function TianLiGPT() {
       } catch (e) {
         console.error('TianliGPT summary failed', e)
         if (!cancelled && reqId === reqRef.current) {
-          setError('获取文章摘要失败，请稍后再试')
+          const msg = String(e?.message || '')
+          if (msg === 'KEY_INVALID') {
+            setError('摘要 Key 无效或已过期，请在 Notion 配置 TianliGPT_KEY')
+          } else if (msg === 'SERVER') {
+            setError('摘要服务暂时不可用（非本站问题），请稍后再试')
+          } else {
+            setError('获取文章摘要失败，请检查网络或 Key 后重试')
+          }
         }
       } finally {
         if (!cancelled && reqId === reqRef.current) setLoading(false)
@@ -116,9 +123,12 @@ export default function TianLiGPT() {
 }
 
 function resolveTianliKey() {
-  const raw = siteConfig('TianliGPT_KEY')
+  const raw =
+    siteConfig('TianliGPT_KEY') ||
+    siteConfig('AI_SUMMARY_KEY') ||
+    siteConfig('NEXT_PUBLIC_TIANLI_GPT_KEY')
   const key = String(raw || '').trim()
-  // Notion 配置中心若留空会盖掉默认值，这里回退到内置 Key
+  // Notion 若清空会盖掉环境变量；无 Key 时用内置占位（失效则提示服务端错误）
   return key || '57X8Ht6R9a8GX548ggS'
 }
 
@@ -190,6 +200,12 @@ async function fetchTianliSummary(content, token) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content })
   })
+  if (res.status === 401 || res.status === 403) {
+    throw new Error('KEY_INVALID')
+  }
+  if (res.status >= 500) {
+    throw new Error('SERVER')
+  }
   if (!res.ok) throw new Error(`summary ${res.status}`)
   const data = await res.json()
   return String(data?.summary || '').trim()

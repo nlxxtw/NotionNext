@@ -135,11 +135,11 @@ export default function PostHeader({ post, siteInfo, lock }) {
             )}
           </div>
 
-          <h1 className='flex max-w-4xl justify-center text-center text-[1.75rem] font-extrabold leading-snug text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] md:justify-start md:text-left md:text-4xl lg:text-[2.75rem] lg:leading-[1.25]'>
+          <h1 className='max-w-4xl text-center text-[1.85rem] font-extrabold leading-[1.35] tracking-normal text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.35)] md:text-left md:text-4xl md:leading-[1.3] lg:text-[2.75rem] lg:leading-[1.28]'>
             {siteConfig('POST_TITLE_ICON') && (
-              <NotionIcon icon={post.pageIcon} />
+              <NotionIcon icon={post.pageIcon} className='mr-2 inline-block align-middle' />
             )}
-            {post.title}
+            <span className='align-middle'>{post.title}</span>
           </h1>
 
           <section className='mt-2 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-sm font-medium text-white/92 md:justify-start'>

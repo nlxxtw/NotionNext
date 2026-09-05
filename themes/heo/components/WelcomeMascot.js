@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import CONFIG from '../config'
 
 /**
- * 右下角欢迎挂件：小图 + 省市欢迎语（自动消失）
+ * 右下角欢迎挂件：横向气泡 + 轻 3D 浮动图
  * 首页滑到底隐藏，往上滑再悬浮显示
  */
 export default function WelcomeMascot() {
@@ -14,8 +14,8 @@ export default function WelcomeMascot() {
     siteConfig('HEO_MASCOT_IMG', '/images/heo-mascot.png', CONFIG) ||
     '/images/heo-mascot.png'
   const size = Math.max(
-    48,
-    Number(siteConfig('HEO_MASCOT_SIZE', 72, CONFIG)) || 72
+    56,
+    Number(siteConfig('HEO_MASCOT_SIZE', 88, CONFIG)) || 88
   )
   const tipMs = Math.max(
     2000,
@@ -34,9 +34,9 @@ export default function WelcomeMascot() {
     let cancelled = false
     let tipTimer
 
-    // 每个会话只自动弹出一次欢迎语
     const tipKey = 'heo-mascot-welcome-shown'
-    const already = typeof window !== 'undefined' && sessionStorage.getItem(tipKey)
+    const already =
+      typeof window !== 'undefined' && sessionStorage.getItem(tipKey)
 
     ;(async () => {
       try {
@@ -86,9 +86,7 @@ export default function WelcomeMascot() {
         document.body?.scrollHeight || 0
       )
       const distanceToBottom = fullH - (scrollTop + viewH)
-      // 接近页脚底部时隐藏；往上离开底部再显示
-      const nearBottom = distanceToBottom < 120
-      setVisible(!nearBottom)
+      setVisible(distanceToBottom >= 120)
     }
 
     onScroll()
@@ -114,39 +112,44 @@ export default function WelcomeMascot() {
         right: rightOffset,
         bottom: bottomOffset
       }}>
-      <div className='pointer-events-auto relative flex items-end justify-end'>
-        {/* 欢迎气泡 */}
-        <div
-          className={`absolute bottom-[72%] right-[88%] z-10 max-w-[11.5rem] origin-bottom-right transition-all duration-500 sm:max-w-[13rem] ${
-            showTip && welcome
-              ? 'translate-y-0 scale-100 opacity-100'
-              : 'pointer-events-none translate-y-2 scale-95 opacity-0'
-          }`}>
-          <div className='rounded-2xl rounded-br-md border border-black/[0.06] bg-white px-3 py-2 text-[12px] font-semibold leading-snug text-gray-700 shadow-[0_12px_28px_-14px_rgba(40,50,90,0.55)] dark:border-white/10 dark:bg-[#2a2b31] dark:text-gray-100'>
-            {welcome}
-          </div>
-        </div>
-
+      <div className='pointer-events-auto relative flex flex-row-reverse items-end gap-2'>
         <button
           type='button'
           aria-label={welcome || '欢迎挂件'}
           onClick={() => {
-            // 再点一次可重看欢迎语
             if (welcome) {
               setShowTip(true)
               window.setTimeout(() => setShowTip(false), tipMs)
             }
           }}
-          className='block select-none transition hover:scale-105 active:scale-95'>
+          className='heo-mascot-3d block select-none'>
           <LazyImage
             src={img}
             alt='欢迎挂件'
             width={size}
             height={size}
-            className='h-auto w-auto object-contain drop-shadow-[0_10px_18px_rgba(40,50,90,0.22)]'
-            style={{ width: size, height: 'auto', maxHeight: size + 8 }}
+            className='heo-mascot-img h-auto w-auto object-contain'
+            style={{ width: size, height: 'auto', maxHeight: size + 12 }}
           />
         </button>
+
+        {/* 横向气泡，避免竖排压扁 */}
+        <div
+          className={`heo-mascot-tip mb-6 max-w-[14rem] origin-bottom-right transition-all duration-500 sm:max-w-[16rem] ${
+            showTip && welcome
+              ? 'translate-y-0 scale-100 opacity-100'
+              : 'pointer-events-none translate-y-2 scale-95 opacity-0'
+          }`}>
+          <div
+            className='rounded-2xl border border-black/[0.06] bg-white px-3.5 py-2.5 text-[13px] font-semibold leading-relaxed tracking-normal text-gray-700 shadow-[0_14px_32px_-14px_rgba(40,50,90,0.5)] dark:border-white/10 dark:bg-[#2a2b31] dark:text-gray-100'
+            style={{
+              writingMode: 'horizontal-tb',
+              whiteSpace: 'normal',
+              wordBreak: 'keep-all'
+            }}>
+            {welcome}
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -158,13 +161,20 @@ function buildWelcome(geo) {
   const city = cleanPlace(geo.city)
   const country = cleanPlace(geo.country)
 
+  const p = stripAdminSuffix(province)
+  const c = stripAdminSuffix(city)
+
   let place = ''
-  if (province && city && province !== city) {
-    place = `${stripSuffix(province)}${stripSuffix(city)}`
-  } else if (province) {
-    place = stripSuffix(province)
-  } else if (city) {
-    place = stripSuffix(city)
+  if (p && c) {
+    if (p === c || p.includes(c) || c.includes(p)) {
+      place = p.length >= c.length ? p : c
+    } else {
+      place = `${p}${c}`
+    }
+  } else if (p) {
+    place = p
+  } else if (c) {
+    place = c
   } else if (country && country !== '中国') {
     place = country
   }
@@ -182,10 +192,14 @@ function cleanPlace(v) {
   return s
 }
 
-function stripSuffix(s) {
+function stripAdminSuffix(s) {
+  if (!s) return ''
   return (
     s
-      .replace(/(特别行政区|自治区|壮族|回族|维吾尔|省|市|地区)$/g, '')
+      .replace(
+        /(特别行政区|自治区|壮族|回族|维吾尔|省|市|地区|都|县|州)$/g,
+        ''
+      )
       .trim() || s
   )
 }

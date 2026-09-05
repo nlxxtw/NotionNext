@@ -205,6 +205,34 @@ const Style = () => {
         border-radius: 1rem;
       }
 
+      /* 欢迎挂件：轻 3D 浮动，去掉方框感 */
+      #theme-heo .heo-mascot-3d {
+        perspective: 420px;
+        filter: drop-shadow(0 14px 18px rgba(40, 50, 90, 0.28));
+      }
+      #theme-heo .heo-mascot-img {
+        transform: rotateY(-8deg) rotateX(6deg);
+        transform-style: preserve-3d;
+        animation: heo-mascot-float 3.6s ease-in-out infinite;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+      }
+      @keyframes heo-mascot-float {
+        0%, 100% { transform: rotateY(-8deg) rotateX(6deg) translateY(0); }
+        50% { transform: rotateY(-4deg) rotateX(8deg) translateY(-6px); }
+      }
+      #theme-heo .heo-mascot-tip {
+        writing-mode: horizontal-tb !important;
+      }
+
+      /* 文章页主体：去掉细线框 */
+      #theme-heo .article {
+        box-shadow: none !important;
+        border: 0 !important;
+        outline: none !important;
+      }
+
       /* 避免父层 overflow 裁切 fixed 导航（Safari） */
       #theme-heo,
       #theme-heo #wrapper-outer {

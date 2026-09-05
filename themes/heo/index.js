@@ -321,7 +321,7 @@ const LayoutSlug = props => {
   return (
     <>
       <div
-        className={`article h-full w-full rounded-2xl bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-bg-dark)] ${fullWidth ? '' : 'xl:max-w-5xl'} ${hasCode ? 'xl:w-[73.15vw]' : ''} lg:px-2 lg:py-4 lg:shadow-[var(--heo-shadow-border)] lg:ring-1 lg:ring-black/5 dark:lg:ring-white/10`}>
+        className={`article h-full w-full rounded-2xl bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-bg-dark)] ${fullWidth ? '' : 'xl:max-w-5xl'} ${hasCode ? 'xl:w-[73.15vw]' : ''} lg:px-2 lg:py-4`}>
         {/* 文章锁 */}
         {lock && <PostLock validPassword={validPassword} />}
 
