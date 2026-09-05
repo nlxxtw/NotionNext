@@ -70,8 +70,15 @@ const Header = props => {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY
-          setActiveIndex(currentScrollY > prevScrollY + 4 ? 1 : 0)
+          const currentScrollY = window.scrollY || 0
+          // 首页英雄区附近始终显示菜单，避免「站名·简介」胶囊插进轮播卡
+          if (currentScrollY < 220) {
+            setActiveIndex(0)
+          } else if (currentScrollY > prevScrollY + 6) {
+            setActiveIndex(1)
+          } else if (currentScrollY < prevScrollY - 6) {
+            setActiveIndex(0)
+          }
           prevScrollY = currentScrollY
           ticking = false
         })
@@ -80,6 +87,7 @@ const Header = props => {
     }
     if (isBrowser) {
       window.addEventListener('scroll', handleScroll, { passive: true })
+      handleScroll()
     }
     return () => {
       if (isBrowser) window.removeEventListener('scroll', handleScroll)
@@ -116,12 +124,12 @@ const Header = props => {
 
           <div
             id='nav-bar-swipe'
-            className='relative hidden h-full items-center justify-center lg:flex'>
+            className='relative hidden h-full max-w-full items-center justify-center overflow-hidden lg:flex'>
             <div
               className={`transition-all duration-500 ${
                 activeIndex === 0
-                  ? 'opacity-100'
-                  : 'pointer-events-none absolute opacity-0'
+                  ? 'relative opacity-100'
+                  : 'pointer-events-none absolute inset-y-0 flex items-center opacity-0'
               }`}>
               <div
                 className={`${
@@ -135,17 +143,17 @@ const Header = props => {
             <div
               className={`transition-all duration-500 ${
                 activeIndex === 1
-                  ? 'opacity-100'
-                  : 'pointer-events-none absolute opacity-0'
+                  ? 'relative opacity-100'
+                  : 'pointer-events-none absolute inset-y-0 flex items-center opacity-0'
               }`}>
               <div
-                className={`${
+                className={`max-w-[min(28rem,46vw)] truncate ${
                   textWhite
                     ? 'px-1 py-1'
                     : 'heo-nav-chip rounded-full px-4 py-1.5'
                 }`}>
                 <h1
-                  className={`text-center text-sm font-bold ${
+                  className={`truncate text-center text-sm font-bold ${
                     textWhite
                       ? 'text-white'
                       : 'text-gray-700 dark:text-gray-200'
