@@ -711,7 +711,7 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 右侧栏吸顶跟随到底 */
+      /* 右侧栏吸顶跟随到底；隐藏滚动条（不显示灰色竖线） */
       #theme-heo #sideRight.heo-side-right {
         align-self: stretch;
       }
@@ -722,15 +722,17 @@ const Style = () => {
         overflow-x: hidden;
         overflow-y: auto;
         overscroll-behavior: contain;
-        scrollbar-width: thin;
         padding-bottom: 0.5rem;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge legacy */
       }
       #theme-heo #sideRight .heo-side-sticky::-webkit-scrollbar {
-        width: 4px;
+        width: 0;
+        height: 0;
+        display: none;
       }
       #theme-heo #sideRight .heo-side-sticky::-webkit-scrollbar-thumb {
-        background: rgba(60, 60, 67, 0.28);
-        border-radius: 999px;
+        background: transparent;
       }
 
       ${themeConsoleStyle('heo', CONFIG)}
