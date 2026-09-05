@@ -38,6 +38,10 @@ const CONFIG = {
   HEO_LOGO_MEGA_FOOTER_ICON: '', // 留空用站点头像
   // false：左上角用 Heo 四瓣图标（默认）；true：改回站点风车/自定义图标
   HEO_LOGO_USE_SITE_ICON: false,
+  // 左上角显示的站名；留空则用 Notion Config 的 TITLE
+  HEO_LOGO_TITLE: '',
+  // 悬停时「回主页」按钮提示
+  HEO_LOGO_HOME_TOOLTIP: '返回博客主页',
   // Notion 尚未配置时的本地回退示例（有 Notion 数据后自动忽略）
   HEO_LOGO_MEGA_GROUPS: [
     {
@@ -177,9 +181,6 @@ const CONFIG = {
   // 侧栏「最新评论」（Waline）
   HEO_WIDGET_RECENT_COMMENTS: true,
   HEO_RECENT_COMMENTS_COUNT: 5,
-  // 左上角回主页提示；HEO_LOGO_SHOW_TITLE 可再显示站名
-  HEO_LOGO_HOME_TOOLTIP: '返回博客主页',
-  HEO_LOGO_SHOW_TITLE: false,
 
   // 右下角欢迎挂件（省市欢迎语 + 滑到底隐藏）
   HEO_MASCOT_ENABLE: true,
