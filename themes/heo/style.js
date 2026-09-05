@@ -39,17 +39,27 @@ const Style = () => {
         --heo-color-text-secondary-dark: #d1d5db;
         --heo-color-text: var(--heo-color-text-light);
         --heo-color-text-secondary: var(--heo-color-text-secondary-light);
-        background-color: var(--heo-color-bg);
+        /* 顶区柔和紫雾氛围：整页一层，避免「实心白条 + 下层透明」分层 */
+        background-color: ${bg};
+        background-image:
+          radial-gradient(ellipse 95% 60% at 8% -12%, rgba(167, 139, 250, 0.48), transparent 58%),
+          radial-gradient(ellipse 80% 55% at 92% -8%, rgba(196, 181, 253, 0.36), transparent 55%),
+          radial-gradient(ellipse 55% 40% at 48% -4%, rgba(253, 224, 171, 0.2), transparent 50%),
+          linear-gradient(180deg, #efeaff 0%, #f4f2ff 16%, ${bg} 38%, ${bg} 100%);
+        background-repeat: no-repeat;
         color: var(--heo-color-text);
       }
 
       .dark #theme-heo {
         --heo-color-text: var(--heo-color-text-dark);
         --heo-color-text-secondary: var(--heo-color-text-secondary-dark);
-        /* 夜间模式不用刺眼黄，改柔和紫（与主色同系） */
         --heo-color-accent: #a794ff;
         --heo-color-border-dark: rgba(255, 255, 255, 0.12);
         background-color: var(--heo-color-bg-dark);
+        background-image:
+          radial-gradient(ellipse 90% 50% at 10% -10%, rgba(122, 93, 250, 0.22), transparent 55%),
+          radial-gradient(ellipse 70% 45% at 90% -5%, rgba(167, 148, 255, 0.14), transparent 50%),
+          linear-gradient(180deg, #1c1b24 0%, ${bgDark} 40%, ${bgDark} 100%);
       }
 
       /* 资料卡：永远跟主色/封面色，禁止夜间变成黄色 */
@@ -169,6 +179,19 @@ const Style = () => {
 
       body {
         background-color: ${bg};
+        background-image:
+          radial-gradient(ellipse 95% 60% at 8% -12%, rgba(167, 139, 250, 0.48), transparent 58%),
+          radial-gradient(ellipse 80% 55% at 92% -8%, rgba(196, 181, 253, 0.36), transparent 55%),
+          radial-gradient(ellipse 55% 40% at 48% -4%, rgba(253, 224, 171, 0.2), transparent 50%),
+          linear-gradient(180deg, #efeaff 0%, #f4f2ff 16%, ${bg} 38%, ${bg} 100%);
+        background-repeat: no-repeat;
+      }
+      .dark body {
+        background-color: ${bgDark};
+        background-image:
+          radial-gradient(ellipse 90% 50% at 10% -10%, rgba(122, 93, 250, 0.22), transparent 55%),
+          radial-gradient(ellipse 70% 45% at 90% -5%, rgba(167, 148, 255, 0.14), transparent 50%),
+          linear-gradient(180deg, #1c1b24 0%, ${bgDark} 40%, ${bgDark} 100%);
       }
 
       #theme-heo {
@@ -181,34 +204,47 @@ const Style = () => {
         --heo-card-border: rgba(255, 255, 255, 0.1);
       }
 
-      /* 分类条半透明白胶囊 */
+      /* 分类条：半透明毛玻璃，透出顶区紫雾 */
       #theme-heo .heo-cat-chip {
-        background: rgba(255, 255, 255, 0.72);
+        background: rgba(255, 255, 255, 0.48);
         border: 1px solid rgba(255, 255, 255, 0.55);
-        box-shadow: 0 4px 14px -6px rgba(44, 45, 48, 0.12);
-        backdrop-filter: blur(12px) saturate(160%);
-        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        box-shadow: 0 4px 14px -8px rgba(44, 45, 48, 0.12);
+        backdrop-filter: blur(18px) saturate(180%);
+        -webkit-backdrop-filter: blur(18px) saturate(180%);
       }
 
       .dark #theme-heo .heo-cat-chip {
-        background: rgba(40, 42, 50, 0.72);
+        background: rgba(40, 42, 50, 0.55);
         border-color: rgba(255, 255, 255, 0.08);
         box-shadow: none;
       }
 
-      /* 顶栏悬浮胶囊：半透明毛玻璃（非整条实心白底） */
+      /* 顶栏悬浮胶囊：更透，透出同一层氛围（非实心白块） */
       #theme-heo .heo-nav-chip {
-        background: rgba(255, 255, 255, 0.55);
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        box-shadow: 0 4px 16px -8px rgba(40, 50, 80, 0.22);
-        backdrop-filter: blur(16px) saturate(180%);
-        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 6px 20px -10px rgba(40, 50, 80, 0.28);
+        backdrop-filter: blur(22px) saturate(200%);
+        -webkit-backdrop-filter: blur(22px) saturate(200%);
       }
 
       .dark #theme-heo .heo-nav-chip {
-        background: rgba(40, 42, 50, 0.45);
+        background: rgba(40, 42, 50, 0.4);
         border-color: rgba(255, 255, 255, 0.1);
         box-shadow: none;
+      }
+
+      /* 顶栏区域本身绝不铺实心白 */
+      #theme-heo header,
+      #theme-heo .heo-nav-spacer,
+      #theme-heo #nav,
+      #theme-heo .heo-nav--plain,
+      #theme-heo .heo-nav--top,
+      #theme-heo .heo-nav--scrolled {
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: 0 !important;
       }
 
       /* 左上角回主页胶囊：文章头图上用白底深色图标（见下方更具体规则） */

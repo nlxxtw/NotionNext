@@ -89,16 +89,16 @@ const Logo = props => {
   const iconNode = logoIcon ? (
     <LazyImage
       src={logoIcon}
-      width={32}
-      height={32}
+      width={34}
+      height={34}
       alt=''
-      className='h-8 w-8 rounded-md object-cover'
+      className='h-[34px] w-[34px] rounded-md object-cover'
     />
   ) : (
-    <TagCloverIcon className='h-7 w-7' />
+    <TagCloverIcon className='h-8 w-8' />
   )
 
-  // 比下方分类 tab（h-10 / 15px）更大更醒目
+  // 比下方分类 tab 更大更醒目（对齐 Heo 大气比例）
   const menuBtn = (
     <button
       type='button'
@@ -110,16 +110,16 @@ const Logo = props => {
         setOpen(v => !v)
       }}
       onMouseEnter={openMenu}
-      className='heo-logo-menu-btn flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-gray-800 transition hover:bg-black/[0.06] dark:text-gray-100 dark:hover:bg-white/10'>
+      className='heo-logo-menu-btn flex h-[3.25rem] w-[3.25rem] shrink-0 items-center justify-center rounded-full text-gray-800 transition hover:bg-black/[0.06] dark:text-gray-100 dark:hover:bg-white/10'>
       {iconNode}
     </button>
   )
 
   const titleOrHome = (
-    <div className='relative flex h-12 min-w-[5rem] items-center'>
+    <div className='relative flex h-[3.25rem] min-w-[5.5rem] items-center'>
       <span
         onMouseEnter={openMenu}
-        className={`max-w-[12rem] cursor-default truncate px-2 text-[20px] font-extrabold leading-none tracking-tight text-gray-900 transition duration-150 dark:text-gray-100 ${
+        className={`max-w-[12rem] cursor-default truncate px-2 text-[22px] font-extrabold leading-none tracking-tight text-gray-900 transition duration-150 dark:text-gray-100 ${
           pillHover
             ? 'pointer-events-none absolute opacity-0'
             : 'relative opacity-100'
@@ -134,7 +134,7 @@ const Logo = props => {
           setPillHover(true)
           scheduleClose()
         }}
-        className={`heo-logo-home-btn relative flex h-12 shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)] px-5 text-white shadow-[0_8px_18px_-10px_rgba(66,90,239,0.9)] transition duration-150 hover:brightness-105 dark:bg-[var(--heo-color-accent)] dark:text-gray-900 dark:shadow-none ${
+        className={`heo-logo-home-btn relative flex h-[3.25rem] shrink-0 items-center justify-center rounded-full bg-[var(--heo-color-primary)] px-5 text-white shadow-[0_8px_18px_-10px_rgba(66,90,239,0.9)] transition duration-150 hover:brightness-105 dark:bg-[var(--heo-color-accent)] dark:text-gray-900 dark:shadow-none ${
           pillHover
             ? 'relative opacity-100'
             : 'pointer-events-none absolute opacity-0'
@@ -146,7 +146,7 @@ const Logo = props => {
 
   const pill = (
     <div
-      className='heo-logo-trigger heo-nav-chip heo-nav-home-pill inline-flex min-h-[52px] items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3'
+      className='heo-logo-trigger heo-nav-chip heo-nav-home-pill inline-flex min-h-[56px] items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3.5'
       onMouseEnter={() => setPillHover(true)}
       onMouseLeave={() => {
         setPillHover(false)
@@ -157,7 +157,7 @@ const Logo = props => {
       ) : (
         <SmartLink
           href='/'
-          className='flex h-12 w-12 items-center justify-center rounded-full text-gray-800 transition hover:bg-black/[0.06] dark:text-gray-100 dark:hover:bg-white/10'
+          className='flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-full text-gray-800 transition hover:bg-black/[0.06] dark:text-gray-100 dark:hover:bg-white/10'
           aria-label='首页'>
           {iconNode}
         </SmartLink>

@@ -68,15 +68,15 @@ const LayoutBase = props => {
   const router = useRouter()
 
   const headerSlot = (
-    <header>
-      {/* 顶部导航 */}
+    <header className='relative z-[20] bg-transparent'>
+      {/* 顶部导航：整条透明，仅悬浮毛玻璃胶囊 */}
       <Header {...props} />
 
       {/* 通知横幅（HEO_NOTICE_BAR 为空则不渲染） */}
       {router.route === '/' ? (
         <>
           <NoticeBar />
-          <div className='mx-auto mb-3 w-full max-w-[86rem] px-5'>
+          <div className='relative z-[1] mx-auto mb-3 w-full max-w-[86rem] bg-transparent px-5'>
             <CategoryBar {...props} />
             <div className='mt-3'>
               <Hero {...props} />
@@ -115,7 +115,7 @@ const LayoutBase = props => {
   return (
     <div
       id='theme-heo'
-      className={`${siteConfig('FONT_STYLE')} bg-[var(--heo-color-bg)] dark:bg-[var(--heo-color-bg-dark)] h-full min-h-screen flex flex-col scroll-smooth`}>
+      className={`${siteConfig('FONT_STYLE')} relative h-full min-h-screen flex flex-col scroll-smooth dark:text-white`}>
       <Style />
       <PostCoverTheme post={props?.post} />
 
