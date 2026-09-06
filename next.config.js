@@ -309,6 +309,16 @@ const nextConfig = {
 
       return [
         ...langsRewrites,
+        // IndexNow：标准密钥文件 /{key}.txt（勿拦 robots.txt）
+        {
+          source: '/:key((?!robots)[\\w.-]+).txt',
+          destination: '/api/indexnow-key-file?key=:key'
+        },
+        // 兼容旧地址
+        {
+          source: '/indexnow-key.txt',
+          destination: '/api/indexnow-key-file?key=indexnow-key'
+        },
         // RSS fallback: when static file doesn't exist, route to API
         {
           source: '/rss/feed.xml',

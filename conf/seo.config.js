@@ -20,7 +20,7 @@ module.exports = {
     process.env.NEXT_PUBLIC_INDEXNOW_ENABLE !== 'false',
   // 可选自定义密钥；不填则按域名自动生成
   INDEXNOW_KEY: process.env.INDEXNOW_KEY || '',
-  // 密钥文件地址，默认 https://你的域名/indexnow-key.txt
+  // 密钥文件地址；留空则自动用 https://域名/{INDEXNOW_KEY}.txt
   INDEXNOW_KEY_LOCATION: process.env.INDEXNOW_KEY_LOCATION || '',
   /**
    * 站内链接候选（利于 Google/Bing Sitelinks），JSON 数组：
