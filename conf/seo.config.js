@@ -5,7 +5,7 @@
 module.exports = {
   // 首页标题后缀（站名 - 标语），对齐「张洪Heo - 分享设计与科技生活」
   SEO_SITE_TAGLINE: process.env.NEXT_PUBLIC_SEO_SITE_TAGLINE || '',
-  // 站点级 meta description；留空则用 Notion 站点描述 / BIO
+  // 站点级 meta description；留空则用 Notion 站点描述 / BIO（输出时自动规范到约 50–160 字）
   SEO_DESCRIPTION: process.env.NEXT_PUBLIC_SEO_DESCRIPTION || '',
   // 标题分隔符
   SEO_TITLE_SEPARATOR: process.env.NEXT_PUBLIC_SEO_TITLE_SEPARATOR || ' - ',

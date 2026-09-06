@@ -1,6 +1,7 @@
 import LazyImage from '@/components/LazyImage'
 import SmartLink from '@/components/SmartLink'
 import { siteConfig } from '@/lib/config'
+import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CONFIG from '../config'
 import { TagCloverIcon } from './TagGroups'
@@ -8,9 +9,13 @@ import { TagCloverIcon } from './TagGroups'
 /**
  * 左上角 Logo：加大热区；悬停图标/站名弹出项目菜单
  * 悬停「回主页」按钮本身不弹窗（仅跳转）
+ * 首页站名渲染为 h1，满足 Bing「缺少 H1」检测
  */
 const Logo = props => {
   const { siteInfo, customMenu } = props
+  const router = useRouter()
+  const isHome =
+    router.pathname === '/' || router.pathname === '/page/[page]'
   const enable = parseBool(siteConfig('HEO_LOGO_MEGA_ENABLE', true, CONFIG))
   const [open, setOpen] = useState(false)
   const [pillHover, setPillHover] = useState(false)
@@ -115,17 +120,41 @@ const Logo = props => {
     </button>
   )
 
+  // 首页站名作唯一 H1；带上标语供读屏/SEO
+  const homeTagline =
+    siteConfig('SEO_SITE_TAGLINE', '', CONFIG) ||
+    siteInfo?.description ||
+    siteConfig('BIO') ||
+    ''
+  const homeH1Title =
+    isHome && homeTagline && String(homeTagline).trim() !== String(logoTitle).trim()
+      ? `${logoTitle} - ${String(homeTagline).trim()}`
+      : logoTitle
+
   const titleOrHome = (
     <div className='relative flex h-9 min-w-[4.5rem] items-center'>
-      <span
-        onMouseEnter={openMenu}
-        className={`max-w-[10rem] cursor-default truncate px-1.5 text-[17px] font-extrabold leading-none tracking-tight text-gray-900 transition duration-150 dark:text-gray-100 ${
-          pillHover
-            ? 'pointer-events-none absolute opacity-0'
-            : 'relative opacity-100'
-        }`}>
-        {logoTitle}
-      </span>
+      {isHome ? (
+        <h1
+          onMouseEnter={openMenu}
+          title={homeH1Title}
+          className={`m-0 max-w-[10rem] cursor-default truncate px-1.5 text-[17px] font-extrabold leading-none tracking-tight text-gray-900 transition duration-150 dark:text-gray-100 ${
+            pillHover
+              ? 'pointer-events-none absolute opacity-0'
+              : 'relative opacity-100'
+          }`}>
+          {logoTitle}
+        </h1>
+      ) : (
+        <span
+          onMouseEnter={openMenu}
+          className={`max-w-[10rem] cursor-default truncate px-1.5 text-[17px] font-extrabold leading-none tracking-tight text-gray-900 transition duration-150 dark:text-gray-100 ${
+            pillHover
+              ? 'pointer-events-none absolute opacity-0'
+              : 'relative opacity-100'
+          }`}>
+          {logoTitle}
+        </span>
+      )}
       <SmartLink
         href='/'
         aria-label={homeTip}

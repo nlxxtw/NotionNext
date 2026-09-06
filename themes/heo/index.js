@@ -165,7 +165,7 @@ const LayoutBase = props => {
 const LayoutIndex = props => {
   return (
     <div id='post-outer-wrapper' className='w-full'>
-      {/* 分类条已提到 LayoutBase 通栏；此处仅轮播，与右侧资料卡顶对齐 */}
+      {/* 首页 H1 在顶栏 Logo 站名；分类条通栏，此处仅轮播与侧栏顶对齐 */}
       <Hero {...props} />
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
         <BlogPostListPage {...props} />

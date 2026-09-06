@@ -61,10 +61,12 @@ const SEO = props => {
   }
   const TITLE = siteConfig('TITLE')
   const title = meta?.title || TITLE
-  const description =
+  const description = normalizeMetaDescription(
     meta?.description ||
-    getSiteDescription(siteInfo, NOTION_CONFIG) ||
+      getSiteDescription(siteInfo, NOTION_CONFIG) ||
+      TITLE,
     TITLE
+  )
   const type = meta?.type === 'Post' ? 'article' : meta?.type || 'website'
   const language =
     router?.locale || siteConfig('LANG', 'zh-CN', NOTION_CONFIG)
@@ -458,6 +460,49 @@ export const generateStructuredData = (
 
 const trimText = value => String(value || '').trim()
 
+/** Bing/Google 建议 meta description 约 50–160 字符 */
+const META_DESC_MIN = 50
+const META_DESC_MAX = 160
+
+/**
+ * 把描述裁到合适长度：过短则补全，过长则在标点处截断
+ */
+export function normalizeMetaDescription(raw, siteTitle = '') {
+  let text = trimText(raw)
+  const title = trimText(siteTitle)
+
+  if (!text) {
+    text = title
+      ? `${title} - 个人博客，分享学习资源与实用技巧`
+      : '个人博客，分享学习资源与实用技巧'
+  }
+
+  if (text.length < META_DESC_MIN) {
+    const suffix = title
+      ? `${title}的个人博客，专注学习资源分享与实用技巧。`
+      : '个人博客，专注学习资源分享与实用技巧。'
+    const joiner = /[。！？.!?]$/.test(text) ? '' : '。'
+    text = `${text}${joiner}${suffix}`
+  }
+
+  if (text.length <= META_DESC_MAX) return text
+
+  const slice = text.slice(0, META_DESC_MAX)
+  const breakAt = Math.max(
+    slice.lastIndexOf('。'),
+    slice.lastIndexOf('！'),
+    slice.lastIndexOf('？'),
+    slice.lastIndexOf('；'),
+    slice.lastIndexOf('，'),
+    slice.lastIndexOf(' '),
+    slice.lastIndexOf('、')
+  )
+  if (breakAt >= META_DESC_MIN) {
+    return slice.slice(0, breakAt + (slice[breakAt] === ' ' ? 0 : 1)).trim()
+  }
+  return `${slice.slice(0, META_DESC_MAX - 1).trim()}…`
+}
+
 const getSiteDescription = (siteInfo, notionConfig) => {
   const configured = trimText(
     siteConfig('SEO_DESCRIPTION', '', notionConfig) ||
@@ -465,9 +510,14 @@ const getSiteDescription = (siteInfo, notionConfig) => {
   )
   const fromSite = trimText(siteInfo?.description)
   // 优先用更长、更像「个人博客介绍」的文案
-  if (configured && configured.length >= 12) return configured
-  if (fromSite && fromSite.length >= 12) return fromSite
-  return configured || fromSite || ''
+  let raw = ''
+  if (configured && configured.length >= 12) raw = configured
+  else if (fromSite && fromSite.length >= 12) raw = fromSite
+  else raw = configured || fromSite || ''
+
+  const title =
+    trimText(siteInfo?.title) || siteConfig('TITLE', '', notionConfig)
+  return normalizeMetaDescription(raw, title)
 }
 
 const getHomeTitle = (siteInfo, notionConfig) => {

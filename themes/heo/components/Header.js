@@ -168,14 +168,25 @@ const Header = props => {
                     : 'heo-nav-chip rounded-full px-4 py-1.5'
                 }`}
                 title={centerSecondaryText}>
-                <h1
-                  className={`truncate text-center text-sm font-bold ${
-                    textWhite
-                      ? 'text-gray-800'
-                      : 'text-gray-700 dark:text-gray-200'
-                  }`}>
-                  {centerSecondaryText}
-                </h1>
+                {isPostPage ? (
+                  <h1
+                    className={`truncate text-center text-sm font-bold ${
+                      textWhite
+                        ? 'text-gray-800'
+                        : 'text-gray-700 dark:text-gray-200'
+                    }`}>
+                    {centerSecondaryText}
+                  </h1>
+                ) : (
+                  <div
+                    className={`truncate text-center text-sm font-bold ${
+                      textWhite
+                        ? 'text-gray-800'
+                        : 'text-gray-700 dark:text-gray-200'
+                    }`}>
+                    {centerSecondaryText}
+                  </div>
+                )}
               </div>
             </div>
           </div>
