@@ -272,7 +272,7 @@ const LayoutArchive = props => {
  */
 const LayoutSlug = props => {
   const { post, lock, validPassword } = props
-  const { locale, fullWidth } = useGlobal()
+  const { fullWidth } = useGlobal()
 
   const [hasCode, setHasCode] = useState(false)
 
@@ -362,14 +362,9 @@ const LayoutSlug = props => {
                   <AdSlot />
                 </div>
                 <div className='overflow-x-auto px-4 sm:px-5'>
-                  <div className='heo-post-comment__head'>
-                    <div className='heo-post-comment__title'>
-                      <i className='fas fa-comments' aria-hidden />
-                      <span>{locale.COMMON.COMMENTS}</span>
-                    </div>
-                  </div>
-                  <div id='comment' className='heo-post-comment__body'>
-                    <Comment frontMatter={post} className='' />
+                  {/* 标题与 Waline/哔哔 tab 由 Comment/Tabs 同一行渲染 */}
+                  <div className='heo-post-comment__body'>
+                    <Comment frontMatter={post} className='!mt-0' />
                   </div>
                 </div>
               </div>

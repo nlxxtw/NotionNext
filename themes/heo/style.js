@@ -1474,12 +1474,8 @@ const Style = () => {
         margin-top: 1.5rem;
         padding-bottom: 1.5rem;
       }
-      #theme-heo .heo-post-comment__head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        margin-bottom: 0.85rem;
+      #theme-heo .heo-post-comment__body .comment {
+        margin-top: 0 !important;
       }
       #theme-heo .heo-post-comment__title {
         display: inline-flex;
@@ -1489,23 +1485,38 @@ const Style = () => {
         font-weight: 700;
         color: var(--heo-color-text, #111827);
       }
+      #theme-heo .heo-comment-tabs-bar {
+        margin-bottom: 1rem;
+      }
+      #theme-heo .heo-comment-tabs {
+        background: var(--heo-color-card-muted, #f3f4f8);
+      }
+      .dark #theme-heo .heo-comment-tabs {
+        background: rgba(255, 255, 255, 0.06);
+      }
 
       /* Waline：对齐安知鱼评论框气质 */
-      #theme-heo .heo-post-comment__body .wl-panel,
-      #theme-heo .heo-post-comment__body .wl-editor {
+      #theme-heo .heo-post-comment__body .wl-panel {
         border-radius: 12px !important;
         background: var(--heo-color-card-muted, #f7f7f9) !important;
         border: 1px solid transparent !important;
         box-shadow: none !important;
-      }
-      .dark #theme-heo .heo-post-comment__body .wl-panel,
-      .dark #theme-heo .heo-post-comment__body .wl-editor {
-        background: rgba(255, 255, 255, 0.05) !important;
+        overflow: visible !important;
       }
       #theme-heo .heo-post-comment__body .wl-editor {
+        border-radius: 12px !important;
+        background: #fff !important;
+        border: 1px solid transparent !important;
+        box-shadow: none !important;
         min-height: 140px !important;
         padding: 0.85rem 1rem !important;
         font-size: 0.95rem !important;
+      }
+      .dark #theme-heo .heo-post-comment__body .wl-panel {
+        background: rgba(255, 255, 255, 0.05) !important;
+      }
+      .dark #theme-heo .heo-post-comment__body .wl-editor {
+        background: rgba(0, 0, 0, 0.25) !important;
       }
       #theme-heo .heo-post-comment__body .wl-editor:focus {
         border-color: color-mix(
@@ -1513,6 +1524,32 @@ const Style = () => {
           var(--heo-color-primary, #425aef) 45%,
           transparent
         ) !important;
+      }
+      /* 发送栏：.wl-footer 是编辑器操作区，不能隐藏 */
+      #theme-heo .heo-post-comment__body .wl-panel > .wl-footer,
+      #theme-heo .heo-post-comment__body .wl-footer {
+        display: flex !important;
+        visibility: visible !important;
+        height: auto !important;
+        overflow: visible !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: 0.75rem !important;
+        padding: 0 0.15rem 0.15rem !important;
+      }
+      #theme-heo .heo-post-comment__body .wl-btn,
+      #theme-heo .heo-post-comment__body .wl-btn.primary {
+        display: inline-flex !important;
+        visibility: visible !important;
+        align-items: center;
+        justify-content: center;
+        min-width: 4.5rem;
+        border-radius: 8px !important;
+        background: var(--heo-color-primary, #425aef) !important;
+        border-color: var(--heo-color-primary, #425aef) !important;
+        color: #fff !important;
+        font-weight: 600;
       }
       #theme-heo .heo-post-comment__body .wl-card,
       #theme-heo .heo-post-comment__body .wl-item {
@@ -1527,12 +1564,12 @@ const Style = () => {
       .dark #theme-heo .heo-post-comment__body .wl-item {
         border-top-color: rgba(255, 255, 255, 0.1);
       }
-      #theme-heo .heo-post-comment__body .wl-btn.primary {
-        border-radius: 8px !important;
-        background: var(--heo-color-primary, #425aef) !important;
-      }
 
-      /* 游客付费解锁墙 */
+      /* 去掉表情反应条标题（兜底） */
+      #theme-heo .wl-reaction-title,
+      #theme-heo .wl-reaction {
+        display: none !important;
+      }
       #theme-heo .heo-paid-wall {
         position: relative;
         margin: 1.25rem 0;
@@ -1651,10 +1688,8 @@ const Style = () => {
         margin: 0.5rem 0 0;
       }
 
-      /* Waline：隐藏底部 RSS / Powered by / 空评论提示 */
-      #theme-heo .wl-footer,
+      /* Waline：只藏底部 Powered by / RSS，勿藏 .wl-footer（那是发送按钮栏） */
       #theme-heo .wl-power,
-      .wl-footer,
       .wl-power {
         display: none !important;
         height: 0 !important;

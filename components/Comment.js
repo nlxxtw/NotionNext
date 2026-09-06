@@ -1,5 +1,6 @@
 import Tabs from '@/components/Tabs'
 import { siteConfig } from '@/lib/config'
+import { useGlobal } from '@/lib/global'
 import { isBrowser, isSearchEngineBot } from '@/lib/utils'
 import { stripTransientQueryParamsFromAsPath } from '@/lib/utils/stripTransientUrlParams'
 import dynamic from 'next/dynamic'
@@ -13,8 +14,9 @@ import Artalk from './Artalk'
  * @param {*} param0
  * @returns
  */
-const Comment = ({ frontMatter, className }) => {
+const Comment = ({ frontMatter, className, showHeading = true }) => {
   const router = useRouter()
+  const { locale } = useGlobal()
   const [shouldLoad, setShouldLoad] = useState(false)
   const commentRef = useRef(null)
 
@@ -92,6 +94,13 @@ const Comment = ({ frontMatter, className }) => {
     return null
   }
 
+  const heading = showHeading ? (
+    <div className='heo-post-comment__title inline-flex shrink-0 items-center gap-2'>
+      <i className='fas fa-comments' aria-hidden />
+      <span>{locale?.COMMON?.COMMENTS || '评论'}</span>
+    </div>
+  ) : null
+
   return (
     <div
       key={frontMatter?.id}
@@ -108,7 +117,7 @@ const Comment = ({ frontMatter, className }) => {
       )}
 
       {shouldLoad && (
-        <Tabs>
+        <Tabs heading={heading} className='heo-comment-tabs-root'>
           {COMMENT_ARTALK_SERVER && (
             <div key='Artalk'>
               <Artalk />

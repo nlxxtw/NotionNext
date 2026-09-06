@@ -1,4 +1,4 @@
-import  { createRef, useEffect } from 'react'
+import { createRef, useEffect } from 'react'
 import { init } from '@waline/client'
 import { useRouter } from 'next/router'
 import '@waline/client/style'
@@ -11,7 +11,7 @@ let waline = null
  * @param {*} props
  * @returns
  */
-const WalineComponent = (props) => {
+const WalineComponent = props => {
   const containerRef = createRef()
   const router = useRouter()
 
@@ -27,20 +27,27 @@ const WalineComponent = (props) => {
         ...props,
         el: containerRef.current,
         serverURL: siteConfig('COMMENT_WALINE_SERVER_URL'),
-        lang: siteConfig('LANG'),
-        reaction: true,
+        lang: 'zh-CN',
+        // 去掉 “What do you think?” 表情反应条
+        reaction: false,
         dark: 'html.dark',
         // Waline v3：用 noCopyright / noRss；旧版 copyright:false 兼容
         copyright: false,
         noCopyright: true,
         noRss: true,
         locale: {
-          sofa: '', // 去掉 “No comment yet.”
+          sofa: '',
           placeholder: '欢迎留下宝贵的建议啦~',
+          submit: '发送',
           comment: '发送',
           nick: '昵称',
           mail: '邮箱',
-          link: '网址'
+          link: '网址',
+          emoji: '表情',
+          preview: '预览',
+          newest: '最新',
+          oldest: '最早',
+          hottest: '热门'
         },
         emoji: [
           '//npm.elemecdn.com/@waline/emojis@1.1.0/tieba',
@@ -58,7 +65,7 @@ const WalineComponent = (props) => {
       const targetNode = document.getElementsByClassName('wl-cards')[0]
 
       // 当观察到变动时执行的回调函数
-      const mutationCallback = (mutations) => {
+      const mutationCallback = mutations => {
         for (const mutation of mutations) {
           const type = mutation.type
           if (type === 'childList') {
@@ -77,7 +84,9 @@ const WalineComponent = (props) => {
 
       // 观察子节点 变化
       const observer = new MutationObserver(mutationCallback)
-      observer.observe(targetNode, { childList: true })
+      if (targetNode) {
+        observer.observe(targetNode, { childList: true })
+      }
     }
 
     return () => {
