@@ -44,8 +44,8 @@ const PaginationNumber = ({ page, totalPage }) => {
 
   return (
     <>
-      {/* pc端分页按钮 */}
-      <div className='hidden lg:flex justify-between items-end mt-10 font-medium text-black duration-500 dark:text-gray-300 pt-3 space-x-2 overflow-x-auto'>
+      {/* pc端分页：居中对齐主栏文章区 */}
+      <div className='mt-10 hidden items-center justify-center space-x-2 overflow-x-auto pt-3 font-medium text-black duration-500 dark:text-gray-300 lg:flex'>
         {/* 上一页 */}
         <SmartLink
           href={{
@@ -57,9 +57,9 @@ const PaginationNumber = ({ page, totalPage }) => {
           }}
           rel='prev'
           className={`${currentPage === 1 ? 'invisible' : 'block'}`}>
-          <div className='hover:border-[var(--heo-color-border)] dark:hover:border-[var(--heo-color-border-dark)] relative w-24 h-10 flex items-center transition-all duration-200 justify-center py-2 px-2 bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] border dark:border-gray-600 rounded-lg cursor-pointer group'>
-            <i className='fas fa-angle-left mr-2 transition-all duration-200 transform group-hover:-translate-x-4' />
-            <div className='absolute translate-x-4 ml-2 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0'>
+          <div className='group relative flex h-10 w-24 cursor-pointer items-center justify-center rounded-lg border bg-[var(--heo-color-card)] px-2 py-2 transition-all duration-200 hover:border-[var(--heo-color-border)] dark:border-gray-600 dark:bg-[var(--heo-color-card-dark)] dark:hover:border-[var(--heo-color-border-dark)]'>
+            <i className='fas fa-angle-left mr-2 transform transition-all duration-200 group-hover:-translate-x-4' />
+            <div className='absolute ml-2 translate-x-4 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100'>
               {locale.PAGINATION.PREV}
             </div>
           </div>
@@ -70,15 +70,15 @@ const PaginationNumber = ({ page, totalPage }) => {
           {pages}
 
           {/* 跳转页码 */}
-          <div className='bg-[var(--heo-color-card)] hover:bg-gray-100 dark:hover:bg-[var(--heo-color-accent)] dark:bg-[var(--heo-color-card-dark)] h-10 border dark:border-gray-600 flex justify-center items-center rounded-lg group hover:border-[var(--heo-color-border)] transition-all duration-200'>
+          <div className='group flex h-10 items-center justify-center rounded-lg border bg-[var(--heo-color-card)] transition-all duration-200 hover:border-[var(--heo-color-border)] hover:bg-gray-100 dark:border-gray-600 dark:bg-[var(--heo-color-card-dark)] dark:hover:bg-[var(--heo-color-accent)]'>
             <input
               value={value}
-              className='w-0 group-hover:w-20 group-hover:px-3 transition-all duration-200 bg-gray-100 border-none outline-none h-full rounded-lg'
+              className='h-full w-0 rounded-lg border-none bg-gray-100 outline-none transition-all duration-200 group-hover:w-20 group-hover:px-3'
               onInput={handleInputChange}></input>
             <div
               onClick={jumpToPage}
-              className='cursor-pointer hover:bg-[var(--heo-color-primary)] dark:bg-[var(--heo-color-card-dark)] dark:hover:bg-[var(--heo-color-accent)] hover:text-[var(--heo-color-primary-text)] px-4 py-2 group-hover:px-2 group-hover:mx-1 group-hover:rounded bg-[var(--heo-color-card)]'>
-              <ChevronDoubleRight className={'w-4 h-4'} />
+              className='cursor-pointer bg-[var(--heo-color-card)] px-4 py-2 transition-all hover:bg-[var(--heo-color-primary)] hover:text-[var(--heo-color-primary-text)] group-hover:mx-1 group-hover:rounded group-hover:px-2 dark:bg-[var(--heo-color-card-dark)] dark:hover:bg-[var(--heo-color-accent)]'>
+              <ChevronDoubleRight className={'h-4 w-4'} />
             </div>
           </div>
         </div>
@@ -91,9 +91,9 @@ const PaginationNumber = ({ page, totalPage }) => {
           }}
           rel='next'
           className={`${+showNext ? 'block' : 'invisible'} `}>
-          <div className='hover:border-[var(--heo-color-border)] dark:hover:border-[var(--heo-color-border-dark)] relative w-24 h-10 flex items-center transition-all duration-200 justify-center py-2 px-2 bg-[var(--heo-color-card)] dark:bg-[var(--heo-color-card-dark)] border dark:border-gray-600 rounded-lg cursor-pointer group'>
-            <i className='fas fa-angle-right mr-2 transition-all duration-200 transform group-hover:translate-x-6' />
-            <div className='absolute -translate-x-10 ml-2 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-x-2'>
+          <div className='group relative flex h-10 w-24 cursor-pointer items-center justify-center rounded-lg border bg-[var(--heo-color-card)] px-2 py-2 transition-all duration-200 hover:border-[var(--heo-color-border)] dark:border-gray-600 dark:bg-[var(--heo-color-card-dark)] dark:hover:border-[var(--heo-color-border-dark)]'>
+            <i className='fas fa-angle-right mr-2 transform transition-all duration-200 group-hover:translate-x-6' />
+            <div className='absolute -translate-x-10 ml-2 opacity-0 transition-all duration-200 group-hover:-translate-x-2 group-hover:opacity-100'>
               {locale.PAGINATION.NEXT}
             </div>
           </div>

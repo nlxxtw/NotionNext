@@ -30,7 +30,7 @@ export default function SearchButton(props) {
       <div
         onClick={handleSearch}
         title={locale.NAV.SEARCH}
-        className='flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-all duration-200 hover:bg-black hover:bg-opacity-10'>
+        className='flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[15px] transition-all duration-200 hover:bg-black/10 dark:hover:bg-white/10'>
         <i title={locale.NAV.SEARCH} className='fa-solid fa-magnifying-glass' />
       </div>
       <AlgoliaSearchModal cRef={searchModal} {...props} />

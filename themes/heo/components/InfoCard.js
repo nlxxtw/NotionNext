@@ -36,14 +36,19 @@ export function shouldUseInfoCardBlurAvatar(isSlugPage, avatarBlurEnabled) {
 }
 
 /**
- * 侧栏资料卡（不再挂 Notion Notice，避免 &emsp;/番外 垃圾内容）
+ * 侧栏资料卡：与 Heo .card-info .card-content 同高 320px，
+ * 与左侧轮播同高顶对齐，底边与公众号条形成十字缝
  */
 export function InfoCard(props) {
   const { siteInfo, className = '' } = props
 
   return (
-    <div className={`w-full ${className}`}>
-      <AuthorCard siteInfo={siteInfo} minHeightClass='min-h-[240px]' />
+    <div className={`heo-info-card w-full shrink-0 ${className}`}>
+      <AuthorCard
+        siteInfo={siteInfo}
+        className='heo-info-card__body w-full'
+        minHeightClass='h-[320px] min-h-[320px]'
+      />
     </div>
   )
 }

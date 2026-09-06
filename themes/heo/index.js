@@ -93,6 +93,15 @@ const LayoutBase = props => {
   )
   const HEO_LOADING_COVER = siteConfig('HEO_LOADING_COVER', true, CONFIG)
 
+  // 分类条通栏（对齐 Heo .layout--home > .home-category-bar），在双栏之上
+  // 这样轮播与资料卡顶对齐，底边与下方模块形成十字间隙
+  const path = router.pathname || ''
+  const isHomePage = path === '/' || path === '/page/[page]'
+  const showCategoryBarTop =
+    isHomePage ||
+    path.startsWith('/category/') ||
+    path.startsWith('/tag/')
+
   // 加载wow动画
   useEffect(() => {
     loadWowJS()
@@ -110,10 +119,16 @@ const LayoutBase = props => {
       {/* 顶部嵌入 导航栏，首页放hero，文章页放文章详情 */}
       {headerSlot}
 
-      {/* 主区块 */}
+      {/* 主区块：分类条通栏 → 左轮播/列表 + 右资料卡 */}
       <main
         id='wrapper-outer'
-        className={`relative mx-auto w-full flex-grow px-5 ${maxWidth}`}>
+        className={`relative mx-auto flex w-full flex-grow flex-col px-5 ${maxWidth}`}>
+        {showCategoryBarTop && (
+          <div className='heo-home-category-bar relative z-[5] mb-3 w-full shrink-0 bg-transparent pt-2'>
+            {isHomePage && <NoticeBar />}
+            <CategoryBar {...props} />
+          </div>
+        )}
         <div
           id='container-inner'
           className={`${HEO_HERO_BODY_REVERSE ? 'flex-row-reverse' : ''} relative z-10 mx-auto flex w-full items-stretch justify-center lg:flex lg:gap-3`}>
@@ -150,14 +165,8 @@ const LayoutBase = props => {
 const LayoutIndex = props => {
   return (
     <div id='post-outer-wrapper' className='w-full'>
-      {/* 与分类页同一套：分类条/英雄区在 main 内，避免 header 外再挂一层造成底部分层线 */}
-      <NoticeBar />
-      <div className='relative mb-3 w-full bg-transparent pt-1'>
-        <CategoryBar {...props} />
-        <div className='mt-3'>
-          <Hero {...props} />
-        </div>
-      </div>
+      {/* 分类条已提到 LayoutBase 通栏；此处仅轮播，与右侧资料卡顶对齐 */}
+      <Hero {...props} />
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
         <BlogPostListPage {...props} />
       ) : (
@@ -175,8 +184,7 @@ const LayoutIndex = props => {
 const LayoutPostList = props => {
   return (
     <div id='post-outer-wrapper' className='w-full'>
-      {/* 文章分类条 */}
-      <CategoryBar {...props} />
+      {/* 分类条由 LayoutBase 通栏渲染，与侧栏顶对齐 */}
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
         <BlogPostListPage {...props} />
       ) : (

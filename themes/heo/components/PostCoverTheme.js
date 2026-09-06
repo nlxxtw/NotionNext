@@ -1,23 +1,26 @@
 import { siteConfig } from '@/lib/config'
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import CONFIG from '../config'
 import {
   buildHeoThemeStyleCss,
   extractDominantColorFromUrl,
   fetchCoverColorFromApi,
   normalizeHex,
+  resolveInstantCoverColor,
   resolvePostCoverColor,
+  setCachedCoverColor,
   tuneCoverColor
 } from '../lib/coverColor'
 
 const STYLE_ID = 'heo-post-cover-theme'
 
 /**
- * 文章页：根据封面主色动态改主题色（对齐 Heo coverColor）
- * 优先级：Notion 手动色 > 图床 API > 浏览器采样
+ * 文章页：根据封面主色动态改主题色
+ * - 优先同步应用「手动色 / 本地缓存」，避免先闪默认紫再跳变
+ * - 再异步精取并回写缓存
  */
 export default function PostCoverTheme({ post }) {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const enabled = parseBool(
       siteConfig('HEO_POST_COVER_COLOR', true, CONFIG)
     )
@@ -27,23 +30,24 @@ export default function PostCoverTheme({ post }) {
     }
 
     let cancelled = false
+    const cover =
+      post?.pageCover ||
+      post?.pageCoverThumbnail ||
+      post?.page_cover ||
+      ''
 
-    async function apply() {
-      const manual = resolvePostCoverColor(post)
-      let hex = manual
+    // 同步瞬时色：不走默认主题紫
+    const instant = resolveInstantCoverColor(post)
+    if (instant) {
+      injectTheme(instant)
+      dispatchReady(instant)
+    }
 
-      const cover =
-        post?.pageCover ||
-        post?.pageCoverThumbnail ||
-        post?.page_cover ||
-        ''
+    async function refine() {
+      let hex = resolvePostCoverColor(post)
 
       if (!hex && cover) {
-        const apiSuffix = siteConfig(
-          'HEO_POST_COVER_COLOR_API',
-          '',
-          CONFIG
-        )
+        const apiSuffix = siteConfig('HEO_POST_COVER_COLOR_API', '', CONFIG)
         if (apiSuffix) {
           try {
             hex = await fetchCoverColorFromApi(cover, apiSuffix)
@@ -53,7 +57,6 @@ export default function PostCoverTheme({ post }) {
         }
       }
 
-      // 优先走同源 API（sharp），规避图床 CORS
       if (!hex && cover) {
         try {
           const endpoint = `/api/cover-color?url=${encodeURIComponent(cover)}`
@@ -83,26 +86,26 @@ export default function PostCoverTheme({ post }) {
       }
 
       if (cancelled) return
-      hex = tuneCoverColor(normalizeHex(hex))
-      if (!hex) {
-        clearTheme()
+      const color = tuneCoverColor(normalizeHex(hex))
+      if (!color) {
+        // 没有取到色时：若已有瞬时色就保持；否则不套默认紫
+        if (!instant) clearTheme()
         return
       }
-      injectTheme(hex)
-      try {
-        window.dispatchEvent(
-          new CustomEvent('heo-cover-theme-ready', { detail: { color: hex } })
-        )
-      } catch {
-        /* ignore */
-      }
+
+      setCachedCoverColor(cover, color)
+      // 与瞬时色相同则不必重绘，减少二次跳变
+      if (color.toLowerCase() === String(instant || '').toLowerCase()) return
+      injectTheme(color)
+      dispatchReady(color)
     }
 
-    // 立刻取色，避免先进默认紫再跳到封面色
-    apply()
+    refine()
+
     return () => {
       cancelled = true
-      clearTheme()
+      // 离开文章页才清；切文章时留给下一次 layout 覆盖，避免回闪默认紫
+      if (!post) clearTheme()
     }
   }, [
     post?.id,
@@ -112,10 +115,29 @@ export default function PostCoverTheme({ post }) {
     post?.themeColor
   ])
 
+  // 真正离开文章（post 变空）时清理
+  useLayoutEffect(() => {
+    if (post) return undefined
+    clearTheme()
+    return undefined
+  }, [post])
+
   return null
 }
 
+function dispatchReady(color) {
+  try {
+    window.dispatchEvent(
+      new CustomEvent('heo-cover-theme-ready', { detail: { color } })
+    )
+  } catch {
+    /* ignore */
+  }
+}
+
 function injectTheme(hex) {
+  const color = tuneCoverColor(normalizeHex(hex))
+  if (!color) return
   const root = document.getElementById('theme-heo')
   if (root) root.classList.add('heo-cover-theme')
 
@@ -125,7 +147,7 @@ function injectTheme(hex) {
     style.id = STYLE_ID
     document.head.appendChild(style)
   }
-  style.textContent = buildHeoThemeStyleCss(hex)
+  style.textContent = buildHeoThemeStyleCss(color)
 
   const meta =
     document.querySelector('meta[name="theme-color"]') ||
@@ -135,7 +157,7 @@ function injectTheme(hex) {
       document.head.appendChild(m)
       return m
     })()
-  meta.setAttribute('content', hex)
+  meta.setAttribute('content', color)
   meta.dataset.heoCoverTheme = '1'
 }
 
@@ -143,10 +165,11 @@ function clearTheme() {
   const root = document.getElementById('theme-heo')
   if (root) root.classList.remove('heo-cover-theme')
   document.getElementById(STYLE_ID)?.remove()
-  const meta = document.querySelector('meta[name="theme-color"][data-heo-cover-theme]')
+  const meta = document.querySelector(
+    'meta[name="theme-color"][data-heo-cover-theme]'
+  )
   if (meta) {
     meta.removeAttribute('data-heo-cover-theme')
-    // 恢复站点默认主色
     const fallback =
       siteConfig('HEO_COLOR_PRIMARY', null, CONFIG) || '#7a5dfa'
     meta.setAttribute('content', fallback)

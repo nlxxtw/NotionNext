@@ -54,14 +54,14 @@ export default function ReadingProgress() {
       aria-label='返回顶部'
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       className={`${
-        visible ? 'w-10 h-10' : 'w-0 h-0 opacity-0 pointer-events-none'
-      } group cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 rounded-full flex justify-center items-center duration-200 transition-all`}>
+        visible ? 'h-9 w-9' : 'pointer-events-none h-0 w-0 opacity-0'
+      } group flex cursor-pointer items-center justify-center rounded-full transition-all duration-200 hover:bg-black/10 dark:hover:bg-white/10`}>
       {/* 默认显示向上箭头；悬停时显示进度数字 */}
-      <div className='flex h-6 w-6 items-center justify-center rounded-full bg-black text-white'>
+      <div className='flex h-5 w-5 items-center justify-center rounded-full bg-black text-white'>
         <ArrowSmallUp
-          className={'h-5 w-5 fill-white group-hover:hidden'}
+          className={'h-4 w-4 fill-white group-hover:hidden'}
         />
-        <span className='hidden text-xs group-hover:flex items-center justify-center'>
+        <span className='hidden items-center justify-center text-[10px] group-hover:flex'>
           {scrollPercentage}
         </span>
       </div>

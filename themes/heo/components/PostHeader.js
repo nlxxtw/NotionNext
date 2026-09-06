@@ -5,6 +5,10 @@ import { siteConfig } from '@/lib/config'
 import { formatDateFmt } from '@/lib/utils/formatDate'
 import SmartLink from '@/components/SmartLink'
 import { useEffect, useState } from 'react'
+import {
+  getCachedCoverColor,
+  resolveInstantCoverColor
+} from '../lib/coverColor'
 
 /**
  * 文章页头：对齐 Heo —— 内容上移、底边留白、右侧大封面
@@ -20,8 +24,17 @@ export default function PostHeader({ post, siteInfo, lock }) {
   const ANALYTICS_BUSUANZI_ENABLE = siteConfig('ANALYTICS_BUSUANZI_ENABLE')
   const showAside = Boolean(coverSrc)
 
-  const [bgColor, setBgColor] = useState('')
-  const [bgReady, setBgReady] = useState(false)
+  // 首屏尽量直接用缓存/手动色，避免默认紫中间态
+  const [bgColor, setBgColor] = useState(() => {
+    if (typeof window === 'undefined') return ''
+    return resolveInstantCoverColor(post) || getCachedCoverColor(coverSrc) || ''
+  })
+  const [bgReady, setBgReady] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return Boolean(
+      resolveInstantCoverColor(post) || getCachedCoverColor(coverSrc)
+    )
+  })
 
   useEffect(() => {
     let cancelled = false
@@ -33,35 +46,36 @@ export default function PostHeader({ post, siteInfo, lock }) {
       return getComputedStyle(root).getPropertyValue('--heo-cover-main').trim()
     }
 
-    const apply = () => {
-      if (cancelled) return
-      const color = readCoverMain()
-      if (color) {
-        setBgColor(color)
-        setBgReady(true)
-        return true
-      }
-      return false
+    const apply = color => {
+      if (cancelled || !color) return false
+      setBgColor(color)
+      setBgReady(true)
+      return true
     }
 
-    if (apply()) return undefined
+    const instant =
+      resolveInstantCoverColor(post) || getCachedCoverColor(coverSrc)
+    if (instant) apply(instant)
+
+    const fromCss = readCoverMain()
+    if (fromCss) apply(fromCss)
 
     const timer = setInterval(() => {
       tries += 1
-      if (apply() || tries > 40) {
+      const color = readCoverMain()
+      if (color) {
+        apply(color)
         clearInterval(timer)
-        if (!cancelled && !readCoverMain()) {
-          setBgColor(
-            getComputedStyle(document.documentElement)
-              .getPropertyValue('--heo-color-primary')
-              .trim() || '#7a5dfa'
-          )
-          setBgReady(true)
-        }
+        return
       }
-    }, 50)
+      // 超时也不回落到内置紫，保持中性深底直到取色完成
+      if (tries > 60) clearInterval(timer)
+    }, 40)
 
-    const onReady = () => apply()
+    const onReady = e => {
+      const color = e?.detail?.color || readCoverMain()
+      apply(color)
+    }
     window.addEventListener('heo-cover-theme-ready', onReady)
 
     return () => {
@@ -75,17 +89,18 @@ export default function PostHeader({ post, siteInfo, lock }) {
     'heo-post-meta-pill inline-flex items-center rounded-full border-0 bg-white/18 px-2.5 py-1 text-[12px] font-semibold text-white backdrop-blur-[6px]'
 
   const showEdited =
-    post.lastEditedDay &&
-    post.lastEditedDay !== post.publishDay
+    post.lastEditedDay && post.lastEditedDay !== post.publishDay
 
   return (
     <div
       id='post-bg'
       className='heo-post-bg relative z-10 mb-0 w-full overflow-hidden md:flex-shrink-0'
       style={{
-        backgroundColor: bgReady ? bgColor : '#1e1f26',
-        opacity: bgReady ? 1 : 0.92,
-        transition: 'background-color 280ms ease, opacity 280ms ease'
+        // 无色时用中性深底，不用内置主题紫
+        backgroundColor: bgReady && bgColor ? bgColor : '#1a1b21',
+        transition: bgReady
+          ? 'background-color 180ms ease'
+          : 'background-color 0ms'
       }}>
       <div
         aria-hidden

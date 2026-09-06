@@ -236,3 +236,78 @@ export function resolvePostCoverColor(post) {
   }
   return null
 }
+
+const COVER_COLOR_CACHE_KEY = 'heo_cover_color_v1'
+
+function readCoverColorStore() {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = window.localStorage.getItem(COVER_COLOR_CACHE_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+function writeCoverColorStore(store) {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(COVER_COLOR_CACHE_KEY, JSON.stringify(store))
+  } catch {
+    // ignore quota
+  }
+}
+
+/** 读取本地缓存的封面主色（同步，避免先闪默认紫） */
+export function getCachedCoverColor(coverUrl) {
+  const key = String(coverUrl || '').trim()
+  if (!key) return null
+  const store = readCoverColorStore()
+  return tuneCoverColor(normalizeHex(store[key]))
+}
+
+export function setCachedCoverColor(coverUrl, hex) {
+  const key = String(coverUrl || '').trim()
+  const color = tuneCoverColor(normalizeHex(hex))
+  if (!key || !color) return
+  const store = readCoverColorStore()
+  store[key] = color
+  // 控制体积：最多留 80 条
+  const keys = Object.keys(store)
+  if (keys.length > 80) {
+    keys.slice(0, keys.length - 80).forEach(k => delete store[k])
+  }
+  writeCoverColorStore(store)
+}
+
+/** 后台预取封面色，供下次打开文章瞬时应用 */
+export async function prefetchCoverColor(coverUrl) {
+  const key = String(coverUrl || '').trim()
+  if (!key || typeof window === 'undefined') return null
+  const cached = getCachedCoverColor(key)
+  if (cached) return cached
+  try {
+    const res = await fetch(
+      `/api/cover-color?url=${encodeURIComponent(key)}`,
+      { cache: 'force-cache' }
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    const color = tuneCoverColor(normalizeHex(data?.color))
+    if (color) setCachedCoverColor(key, color)
+    return color
+  } catch {
+    return null
+  }
+}
+
+/** 同步解析文章可用的瞬时主色：手动色 > 缓存 */
+export function resolveInstantCoverColor(post) {
+  const manual = tuneCoverColor(resolvePostCoverColor(post))
+  if (manual) return manual
+  const cover =
+    post?.pageCoverThumbnail || post?.pageCover || post?.page_cover || ''
+  return getCachedCoverColor(cover)
+}

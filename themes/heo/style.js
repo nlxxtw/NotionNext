@@ -39,16 +39,9 @@ const Style = () => {
         --heo-color-text-secondary-dark: #d1d5db;
         --heo-color-text: var(--heo-color-text-light);
         --heo-color-text-secondary: var(--heo-color-text-secondary-light);
-        /* 顶区氛围：直接铺在页面背景上（不要单独 fixed 层，否则会和顶栏合成出一道色带） */
-        background-color: ${bg};
-        background-image:
-          radial-gradient(ellipse 50% 42% at 10% 0%, rgba(186, 156, 255, 0.34), transparent 72%),
-          radial-gradient(ellipse 46% 38% at 92% 0%, rgba(167, 139, 250, 0.26), transparent 70%),
-          radial-gradient(ellipse 42% 34% at 48% 0%, rgba(253, 224, 171, 0.18), transparent 68%),
-          radial-gradient(ellipse 60% 40% at 55% 18%, rgba(196, 181, 253, 0.14), transparent 75%);
-        background-repeat: no-repeat;
-        background-size: 100% 560px;
-        background-position: top center;
+        /* 氛围只铺在 html/body，主题根透明贯通，避免 fixed 顶栏透视分层 */
+        background-color: transparent;
+        background-image: none;
         color: var(--heo-color-text);
         --heo-maskbg: rgba(255, 255, 255, 0.38);
         --heo-maskbg-border: rgba(255, 255, 255, 0.58);
@@ -61,14 +54,8 @@ const Style = () => {
         --heo-color-text-secondary: var(--heo-color-text-secondary-dark);
         --heo-color-accent: #a794ff;
         --heo-color-border-dark: rgba(255, 255, 255, 0.12);
-        background-color: var(--heo-color-bg-dark);
-        background-image:
-          radial-gradient(ellipse 52% 44% at 8% 0%, rgba(122, 93, 250, 0.28), transparent 72%),
-          radial-gradient(ellipse 48% 40% at 94% 0%, rgba(167, 148, 255, 0.16), transparent 70%),
-          radial-gradient(ellipse 56% 36% at 50% 12%, rgba(90, 70, 160, 0.14), transparent 74%);
-        background-repeat: no-repeat;
-        background-size: 100% 560px;
-        background-position: top center;
+        background-color: transparent;
+        background-image: none;
         --heo-maskbg: rgba(40, 42, 52, 0.42);
         --heo-maskbg-border: rgba(255, 255, 255, 0.1);
         --heo-shadow-glass: none;
@@ -206,13 +193,30 @@ const Style = () => {
         color: var(--heo-color-text-secondary-dark) !important;
       }
 
+      /* fixed 顶栏合成对着视口：html/body 必须与主题同色同雾，否则顶栏下是实色、下面是紫雾 → 分层线 */
+      html,
       body {
         background-color: ${bg};
-        background-image: none;
+        background-image:
+          radial-gradient(ellipse 50% 42% at 10% 0%, rgba(186, 156, 255, 0.34), transparent 72%),
+          radial-gradient(ellipse 46% 38% at 92% 0%, rgba(167, 139, 250, 0.26), transparent 70%),
+          radial-gradient(ellipse 42% 34% at 48% 0%, rgba(253, 224, 171, 0.18), transparent 68%),
+          radial-gradient(ellipse 60% 40% at 55% 18%, rgba(196, 181, 253, 0.14), transparent 75%);
+        background-repeat: no-repeat;
+        background-size: 100% 560px;
+        background-position: top center;
       }
+      html.dark,
+      html.dark body,
       .dark body {
         background-color: ${bgDark};
-        background-image: none;
+        background-image:
+          radial-gradient(ellipse 52% 44% at 8% 0%, rgba(122, 93, 250, 0.28), transparent 72%),
+          radial-gradient(ellipse 48% 40% at 94% 0%, rgba(167, 148, 255, 0.16), transparent 70%),
+          radial-gradient(ellipse 56% 36% at 50% 12%, rgba(90, 70, 160, 0.14), transparent 74%);
+        background-repeat: no-repeat;
+        background-size: 100% 560px;
+        background-position: top center;
       }
 
       #theme-heo {
@@ -326,6 +330,23 @@ const Style = () => {
         border: 0 !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
+      }
+
+      /* 分类条压过 Hero 装饰层，避免 tab 被盖住/裁切 */
+      #theme-heo #category-bar,
+      #theme-heo .home-category-bar {
+        position: relative;
+        z-index: 5;
+        isolation: isolate;
+      }
+      #theme-heo #category-bar-items {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+      #theme-heo #hero-wrapper {
+        position: relative;
+        z-index: 0;
+        isolation: isolate;
       }
 
       /* 左上角回主页胶囊：文章头图上用白底深色图标（见下方更具体规则） */
@@ -644,6 +665,7 @@ const Style = () => {
         border: 0 !important;
         box-shadow: none !important;
         background: #e9ebf2 !important;
+        height: 2.25rem !important;
       }
 
       .dark #theme-heo #darkModeButton,
@@ -654,6 +676,13 @@ const Style = () => {
       #theme-heo .heo-dark-toggle-knob {
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
         color: #374151;
+      }
+
+      /* 右侧工具胶囊与日夜开关同高对齐 */
+      #theme-heo .heo-nav-inner .heo-nav-chip {
+        min-height: 2.25rem;
+        display: inline-flex;
+        align-items: center;
       }
 
       /* Heo 玻璃胶囊音乐条 */
@@ -959,7 +988,30 @@ const Style = () => {
         color: #fff !important;
       }
 
-      /* 右侧栏与首页 Hero 资料卡同宽，左缘对齐 */
+      /* 首页十字对齐：轮播与资料卡同高 320px（Heo .home-center-content / .card-content） */
+      @media (min-width: 1024px) {
+        #theme-heo .heo-home-banner,
+        #theme-heo #home_center .heo-hero-row {
+          height: 320px !important;
+          min-height: 320px !important;
+        }
+      }
+      @media (min-width: 1280px) {
+        #theme-heo #sideRight .heo-info-card,
+        #theme-heo #sideRight .heo-author-card.heo-info-card__body {
+          height: 320px !important;
+          min-height: 320px !important;
+          max-height: 320px !important;
+        }
+        #theme-heo #sideRight .heo-side-sticky {
+          gap: 0.75rem;
+        }
+        #theme-heo #hero-wrapper {
+          margin-bottom: 0.75rem !important;
+        }
+      }
+
+      /* 右侧栏宽度；资料卡已回到侧栏顶，Hero 旁资料卡仅 <xl 显示 */
       #theme-heo #sideRight.heo-side-right {
         align-self: stretch;
         width: 300px;
@@ -973,12 +1025,12 @@ const Style = () => {
         }
       }
       @media (min-width: 1280px) {
-        #theme-heo #sideRight.heo-side-right,
-        #theme-heo .heo-hero-aside {
+        #theme-heo #sideRight.heo-side-right {
           width: 320px;
         }
       }
-      /* 右侧栏：sticky 跟随页面滚动；正文滚到底才跟着下去；栏内不单独滚动 */
+      /* 右侧栏：对齐 Heo —— 资料卡/公众号普通流；.heo-side-sticky 仅吸住下方热门等
+         aside 必须 stretch 与主栏同高，sticky 才有吸住空间 */
       #theme-heo #sideRight .heo-side-sticky {
         position: sticky;
         top: 5rem;
@@ -1478,6 +1530,125 @@ const Style = () => {
       #theme-heo .heo-post-comment__body .wl-btn.primary {
         border-radius: 8px !important;
         background: var(--heo-color-primary, #425aef) !important;
+      }
+
+      /* 游客付费解锁墙 */
+      #theme-heo .heo-paid-wall {
+        position: relative;
+        margin: 1.25rem 0;
+        padding: 1.25rem 1rem 1rem;
+        border: 1px dashed #f3a6b8;
+        border-radius: 12px;
+        background: #fff5f7;
+        text-align: center;
+      }
+      .dark #theme-heo .heo-paid-wall {
+        background: rgba(243, 166, 184, 0.12);
+        border-color: rgba(243, 166, 184, 0.45);
+      }
+      #theme-heo .heo-paid-wall__ribbon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0.2rem 0.65rem;
+        border-radius: 12px 0 10px 0;
+        background: #e11d48;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      #theme-heo .heo-paid-wall__icon {
+        width: 36px;
+        height: 36px;
+        margin: 0.5rem auto 0.75rem;
+        border-radius: 999px;
+        background: #fb7185;
+        color: #fff;
+        font-weight: 700;
+        line-height: 36px;
+      }
+      #theme-heo .heo-paid-wall__title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+      }
+      #theme-heo .heo-paid-wall__desc {
+        color: #666;
+        font-size: 0.92rem;
+        margin-bottom: 0.75rem;
+      }
+      .dark #theme-heo .heo-paid-wall__desc {
+        color: #c4c4c4;
+      }
+      #theme-heo .heo-paid-wall__price {
+        margin-bottom: 0.9rem;
+      }
+      #theme-heo .heo-paid-wall__amount {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #e11d48;
+        margin-right: 0.25rem;
+      }
+      #theme-heo .heo-paid-wall__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 160px;
+        padding: 0.55rem 1.1rem;
+        border: 0;
+        border-radius: 999px;
+        background: #425aef;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      #theme-heo .heo-paid-wall__btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      #theme-heo .heo-paid-wall__qrbox {
+        margin-top: 0.5rem;
+      }
+      #theme-heo .heo-paid-wall__qr {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 8px;
+      }
+      #theme-heo .heo-paid-wall__tip,
+      #theme-heo .heo-paid-wall__guest {
+        margin-top: 0.6rem;
+        font-size: 12px;
+        color: #888;
+      }
+      #theme-heo .heo-paid-wall__error {
+        margin-top: 0.6rem;
+        color: #e11d48;
+        font-size: 13px;
+      }
+      #theme-heo .heo-paid-wall--unlocked {
+        border-style: solid;
+        border-color: rgba(66, 90, 239, 0.35);
+        background: rgba(66, 90, 239, 0.06);
+        text-align: left;
+      }
+      #theme-heo .heo-paid-wall__badge {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        background: #425aef;
+        color: #fff;
+        font-size: 12px;
+      }
+      #theme-heo .heo-paid-wall__content {
+        white-space: pre-wrap;
+        word-break: break-all;
+        font-family: inherit;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin: 0.5rem 0 0;
       }
 
       /* Waline：隐藏底部 RSS / Powered by / 空评论提示 */

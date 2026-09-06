@@ -28,7 +28,10 @@ const FaceBookPage = dynamic(
 )
 
 /**
- * 右侧栏：sticky 贴顶跟随；文章滚到底才一起下去；栏内不滚动
+ * 右侧栏（对齐 blog.zhheo.com #aside-content）
+ * - 资料卡 / 公众号：普通流，跟正文一起滚走
+ * - 今日热门 / 标签 / 统计等：放进 sticky_layout，滚到顶再吸住
+ *   （整栏 sticky 且高于视口时会出现「小工具滚不动」）
  */
 export default function SideRight(props) {
   const { post, lock, tagOptions, rightAreaSlot } = props
@@ -42,64 +45,79 @@ export default function SideRight(props) {
     siteConfig('HEO_HERO_SUBSCRIBE_ENABLE', true, CONFIG)
   )
   const socialEnable = parseBool(siteConfig('HEO_SOCIAL_CARD', true, CONFIG))
-  // 绿色公众号条：资料卡正下方（首页/文章页都显示）
   const showSubscribe = subscribeEnable || socialEnable
-  const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', false, CONFIG)
+  const showInfoOnHome = siteConfig('HEO_HOME_SHOW_INFO_CARD', true, CONFIG)
   const tagLimit = Number(siteConfig('HEO_SIDE_TAG_LIMIT', 24, CONFIG)) || 24
   const sortedTags = tagOptions?.slice(0, tagLimit) || []
-  // 文章页始终显示资料卡（对齐 Heo）；首页按配置
   const showInfoCard = Boolean(post) || !isHome || showInfoOnHome
   const showToc = !lock && Array.isArray(post?.toc) && post.toc.length > 0
+
+  const hasStickyBlock =
+    showToc ||
+    showHot ||
+    showLatest ||
+    Boolean(rightAreaSlot) ||
+    sortedTags.length > 0 ||
+    showAnalytics
 
   return (
     <aside
       id='sideRight'
-      className='heo-side-right hidden w-[300px] shrink-0 self-stretch xl:block xl:w-[320px]'>
-      <div className='heo-side-sticky sticky top-20 flex w-full flex-col gap-4'>
-        {showInfoCard && (
-          <InfoCard {...props} className='w-full wow fadeInUp' />
-        )}
+      className={`heo-side-right hidden w-[300px] shrink-0 self-stretch xl:flex xl:w-[320px] xl:flex-col ${
+        isHome ? 'gap-3' : 'gap-4'
+      }`}>
+      {/* 顶部模块：不 sticky，跟文章一起滚（评论也放这里，避免 sticky 过高+wow 导致「消失」） */}
+      {showInfoCard && (
+        <InfoCard {...props} className='w-full wow fadeInUp' />
+      )}
 
-        {showSubscribe && (
-          <div className='wow fadeInUp w-full'>
-            <WechatSubscribeCard className='w-full' />
-          </div>
-        )}
+      {showSubscribe && (
+        <div className='wow fadeInUp w-full'>
+          <WechatSubscribeCard className='w-full' />
+        </div>
+      )}
 
-        {showToc && (
-          <div
-            id='card-toc-wrap'
-            className='heo-aside-card heo-aside-toc wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] p-3.5 dark:bg-[var(--heo-color-card-dark)]'>
-            <Catalog toc={post.toc} />
-          </div>
-        )}
+      {showComments && <RecentCommentsCard {...props} />}
 
-        {showHot && <HotPostsCard {...props} />}
+      {/* 下方模块：Heo .sticky_layout（热门 / 标签 / 统计） */}
+      {hasStickyBlock && (
+        <div
+          className={`heo-side-sticky sticky top-20 flex w-full flex-col ${
+            isHome ? 'gap-3' : 'gap-4'
+          }`}>
+          {showToc && (
+            <div
+              id='card-toc-wrap'
+              className='heo-aside-card heo-aside-toc wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] p-3.5 dark:bg-[var(--heo-color-card-dark)]'>
+              <Catalog toc={post.toc} />
+            </div>
+          )}
 
-        {showLatest && (
-          <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] p-4 dark:bg-[var(--heo-color-card-dark)]'>
-            <LatestPostsGroupMini {...props} />
-          </div>
-        )}
+          {showHot && <HotPostsCard {...props} />}
 
-        {showComments && <RecentCommentsCard {...props} />}
+          {showLatest && (
+            <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] p-4 dark:bg-[var(--heo-color-card-dark)]'>
+              <LatestPostsGroupMini {...props} />
+            </div>
+          )}
 
-        {rightAreaSlot}
+          {rightAreaSlot}
 
-        {sortedTags.length > 0 && (
-          <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] px-4 py-4 dark:bg-[var(--heo-color-card-dark)] dark:text-white'>
-            <TagGroups tags={sortedTags} max={tagLimit} />
-          </div>
-        )}
+          {sortedTags.length > 0 && (
+            <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] px-4 py-4 dark:bg-[var(--heo-color-card-dark)] dark:text-white'>
+              <TagGroups tags={sortedTags} max={tagLimit} />
+            </div>
+          )}
 
-        {showAnalytics && (
-          <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] px-4 py-4 dark:bg-[var(--heo-color-card-dark)] dark:text-white'>
-            <AnalyticsCard {...props} />
-          </div>
-        )}
+          {showAnalytics && (
+            <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] px-4 py-4 dark:bg-[var(--heo-color-card-dark)] dark:text-white'>
+              <AnalyticsCard {...props} />
+            </div>
+          )}
 
-        <FaceBookPage />
-      </div>
+          <FaceBookPage />
+        </div>
+      )}
     </aside>
   )
 }

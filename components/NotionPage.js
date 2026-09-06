@@ -2,6 +2,7 @@ import { siteConfig } from '@/lib/config'
 import { compressImage, mapImgUrl } from '@/lib/db/notion/mapImage'
 import NotionEmbed from '@/components/NotionEmbed'
 import NotionLink from '@/components/NotionLink'
+import NotionPaidCallout from '@/components/NotionPaidCallout'
 import { isBrowser, loadExternalResource } from '@/lib/utils'
 import mediumZoom from '@fisch0920/medium-zoom'
 import 'katex/dist/katex.min.css'
@@ -9,6 +10,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useRef } from 'react'
 import { NotionRenderer } from 'react-notion-x'
 import OriginalityProof from './OriginalityProof'
+import { PostPayContext } from '@/lib/postPayContext'
 
 /**
  * 整个站点的核心组件
@@ -115,22 +117,29 @@ const NotionPage = ({ post, className }) => {
     <div
       id='notion-article'
       className={`mx-auto overflow-hidden ${className || ''}`}>
-      <NotionRenderer
-        recordMap={post?.blockMap}
-        mapPageUrl={mapPageUrl}
-        mapImageUrl={mapImgUrl}
-        components={{
-          Code,
-          Collection,
-          Embed: NotionEmbed,
-          Equation,
-          Link: NotionLink,
-          Modal,
-          Pdf,
-          Quote: NotionQuote,
-          Tweet
-        }}
-      />
+      <PostPayContext.Provider
+        value={{
+          postSlug: post?.slug || post?.id || '',
+          pageId: post?.id || ''
+        }}>
+        <NotionRenderer
+          recordMap={post?.blockMap}
+          mapPageUrl={mapPageUrl}
+          mapImageUrl={mapImgUrl}
+          components={{
+            Callout: NotionPaidCallout,
+            Code,
+            Collection,
+            Embed: NotionEmbed,
+            Equation,
+            Link: NotionLink,
+            Modal,
+            Pdf,
+            Quote: NotionQuote,
+            Tweet
+          }}
+        />
+      </PostPayContext.Provider>
 
       <AdEmbed />
       <OriginalityProof proof={post?.originalityProof} />

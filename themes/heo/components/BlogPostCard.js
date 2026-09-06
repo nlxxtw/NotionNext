@@ -68,6 +68,24 @@ const BlogPostCard = ({ index, post, showSummary, siteInfo }) => {
     }
   }, [readKey])
 
+  // 预热封面主色缓存，点进文章时可瞬时上色、避免先闪默认紫
+  useEffect(() => {
+    const cover = post?.pageCoverThumbnail || post?.pageCover || ''
+    if (!cover) return undefined
+    let idleId
+    const run = () => {
+      import('../lib/coverColor')
+        .then(m => m.prefetchCoverColor?.(cover))
+        .catch(() => {})
+    }
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(run, { timeout: 2500 })
+      return () => window.cancelIdleCallback?.(idleId)
+    }
+    idleId = window.setTimeout(run, 600)
+    return () => window.clearTimeout(idleId)
+  }, [post?.pageCoverThumbnail, post?.pageCover])
+
   return (
     <article className='h-full'>
       <div

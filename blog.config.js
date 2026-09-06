@@ -6,7 +6,7 @@ const BLOG = {
   NOTION_PAGE_ID:
     process.env.NOTION_PAGE_ID ||
     '02ab3b8678004aa69e9e415905ef32a5,en:7c1d570661754c8fbc568e00a01fd70e',
-  THEME: process.env.NEXT_PUBLIC_THEME || 'simple', // 当前主题，在themes文件夹下可找到所有支持的主题；主题名称就是文件夹名，例如 claude,endspace,example,fukasawa,fuwari,gitbook,heo,hexo,landing,matery,medium,next,nobelium,plog,simple
+  THEME: process.env.NEXT_PUBLIC_THEME || 'heo', // 当前主题；本地已精简，仅保留 heo / example
   LANG: process.env.NEXT_PUBLIC_LANG || 'zh-CN', // e.g 'zh-CN','en-US'  see /lib/lang.js for more.
   SINCE: process.env.NEXT_PUBLIC_SINCE || 2021, // e.g if leave this empty, current year will be used.
 
@@ -97,7 +97,12 @@ const BLOG = {
 
   // 内嵌 Notion 子页面 URL 跟随父级文章路径，例如 /article/post/{pageId}
   INNER_PAGE_URL_PARENT_PATH:
-    process.env.NEXT_PUBLIC_INNER_PAGE_URL_PARENT_PATH || false
+    process.env.NEXT_PUBLIC_INNER_PAGE_URL_PARENT_PATH || false,
+
+  // 博客游客付费解锁（当面付 + Cookie）
+  BLOG_PAY_ENABLED: process.env.NEXT_PUBLIC_BLOG_PAY_ENABLED || true,
+  BLOG_PAY_DEFAULT_PRICE: process.env.NEXT_PUBLIC_BLOG_PAY_DEFAULT_PRICE || 3
+  // 服务端专用：BLOG_PAY_API_BASE / BLOG_PAY_APP_ID 见 .env
 }
 
 module.exports = BLOG

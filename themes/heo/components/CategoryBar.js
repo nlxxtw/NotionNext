@@ -38,14 +38,16 @@ export default function CategoryBar(props) {
     setScrollRight(!scrollRight)
   }
 
+  const categories = Array.isArray(categoryOptions) ? categoryOptions : []
+
   return (
     <div
       id='category-bar'
-      className='home-category-bar mb-3 flex w-full flex-nowrap items-center justify-between gap-2'>
+      className='home-category-bar relative z-[5] mb-3 flex w-full flex-nowrap items-center justify-between gap-2'>
       <div
         id='category-bar-items'
         ref={categoryBarItemsRef}
-        className='scroll-hidden scroll-smooth flex max-w-full flex-nowrap items-center gap-2 overflow-x-auto py-0.5 pr-1'>
+        className='scroll-hidden scroll-smooth flex min-w-0 flex-1 flex-nowrap items-center gap-2 overflow-x-auto py-0.5 pr-1'>
         {showHome && <MenuItem href='/' name={homeLabel} featured />}
         {pinned.map((item, index) => (
           <MenuItem key={`pin-${index}`} href={item.href} name={item.name} />
@@ -53,10 +55,10 @@ export default function CategoryBar(props) {
         {notionTagShortcuts.map((item, index) => (
           <MenuItem key={`tag-${index}`} href={item.href} name={item.name} />
         ))}
-        {categoryOptions?.map((c, index) => (
+        {categories.map((c, index) => (
           <MenuItem
-            key={`cat-${index}`}
-            href={`/category/${c.name}`}
+            key={`cat-${c.id || c.name || index}`}
+            href={`/category/${encodeURIComponent(c.name)}`}
             name={c.name}
           />
         ))}
@@ -93,7 +95,11 @@ const MenuItem = ({ href, name, featured = false }) => {
     : category === name ||
       tag === name ||
       decodeURIComponent(path) === href ||
-      decodeURIComponent(path) === `${href}/`
+      decodeURIComponent(path) === `${href}/` ||
+      decodeURIComponent(path) === `/category/${name}` ||
+      decodeURIComponent(path) === `/category/${name}/` ||
+      decodeURIComponent(path) === `/tag/${name}` ||
+      decodeURIComponent(path) === `/tag/${name}/`
 
   return (
     <SmartLink

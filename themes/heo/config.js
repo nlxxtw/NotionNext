@@ -243,7 +243,7 @@ const CONFIG = {
   // 页脚（原先定制：访问须知 + 二维码）
   HEO_FOOTER_NOTICE_TITLE: '访问须知',
   HEO_FOOTER_NOTICE_TEXT:
-    '本站为非经营性个人博客，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系博主删除！',
+    '本站为非经营性个人博客，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，\n仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系博主删除！',
   // 中间三颗胶囊默认关闭；图仍给底栏「打赏/资源/订阅」悬停用
   HEO_FOOTER_SHOW_QR_CHIPS: false,
   HEO_FOOTER_QR_LIST: [
@@ -280,7 +280,7 @@ const CONFIG = {
   HEO_FOOTER_LINK_GROUPS: [],
 
   HEO_WIDGET_LATEST_POSTS: false, // 最新文章卡（默认关，避免与今日热门重复）
-  HEO_HOME_SHOW_INFO_CARD: false, // 首页是否强制显示资料卡；有 Notion 公告页时仍会显示
+  HEO_HOME_SHOW_INFO_CARD: true, // 首页右栏顶显示资料卡（对齐 blog.zhheo.com）
   HEO_WIDGET_ANALYTICS: true, // 显示统计卡
   HEO_WIDGET_TO_TOP: true,
   HEO_WIDGET_TO_COMMENT: true, // 跳到评论区

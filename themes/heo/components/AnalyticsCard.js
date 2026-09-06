@@ -1,6 +1,7 @@
 import { siteConfig } from '@/lib/config'
 import { useEffect, useState } from 'react'
 import CONFIG from '../config'
+import { subscribeSitePv } from '../lib/loadSitePv'
 import AsideWidgetHeader from './AsideWidgetHeader'
 
 /**
@@ -81,45 +82,7 @@ export function AnalyticsCard(props) {
   }, [walineURL, overrideComments])
 
   useEffect(() => {
-    const apply = n => {
-      if (!Number.isFinite(n) || n < 0) return
-      setViewDisplay(formatCount(n))
-    }
-
-    const loadApi = async () => {
-      try {
-        const res = await fetch('/api/busuanzi')
-        if (!res.ok) return
-        const data = await res.json()
-        if (data?.ok && data.site_pv != null) apply(Number(data.site_pv))
-      } catch {
-        // ignore
-      }
-    }
-
-    const readPv = () => {
-      const nodes = document.querySelectorAll('.busuanzi_value_site_pv')
-      for (const el of nodes) {
-        const raw = (el.textContent || '').replace(/[,\s]/g, '').trim()
-        if (!raw || !/^\d+$/.test(raw)) continue
-        apply(Number(raw))
-        return true
-      }
-      return false
-    }
-
-    const onReady = e => apply(Number(e?.detail?.site_pv))
-
-    loadApi()
-    readPv()
-    window.addEventListener('heo-busuanzi-ready', onReady)
-    const t = window.setInterval(readPv, 800)
-    const stop = window.setTimeout(() => window.clearInterval(t), 25000)
-    return () => {
-      window.removeEventListener('heo-busuanzi-ready', onReady)
-      window.clearInterval(t)
-      window.clearTimeout(stop)
-    }
+    return subscribeSitePv(n => setViewDisplay(formatCount(n)))
   }, [])
 
   return (

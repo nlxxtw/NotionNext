@@ -63,9 +63,9 @@ export default function AuthorCard({
 
   return (
     <div
-      className={`heo-author-card group relative flex w-full ${minHeightClass} flex-col overflow-hidden rounded-[18px] px-3.5 pb-3.5 pt-2.5 text-white shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] ${className}`}>
+      className={`heo-author-card group relative box-border flex w-full ${minHeightClass} flex-col overflow-hidden rounded-[18px] px-3.5 pb-3 pt-3 text-white shadow-[var(--heo-shadow-border,0_8px_16px_-4px_#2c2d300c)] ${className}`}>
       {/* 问候胶囊 */}
-      <div className='relative z-[2] flex justify-center'>
+      <div className='relative z-[2] flex shrink-0 justify-center'>
         <button
           type='button'
           onClick={nextGreeting}
@@ -74,9 +74,9 @@ export default function AuthorCard({
         </button>
       </div>
 
-      {/* 默认：头像 + 右下角状态徽章（复刻安知鱼 .author-status） */}
-      <div className='heo-author-avatar relative z-[1] mx-auto flex flex-1 items-center justify-center py-2 transition duration-300 group-hover:pointer-events-none group-hover:scale-0 group-hover:opacity-0'>
-        <div className='heo-author-info-avatar relative h-[76px] w-[76px] shrink-0'>
+      {/* 头像区：flex-1 垂直居中，320px 高时落在卡片正中（十字对齐视觉中心） */}
+      <div className='heo-author-avatar relative z-[1] mx-auto flex min-h-0 w-full flex-1 items-center justify-center py-2 transition duration-300 group-hover:pointer-events-none group-hover:scale-0 group-hover:opacity-0'>
+        <div className='heo-author-info-avatar relative h-[88px] w-[88px] shrink-0'>
           <LazyImage
             src={avatar}
             alt={author}
@@ -84,12 +84,12 @@ export default function AuthorCard({
           />
           <span
             aria-hidden
-            className='heo-author-status absolute bottom-[2px] right-[2px] flex h-[33px] w-[33px] items-center justify-center overflow-hidden rounded-full bg-white shadow transition duration-300 group-hover:scale-0 group-hover:opacity-0'>
+            className='heo-author-status absolute bottom-0 right-0 flex h-[28px] w-[28px] items-center justify-center overflow-hidden rounded-full bg-white shadow transition duration-300 group-hover:scale-0 group-hover:opacity-0'>
             {emojiIsImage ? (
               <LazyImage
                 src={emoji}
                 alt=''
-                className='h-[26px] w-[26px] rounded-none object-cover'
+                className='h-[22px] w-[22px] rounded-none object-cover'
               />
             ) : (
               <span className='text-sm leading-none'>{emoji}</span>
@@ -99,12 +99,12 @@ export default function AuthorCard({
       </div>
 
       {/* 悬停：介绍 */}
-      <div className='heo-author-intro pointer-events-none absolute inset-x-3.5 top-[2.6rem] bottom-[3.6rem] z-[1] flex flex-col justify-center gap-1.5 opacity-0 transition duration-300 group-hover:opacity-100'>
+      <div className='heo-author-intro pointer-events-none absolute inset-x-3 top-[2.2rem] bottom-[3.1rem] z-[1] flex flex-col justify-center gap-1 opacity-0 transition duration-300 group-hover:opacity-100'>
         {introBlocks.length > 0 ? (
           introBlocks.map((block, i) => (
             <p
               key={i}
-              className='text-[12.5px] leading-[1.4] text-white/95'
+              className='text-[12px] leading-[1.35] text-white/95'
               style={{ textAlign: 'justify' }}>
               {block.map((part, j) =>
                 part.bold ? (
@@ -118,20 +118,20 @@ export default function AuthorCard({
             </p>
           ))
         ) : (
-          <p className='text-[12.5px] leading-[1.4] text-white/95'>
+          <p className='text-[12px] leading-[1.35] text-white/95'>
             {bio || '分享设计与科技生活'}
           </p>
         )}
       </div>
 
-      {/* 底部姓名 + 社交 */}
-      <div className='relative z-[2] mt-auto flex items-end justify-between gap-2'>
+      {/* 底部姓名 + 社交（贴底，与 Heo author-info__bottom-group 一致） */}
+      <div className='relative z-[2] mt-auto flex shrink-0 items-end justify-between gap-2 pt-1'>
         <div className='min-w-0 flex-1'>
           <div className='truncate text-[20px] font-extrabold leading-none'>
             {author}
           </div>
           {bio && (
-            <div className='mt-1 line-clamp-2 text-[11px] leading-snug opacity-85'>
+            <div className='mt-1 line-clamp-1 text-[12px] leading-snug opacity-70'>
               {bio}
             </div>
           )}

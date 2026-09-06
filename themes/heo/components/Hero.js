@@ -7,34 +7,29 @@ import AuthorCard from './AuthorCard'
 import WechatSubscribeCard from './WechatSubscribeCard'
 
 /**
- * 首页英雄区（对齐 blog.zhheo.com）
- * 左轮播与右资料卡同高，形成中间十字圆角；公众号订阅放到侧栏顶对齐文章列表
+ * 首页英雄区（对齐 blog.zhheo.com #home_center）
+ * 轮播 320px 高、占满主栏；与右侧资料卡同高顶对齐
+ * 下方 mb-3 与侧栏 gap-3 一致，形成十字白缝
+ * 资料卡：xl+ 在 SideRight；更窄屏放在轮播下方
  */
 const Hero = props => {
-  const reverse = siteConfig('HEO_HERO_REVERSE', false, CONFIG)
-
   return (
     <div id='hero-wrapper' className='relative mb-3 w-full select-none'>
       <div
         aria-hidden
-        className='pointer-events-none absolute inset-x-0 -top-20 h-[380px] overflow-hidden'>
+        className='pointer-events-none absolute inset-x-0 top-0 z-0 h-[320px] overflow-hidden'>
         <div className='absolute left-[6%] top-6 h-52 w-52 rounded-full bg-[#a5b4fc]/45 blur-3xl dark:bg-[#f2b94b]/12' />
         <div className='absolute right-[12%] top-0 h-60 w-60 rounded-full bg-[#c4b5fd]/40 blur-3xl dark:bg-[#425aef]/18' />
         <div className='absolute left-[42%] top-24 h-44 w-64 rounded-full bg-[#fde68a]/35 blur-3xl dark:bg-[#fde68a]/8' />
       </div>
 
-      <div
-        id='home_center'
-        className={`relative z-[1] flex w-full flex-col gap-3 ${
-          reverse ? '' : ''
-        }`}>
-        <div
-          className={`heo-hero-row flex w-full flex-col gap-3 lg:h-[300px] lg:flex-row lg:items-stretch ${
-            reverse ? 'lg:flex-row-reverse' : ''
-          }`}>
+      <div id='home_center' className='relative z-0 flex w-full flex-col gap-3'>
+        {/* Heo .home-center-content：与侧栏资料卡同高 320px */}
+        <div className='heo-hero-row heo-home-banner h-[220px] w-full lg:h-[320px]'>
           <HomeCenterCarousel {...props} />
-          <HeroAside {...props} />
         </div>
+        {/* 窄屏：资料卡下移到轮播下方，不抢横向空间 */}
+        <HeroAuthorMobile {...props} />
         <HeroSubscribeMobile />
       </div>
     </div>
@@ -77,7 +72,7 @@ function HomeCenterCarousel(props) {
 
   if (!slides.length) {
     return (
-      <div className='home-center-left flex h-[220px] flex-1 items-center justify-center overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
+      <div className='home-center-left flex h-full min-h-0 w-full flex-1 items-center justify-center overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)]'>
         <span className='text-sm text-gray-400'>暂无推荐内容</span>
       </div>
     )
@@ -87,7 +82,7 @@ function HomeCenterCarousel(props) {
   const hasCover = Boolean(current?.cover)
 
   return (
-    <div className='home-center-left group relative h-[240px] min-h-0 flex-1 overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)] lg:h-full'>
+    <div className='home-center-left group relative h-full min-h-0 w-full overflow-hidden rounded-[22px] bg-[var(--heo-color-card)] shadow-[var(--heo-shadow-border)] dark:bg-[var(--heo-color-card-dark)]'>
       {/* 无封面时用技能图标底纹 */}
       {!hasCover && <TagsGroupBar />}
 
@@ -199,17 +194,16 @@ function CarouselArrow({ direction, onClick }) {
 }
 
 /**
- * 右侧仅资料卡，与左侧轮播严格同高；宽度必须与 SideRight 一致，否则会「歪」
- * SideRight: xl:w-[320px] / w-[300px]
+ * 窄屏资料卡：放在轮播下方（下移），绝不与轮播横排挤压
+ * xl+ 由 SideRight 展示
  */
-function HeroAside(props) {
+function HeroAuthorMobile(props) {
   const { siteInfo } = props
-
   return (
-    <div className='heo-hero-aside h-[240px] w-full shrink-0 lg:h-full lg:w-[300px] xl:w-[320px]'>
+    <div className='heo-hero-aside w-full xl:hidden'>
       <AuthorCard
         siteInfo={siteInfo}
-        className='h-full w-full min-h-0'
+        className='h-[200px] w-full'
         minHeightClass='h-full min-h-0'
       />
     </div>

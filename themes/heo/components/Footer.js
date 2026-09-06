@@ -27,10 +27,12 @@ const Footer = () => {
     '访问须知',
     CONFIG
   )
-  const noticeText = siteConfig(
-    'HEO_FOOTER_NOTICE_TEXT',
-    '本站为非经营性个人博客，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系博主删除！',
-    CONFIG
+  const noticeText = formatFooterNoticeText(
+    siteConfig(
+      'HEO_FOOTER_NOTICE_TEXT',
+      '本站为非经营性个人博客，资源全部来自互联网收集，仅供用于学习和交流，请勿用于商业用途，本站自愿捐赠、打赏，\n仅为维持服务器的开支与维护所用。如有侵权不妥之处，请联系博主删除！',
+      CONFIG
+    )
   )
 
   const qrCatalog = normalizeQrList(
@@ -50,8 +52,8 @@ const Footer = () => {
       <div className='h-16 bg-gradient-to-b from-[#f7f9fe] to-white dark:from-[#18171d] dark:to-[#1a191d]' />
 
       {showQrChips && qrCatalog.length > 0 && (
-        <div className='border-t border-black/[0.04] bg-white px-4 py-7 dark:border-white/10 dark:bg-[#1a191d]'>
-          <div className='mx-auto flex max-w-6xl flex-wrap justify-center gap-3'>
+        <div className='border-t border-black/[0.04] bg-white px-5 py-7 dark:border-white/10 dark:bg-[#1a191d]'>
+          <div className='mx-auto flex w-full max-w-[86rem] flex-wrap justify-center gap-3'>
             {qrCatalog.map((item, index) => (
               <QrHoverChip key={`${item.title}-${index}`} item={item} />
             ))}
@@ -60,8 +62,8 @@ const Footer = () => {
       )}
 
       {linkGroups.length > 0 && (
-        <div className='border-t border-black/[0.04] bg-white px-4 py-8 dark:border-white/10 dark:bg-[#1a191d]'>
-          <div className='mx-auto grid max-w-6xl grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
+        <div className='border-t border-black/[0.04] bg-white px-5 py-8 dark:border-white/10 dark:bg-[#1a191d]'>
+          <div className='mx-auto grid w-full max-w-[86rem] grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
             {linkGroups.map(group => (
               <div key={group.title}>
                 <div className='mb-2.5 text-[14px] font-extrabold text-gray-800 dark:text-gray-100'>
@@ -89,15 +91,18 @@ const Footer = () => {
         className={`w-full overflow-visible border-t border-black/[0.04] bg-[#f3f5f9] dark:border-white/10 dark:bg-[#21232A] ${
           reserveMusicPlayerSpace ? 'pb-20' : ''
         }`}>
-        <div className='mx-auto flex max-w-6xl flex-col gap-4 overflow-visible px-4 py-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12'>
-          <div className='min-w-0 w-full max-w-xl flex-1 lg:max-w-[52%]'>
+        {/* 与主栏 #wrapper-outer / 顶栏同宽：max-w-[86rem] + px-5 */}
+        <div className='mx-auto flex w-full max-w-[86rem] flex-col gap-4 overflow-visible px-5 py-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12'>
+          <div className='min-w-0 w-full flex-1'>
             {(noticeTitle || noticeText) && (
               <div className='mb-4 text-left text-[12px] leading-6 text-gray-500 dark:text-gray-400'>
                 <div className='mb-1 inline-flex items-center gap-1.5 text-[13px] font-bold text-gray-700 dark:text-gray-200'>
                   <i className='fas fa-info-circle text-[11px] text-[var(--heo-color-primary)]' />
                   {noticeTitle}
                 </div>
-                {noticeText ? <p className='break-words'>{noticeText}</p> : null}
+                {noticeText ? (
+                  <p className='whitespace-pre-line break-words'>{noticeText}</p>
+                ) : null}
               </div>
             )}
 
@@ -183,6 +188,13 @@ const Footer = () => {
       </div>
     </footer>
   )
+}
+
+/** 「打赏，」后换行，避免访问须知挤成一行 */
+function formatFooterNoticeText(value) {
+  const text = String(value || '').trim()
+  if (!text) return ''
+  return text.replace(/、打赏，\s*/g, '、打赏，\n')
 }
 
 function QrHoverChip({ item }) {

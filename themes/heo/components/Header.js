@@ -180,12 +180,12 @@ const Header = props => {
             </div>
           </div>
 
-          <div className='flex items-center justify-end gap-1'>
+          <div className='flex items-center justify-end gap-2'>
             <div
-              className={`flex items-center gap-0.5 ${
+              className={`flex h-9 items-center gap-0.5 ${
                 textWhite
-                  ? 'px-0.5 py-1'
-                  : 'heo-nav-chip rounded-full px-1.5 py-1'
+                  ? 'px-0.5'
+                  : 'heo-nav-chip rounded-full px-1.5'
               }`}>
               <RandomPostButton {...props} />
               <SearchButton {...props} />
@@ -194,7 +194,7 @@ const Header = props => {
                 type='button'
                 aria-label='打开菜单'
                 onClick={toggleMenuOpen}
-                className={`flex h-8 w-8 items-center justify-center rounded-full transition lg:hidden ${
+                className={`flex h-9 w-9 items-center justify-center rounded-full transition lg:hidden ${
                   textWhite
                     ? 'text-white hover:bg-white/15'
                     : 'text-gray-700 hover:bg-black/5 dark:text-white dark:hover:bg-white/10'
@@ -203,7 +203,7 @@ const Header = props => {
               </button>
             </div>
             {!textWhite && themeSwitchOff && (
-              <div className='hidden md:block'>
+              <div className='hidden h-9 items-center md:flex'>
                 <DarkModeButton {...props} />
               </div>
             )}

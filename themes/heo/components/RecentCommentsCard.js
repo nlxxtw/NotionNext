@@ -73,13 +73,19 @@ export default function RecentCommentsCard(props) {
   }, [enabled, walineURL, twikooId, count])
 
   if (!enabled) return null
-  if (!walineURL && !twikooId) return null
+
+  // 未配置评论服务也保留卡片外壳，避免侧栏「评论小工具整块消失」
+  const unconfigured = !walineURL && !twikooId
 
   return (
     <div className='heo-aside-card wow fadeInUp rounded-2xl bg-[var(--heo-color-card)] px-4 py-4 dark:bg-[var(--heo-color-card-dark)]'>
       <AsideWidgetHeader title='最新评论' />
 
-      {loading ? (
+      {unconfigured ? (
+        <p className='px-0.5 py-3 text-[13px] text-gray-400 dark:text-gray-500'>
+          未配置评论服务
+        </p>
+      ) : loading ? (
         <div className='space-y-3 px-0.5 py-1'>
           {[0, 1, 2].map(i => (
             <div key={i} className='flex animate-pulse gap-3'>
